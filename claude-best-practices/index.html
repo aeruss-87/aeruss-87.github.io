@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claude Best Practices</title>
+  <style>
+    :root {
+      --navy: #1a2332;
+      --teal: #2d8b8b;
+      --seafoam: #a8dadc;
+      --cream: #f1faee;
+      --teal-dark: #236f6f;
+      --teal-light: #c8eced;
+      --navy-light: #253347;
+      --text-main: #1a2332;
+      --text-muted: #4a6070;
+      --border: #c8eced;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 28px 40px 0;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: -0.3px;
+    }
+
+    .header-title p {
+      font-size: 13px;
+      color: var(--seafoam);
+      margin-top: 4px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .search-wrap input {
+      background: var(--navy-light);
+      border: 1px solid var(--teal);
+      color: var(--cream);
+      padding: 9px 16px 9px 36px;
+      border-radius: 8px;
+      font-size: 13px;
+      width: 240px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-wrap input::placeholder { color: var(--seafoam); opacity: 0.7; }
+    .search-wrap input:focus { border-color: var(--seafoam); }
+
+    .search-icon {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--seafoam);
+      font-size: 14px;
+    }
+
+    /* TABS */
+    nav {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--seafoam);
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .tab:hover { color: var(--cream); background: var(--navy-light); }
+
+    .tab.active {
+      background: var(--cream);
+      color: var(--navy);
+      font-weight: 700;
+    }
+
+    /* MAIN */
+    main {
+      padding: 32px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* SECTION HEADERS */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+      margin-top: 32px;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    /* CARDS GRID */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: box-shadow 0.2s, transform 0.15s;
+      position: relative;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 20px rgba(45, 139, 139, 0.12);
+      transform: translateY(-1px);
+    }
+
+    .card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--teal-light);
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .card p, .card li {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card ul li::before {
+      content: "→";
+      color: var(--teal);
+      font-size: 11px;
+      margin-right: 7px;
+    }
+
+    /* PROMPT CARDS */
+    .prompt-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+
+    .prompt-card:hover {
+      box-shadow: 0 4px 20px rgba(45, 139, 139, 0.12);
+    }
+
+    .prompt-card .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      padding: 3px 8px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .prompt-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .prompt-text {
+      font-size: 12.5px;
+      color: #2a3a45;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--teal);
+      background: none;
+      border: 1px solid var(--border);
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: var(--teal-light);
+      border-color: var(--teal);
+    }
+
+    .copy-btn.copied {
+      color: #2d8b5a;
+      border-color: #b8ddc8;
+      background: #eaf6ef;
+    }
+
+    /* SHORTCUTS TABLE */
+    .shortcuts-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .shortcuts-table th {
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 12px 18px;
+      text-align: left;
+    }
+
+    .shortcuts-table td {
+      padding: 11px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: top;
+    }
+
+    .shortcuts-table tr:last-child td { border-bottom: none; }
+
+    .shortcuts-table tr:hover td { background: var(--cream); }
+
+    .shortcuts-table td:first-child {
+      color: var(--navy);
+      font-weight: 600;
+    }
+
+    kbd {
+      display: inline-block;
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 11px;
+      font-family: 'SF Mono', monospace;
+      padding: 2px 7px;
+      border-radius: 5px;
+      margin: 1px 2px;
+      white-space: nowrap;
+    }
+
+    .code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      font-size: 12px;
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    /* BEST PRACTICE CARDS */
+    .tip-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+      transition: box-shadow 0.2s;
+    }
+
+    .tip-card:hover { box-shadow: 0 4px 16px rgba(45,139,139,0.1); }
+
+    .tip-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .tip-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .tip-card .example {
+      margin-top: 10px;
+      font-size: 12px;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-family: 'SF Mono', monospace;
+      color: #2a3a45;
+      white-space: pre-wrap;
+    }
+
+    /* NO RESULTS */
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .no-results span { display: block; font-size: 32px; margin-bottom: 12px; }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      background: var(--seafoam);
+      color: var(--navy);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    /* TWO COL */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 760px) {
+      main { padding: 20px; }
+      header { padding: 20px 20px 0; }
+      .two-col { grid-template-columns: 1fr; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    /* HIDDEN FOR SEARCH */
+    .hidden { display: none !important; }
+
+    /* 30-DAY PLAN */
+    .plan-intro {
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+    }
+
+    .plan-intro h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--seafoam);
+      margin-bottom: 8px;
+    }
+
+    .plan-intro p {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #c8dde8;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+
+    .tier-1 { background: #d4edda; color: #1a5c2a; }
+    .tier-2 { background: #fff3cd; color: #7a5000; }
+    .tier-3 { background: var(--teal-light); color: var(--teal-dark); }
+
+    .workflow-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+    }
+
+    .workflow-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .workflow-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .workflow-row-item {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .workflow-row-item strong {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--teal);
+      margin-bottom: 3px;
+    }
+
+    .week-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .week-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      background: #fff;
+      transition: background 0.15s;
+      gap: 16px;
+    }
+
+    .week-header:hover { background: var(--cream); }
+
+    .week-header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .week-number {
+      width: 40px;
+      height: 40px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .week-meta h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .week-meta p {
+      font-size: 12px;
+      color: var(--teal);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .week-toggle {
+      font-size: 18px;
+      color: var(--teal);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .week-card.open .week-toggle { transform: rotate(180deg); }
+
+    .week-body {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 0;
+    }
+
+    .week-card.open .week-body { display: block; }
+
+    .week-focus {
+      padding: 14px 20px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .day-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .day-item:last-child { border-bottom: none; }
+
+    .day-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding-top: 1px;
+    }
+
+    .day-content h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .day-content p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .day-deliverable {
+      font-size: 11.5px;
+      color: var(--teal-dark);
+      background: var(--teal-light);
+      border-radius: 6px;
+      padding: 5px 10px;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    .principle-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--navy);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px;
+    }
+
+    .principle-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .principle-num {
+      width: 22px;
+      height: 22px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .principle-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .resource-group h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .resource-group ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .resource-group li {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .resource-group li::before {
+      content: "→";
+      color: var(--teal);
+      font-size: 11px;
+      margin-right: 7px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title">
+      <h1>Claude Best Practices</h1>
+      <p>Prompts, shortcuts, and inspiration for getting the most out of Claude</p>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" placeholder="Search across all sections..." oninput="handleSearch(this.value)" />
+    </div>
+  </div>
+  <nav>
+    <button class="tab active" onclick="switchTab('best-practices', this)">Best Practices</button>
+    <button class="tab" onclick="switchTab('shortcuts', this)">CLI Shortcuts</button>
+    <button class="tab" onclick="switchTab('prompts', this)">Prompt Templates</button>
+    <button class="tab" onclick="switchTab('inspiration', this)">Inspiration</button>
+    <button class="tab" onclick="switchTab('30day', this)">30-Day Plan</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- BEST PRACTICES -->
+  <div class="panel active" id="panel-best-practices">
+
+    <div class="section-label">Core Principles</div>
+    <div class="card-grid">
+      <div class="card searchable">
+        <h3><span class="card-icon">🎯</span> Be Clear and Direct</h3>
+        <ul>
+          <li>State what you want explicitly. Assume nothing is implied.</li>
+          <li>The "golden rule": if a colleague with no context would be confused by your prompt, Claude will be too.</li>
+          <li>Tell Claude what to DO, not what to avoid.</li>
+        </ul>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">🧠</span> Assign a Role</h3>
+        <ul>
+          <li>Give Claude a specific identity and domain before the task.</li>
+          <li>Include expertise level and perspective.</li>
+          <li>Even one sentence of role context dramatically improves output.</li>
+        </ul>
+        <div class="example" style="margin-top:10px;font-size:12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'SF Mono',monospace;color:#2a3a45;">"You are a senior People Ops strategist with 10 years of experience at high-growth tech companies."</div>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">📋</span> Provide Context</h3>
+        <ul>
+          <li>Explain WHY you need something, not just what.</li>
+          <li>Include audience, stakes, and any constraints upfront.</li>
+          <li>More context produces more calibrated output.</li>
+        </ul>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">💡</span> Use Examples</h3>
+        <ul>
+          <li>3-5 well-crafted examples (few-shot prompting) dramatically improve consistency.</li>
+          <li>Show Claude the format and tone you want via examples, not just descriptions.</li>
+          <li>Include both good and bad examples when precision matters.</li>
+        </ul>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">🏗️</span> Structure with XML Tags</h3>
+        <ul>
+          <li>Use tags to separate context, instructions, and input.</li>
+          <li>Reduces misinterpretation on complex prompts.</li>
+          <li>Especially useful for multi-part or document-heavy tasks.</li>
+        </ul>
+        <div class="example" style="margin-top:10px;font-size:12px;background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:'SF Mono',monospace;color:#2a3a45;">&lt;context&gt;...&lt;/context&gt;
+&lt;instructions&gt;...&lt;/instructions&gt;
+&lt;input&gt;...&lt;/input&gt;</div>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">📐</span> Specify Output Format</h3>
+        <ul>
+          <li>Tell Claude exactly what format you want: bullets, table, prose, JSON.</li>
+          <li>Specify length: "in 3 sentences" or "no more than 200 words."</li>
+          <li>Match your prompt style to the output you want. Markdown prompts produce markdown output.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section-label">Output and Tone</div>
+    <div class="card-grid">
+      <div class="tip-card searchable">
+        <h3>Minimize excessive formatting</h3>
+        <p>For long-form content, use clear prose instead of excessive bullet lists. Claude defaults to bullets — override explicitly if you want something else.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Specify tone and audience together</h3>
+        <p>Don't just say "professional." Say "direct and warm, for a 50-person company where people know each other."</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Ask for variants on high-stakes messages</h3>
+        <p>Request 2-3 versions labeled by what each one prioritizes and trades off. Gives you optionality without starting over.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Constrain overthinking</h3>
+        <p>For decisions, add: "Choose an approach and commit to it. Don't revisit unless I give you new information." Stops Claude from hedging.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Add a self-check step</h3>
+        <p>End complex prompts with: "Before finishing, check your answer against [criteria]." Catches basic errors without a follow-up message.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Long documents: put data first</h3>
+        <p>For 20k+ token prompts, place your source material at the top, then your instructions below. Can improve output quality by ~30%.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Add "ultrathink" for hard problems</h3>
+        <p>Adding the word "ultrathink" to any prompt gives Claude more reasoning budget for genuinely complex work. The quality difference on hard analysis, planning, or decisions is visible. Not needed for routine tasks.</p>
+      </div>
+    </div>
+
+    <div class="section-label">For People Ops Work</div>
+    <div class="card-grid">
+      <div class="card searchable">
+        <h3><span class="card-icon">👥</span> Survey and Engagement Analysis</h3>
+        <ul>
+          <li>Always combine quantitative scores with qualitative sentiment.</li>
+          <li>Specify: protect psychological safety, do not surface individual low scorers.</li>
+          <li>Ask for: themes, root causes, and prioritized recommendations.</li>
+        </ul>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">📅</span> Planning and Backwards Mapping</h3>
+        <ul>
+          <li>Give Claude the deadline and constraints first.</li>
+          <li>Ask for: week-by-week, concrete actions, named owners.</li>
+          <li>Request decision gates and dependency flags explicitly.</li>
+        </ul>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">✉️</span> Stakeholder Communications</h3>
+        <ul>
+          <li>Specify audience, stakes, and goal of the message.</li>
+          <li>Ask Claude to flag if the message warrants leadership review.</li>
+          <li>High-stakes sends: always request 2-3 variants.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHORTCUTS -->
+  <div class="panel" id="panel-shortcuts">
+
+    <div class="section-label">My Skills</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Skill</th><th>What it does</th><th>Say something like...</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="code">/ashley-comms</span></td>
+          <td>Draft Slack messages, emails, and internal comms in Ashley's voice. Handles leadership, cross-functional, and company-wide sends.</td>
+          <td>"Draft a Slack to Grant about…" / "Write an announcement for #general"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/survey-analyzer</span></td>
+          <td>Analyze engagement survey data. Produces themed insights, executive summary, and prioritized action plan. Protects psychological safety.</td>
+          <td>"Analyze this survey data" / "Summarize our Q2 pulse results"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/morning-briefing</span></td>
+          <td>Triage your inbox and preview your day via Superhuman Mail. Categorizes email into Urgent, Important, FYI, and Noise. Offers to draft replies and archive.</td>
+          <td>"Brief me on my day" / "What's in my inbox?" / "Morning update"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/eod-wrapup</span></td>
+          <td>End-of-day review via Superhuman Mail. Surfaces open loops, unanswered emails, commitments made, and tomorrow's priorities so you can log off with a clear head.</td>
+          <td>"Wrap up my day" / "What's still open?" / "Anything I'm forgetting before I log off?"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/batch-draft-writer</span></td>
+          <td>Draft multiple email replies or follow-ups at once via Superhuman Mail. Shows a plan before drafting, matches your voice, never sends without approval.</td>
+          <td>"Draft replies to my unread emails" / "Help me get through my inbox"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/meeting-scheduler</span></td>
+          <td>Handle end-to-end scheduling via Superhuman Mail. Checks availability across time zones, proposes times, books directly, or drafts a scheduling email.</td>
+          <td>"Schedule a meeting with [person]" / "Find time with [person] next week"</td>
+        </tr>
+        <tr>
+          <td><span class="code">/deal-tracker</span></td>
+          <td>Build a relationship summary via Superhuman Mail. Pulls email history, calendar interactions, and read receipts for any person or company. Acts as a lightweight CRM.</td>
+          <td>"Show me all my communication with [person]" / "Relationship summary for [company]"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Essential Slash Commands</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Command</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">/clear</span></td><td>Clear conversation history and reset context. Use when starting a new, unrelated task.</td></tr>
+        <tr><td><span class="code">/compact</span></td><td>Compress the conversation to save tokens while keeping key info. Use in long sessions before they get expensive. Guide it with intent: "compact but focus on the API changes" — unguided compaction loses the thread.</td></tr>
+        <tr><td><span class="code">/cost</span></td><td>Show token usage and cost for the current session.</td></tr>
+        <tr><td><span class="code">/memory</span></td><td>View and edit your CLAUDE.md instructions mid-session.</td></tr>
+        <tr><td><span class="code">/help</span></td><td>Show all available slash commands.</td></tr>
+        <tr><td><span class="code">/mcp</span></td><td>Manage MCP server connections (Craft, Notion, Slack, etc.).</td></tr>
+        <tr><td><span class="code">/sessions</span></td><td>List and resume previous sessions.</td></tr>
+        <tr><td><span class="code">/checkpoints</span></td><td>Save or rewind to a previous conversation state.</td></tr>
+        <tr><td><span class="code">/config</span></td><td>Set a persistent output style: Explanatory, Concise, or Technical. Configure it once instead of steering every reply.</td></tr>
+        <tr><td><span class="code">/settings</span></td><td>Access Claude Code configuration.</td></tr>
+        <tr><td><span class="code">/feedback</span></td><td>Report a bug or request a feature.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Referencing and Context</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Syntax</th><th>What it does</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">@file_path</span></td><td>Include a specific file in your prompt. Claude reads it as context.</td></tr>
+        <tr><td><span class="code">@directory/</span></td><td>Include an entire directory's contents.</td></tr>
+        <tr><td><span class="code">! bash_command</span></td><td>Run a bash command inline during your chat.</td></tr>
+        <tr><td><span class="code"># note</span></td><td>Add a persistent memory note to the session.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Mac Tips: Dictation (works in Claude Code input)</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>Fn</kbd> + <kbd>Fn</kbd></td><td>Start macOS dictation in any text field, including the Claude Code input box in VSCode. Speak your prompt, press <kbd>Fn</kbd> again to stop. Enable in System Settings &gt; Keyboard &gt; Dictation.</td></tr>
+        <tr><td><kbd>Fn</kbd> + <kbd>D</kbd></td><td>Alternative dictation shortcut on some Mac keyboard configurations. Same behavior as double-Fn.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Mac Tips: Finder</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>⌥</kbd> + <kbd>⌘</kbd> + <kbd>C</kbd></td><td>Copy the full file or folder path in Finder. Select the item, press this shortcut, then paste with <kbd>⌘</kbd> + <kbd>V</kbd> anywhere (terminal, Claude, etc.).</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Mac Tips: Window and App Switching</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>⌘</kbd> + <kbd>Tab</kbd></td><td>Switch between apps. Hold <kbd>⌘</kbd> and tap <kbd>Tab</kbd> to cycle forward through recent apps. Most-recently-used order, so one tap takes you back to the last app.</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>Tab</kbd></td><td>Cycle backward through the app switcher.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Mac Tips: Chrome Tabs</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>→</kbd></td><td>Next tab.</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>⌥</kbd> + <kbd>←</kbd></td><td>Previous tab.</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>1</kbd> through <kbd>⌘</kbd> + <kbd>8</kbd></td><td>Jump to a specific tab by position.</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>9</kbd></td><td>Jump to the last tab.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Mac Tips: Chrome Windows</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>⌘</kbd> + <kbd>N</kbd></td><td>New window.</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>`</kbd></td><td>Switch between Chrome windows (cycles through them).</td></tr>
+        <tr><td><kbd>⌘</kbd> + <kbd>Shift</kbd> + <kbd>W</kbd></td><td>Close current window.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Keyboard Shortcuts</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Shortcut</th><th>Action</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td><td>Submit your prompt.</td></tr>
+        <tr><td><kbd>Escape</kbd></td><td>Cancel an ongoing operation mid-response.</td></tr>
+        <tr><td><kbd>Esc</kbd> + <kbd>Esc</kbd></td><td>Rewind: opens a menu to restore code, conversation, or both. Use when you're not sure an approach will work and want to roll back.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>S</kbd></td><td>Stash your prompt draft. Halfway through a long message and need to ask something quick first? Save the draft, ask the side question, and it restores automatically.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>B</kbd></td><td>Background a long-running task. When Claude is running something slow (tests, a build), send it to the background and keep chatting. Useful for parallelizing the slow parts.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>L</kbd></td><td>Clear the terminal screen.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>R</kbd></td><td>Reverse search your command history.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>A</kbd></td><td>Jump to the start of the current line.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>E</kbd></td><td>Jump to the end of the current line.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>U</kbd></td><td>Clear the current line entirely.</td></tr>
+        <tr><td><kbd>Ctrl</kbd> + <kbd>D</kbd></td><td>Exit the session.</td></tr>
+        <tr><td><kbd>Tab</kbd></td><td>Auto-complete commands and file paths.</td></tr>
+        <tr><td><kbd>↑</kbd> Arrow</td><td>Cycle through previous prompts.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Execution Modes (press Shift+Tab to cycle)</div>
+    <div class="card-grid">
+      <div class="card searchable">
+        <h3><span class="card-icon">🛡️</span> Default Mode</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6;"><strong>Asks permission</strong> before editing files or running commands. Your starting point. Best for sensitive work: survey data, performance info, anything you want full visibility on.</p>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">✏️</span> Auto-Accept Edits</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6;">Claude <strong>edits files freely</strong> but still asks before running shell commands. Good for repetitive file work: organizing folders, renaming, routine edits where you trust the pattern.</p>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">📋</span> Plan Mode</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6;"><strong>Read-only.</strong> Claude gathers info and creates a plan, but makes no edits and runs no commands. You review the plan, then decide whether to proceed. Best for research, complex projects, and OKR/comms strategy work.</p>
+      </div>
+      <div class="card searchable">
+        <h3><span class="card-icon">⚡</span> Auto Mode</h3>
+        <p style="font-size:13px;color:var(--text-muted);line-height:1.6;"><strong>More autonomous.</strong> Claude evaluates actions with background safety checks and acts without asking for most operations. Still respects CLAUDE.md rules. Best for trusted recurring workflows with clear guardrails.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROMPT TEMPLATES -->
+  <div class="panel" id="panel-prompts">
+
+    <div class="section-label">People Ops</div>
+    <div class="card-grid">
+
+      <div class="prompt-card searchable">
+        <span class="tag">Planning</span>
+        <h3>Backwards Map a Project</h3>
+        <div class="prompt-text">The deadline is [DATE]. The goal is [GOAL].
+Key constraints: [CONSTRAINTS].
+Owners involved: [NAMES/ROLES].
+
+Work backwards from the deadline and build a week-by-week plan. For each week, list:
+- Concrete actions with named owners
+- Communications that need to go out
+- Decision gates or dependencies to flag
+
+No vague phases. Specific actions only.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Survey</span>
+        <h3>Engagement Survey Analysis</h3>
+        <div class="prompt-text">Here is our engagement survey data: [DATA]
+
+Analyze combining quantitative scores and qualitative sentiment.
+Do not identify or surface individual low scorers.
+
+Produce:
+1. Top 3 themes with supporting evidence
+2. Root cause analysis for each theme
+3. Prioritized recommendations, ordered by impact
+4. One-paragraph executive summary suitable for leadership</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Communications</span>
+        <h3>High-Stakes Slack Message</h3>
+        <div class="prompt-text">Draft a Slack message to [AUDIENCE] about [TOPIC].
+
+Context: [BACKGROUND]
+Goal of the message: [DESIRED OUTCOME]
+Tone: direct but warm, no em dashes, no emojis
+
+Give me 3 variants, each labeled by what it prioritizes and what it trades off.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Communications (XML)</span>
+        <h3>Slack Message with XML Structure</h3>
+        <div class="prompt-text">Draft a Slack message for me.
+
+&lt;audience&gt;
+[WHO is receiving this, e.g. Grant (CEO), direct message]
+&lt;/audience&gt;
+
+&lt;context&gt;
+[WHAT they need to know, including any deadlines]
+&lt;/context&gt;
+
+&lt;tone&gt;
+Direct but not pushy. No softening language ("no rush," "when you get a chance").
+Clear ask with a deadline.
+&lt;/tone&gt;
+
+&lt;constraints&gt;
+- No em dashes
+- No emojis (leadership message)
+- 3-4 sentences max
+&lt;/constraints&gt;</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Survey (XML)</span>
+        <h3>Engagement Survey Analysis with XML Structure</h3>
+        <div class="prompt-text">Analyze the attached engagement survey data.
+
+&lt;data_source&gt;
+[PASTE DATA or FILE REFERENCE]
+&lt;/data_source&gt;
+
+&lt;methodology&gt;
+- Combine quantitative scores with qualitative sentiment
+- Group findings into themes, not individual questions
+- Flag any scores that dropped 10%+ from the prior quarter
+&lt;/methodology&gt;
+
+&lt;output_format&gt;
+1. Executive summary: 3-5 key takeaways for leadership
+2. Detailed themes: theme-by-theme breakdown with supporting data points
+3. Action items: prioritized recommendations tied to specific themes
+&lt;/output_format&gt;
+
+&lt;guardrails&gt;
+- Never identify or surface individual low scorers
+- Protect psychological safety in all framing
+- When team sizes are small enough to be identifying, aggregate up
+&lt;/guardrails&gt;</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Performance</span>
+        <h3>Performance Review Draft</h3>
+        <div class="prompt-text">Draft a performance review for [ROLE].
+
+Strengths observed: [LIST]
+Areas for growth: [LIST]
+Key contributions this cycle: [LIST]
+
+Tone: direct, specific, and developmental. No vague praise.
+Format: 3 sections — Strengths, Growth Areas, Overall Assessment.
+Length: 250-350 words per section.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">OKR</span>
+        <h3>OKR Planning Deck Outline</h3>
+        <div class="prompt-text">Build a deck outline for our Q[X] OKR planning session.
+
+Audience: [LEADERSHIP / FULL TEAM / MANAGERS]
+Key context: [PRIORITIES, PRIOR CYCLE OUTCOMES]
+Goal of the session: [ALIGN / REVIEW / VOTE]
+
+Include: narrative arc, slide-by-slide outline, what decisions the audience needs to make, and likely questions they will ask.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">RACI</span>
+        <h3>Build a RACI Matrix</h3>
+        <div class="prompt-text">Build a RACI matrix for [INITIATIVE].
+
+Tasks/workstreams: [LIST]
+People involved: [NAMES AND ROLES]
+
+For each task, assign: Responsible, Accountable, Consulted, Informed.
+Flag any gaps where no one is clearly accountable.
+Output as a table.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+    </div>
+
+    <div class="section-label">General Purpose</div>
+    <div class="card-grid">
+
+      <div class="prompt-card searchable">
+        <span class="tag">Analysis</span>
+        <h3>Decision Analysis</h3>
+        <div class="prompt-text">Help me think through this decision: [DECISION]
+
+Context: [SITUATION]
+Constraints: [CONSTRAINTS]
+Stakeholders affected: [LIST]
+
+Analyze pros and cons of each option. Weight short, medium, and long-term impact separately.
+End with a clear recommendation and what I should monitor after deciding.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Summary</span>
+        <h3>Executive Summary</h3>
+        <div class="prompt-text">Summarize the following in an executive summary format: [CONTENT]
+
+Structure:
+- What: 2-sentence situation summary
+- So What: key implications
+- Now What: recommended next steps with owners
+
+Keep it under 200 words. Audience: [AUDIENCE]</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Critique</span>
+        <h3>Devil's Advocate Review</h3>
+        <div class="prompt-text">Review this [PLAN / MESSAGE / PROPOSAL]: [CONTENT]
+
+Act as a trusted advisor who tells me what I need to hear.
+Identify: real gaps, weak logic, and likely audience objections.
+Do not nitpick minor details. Focus on what could actually derail this.
+
+Be sharp but constructive.</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+      <div class="prompt-card searchable">
+        <span class="tag">Brainstorm</span>
+        <h3>Unconventional Ideas</h3>
+        <div class="prompt-text">Generate 8 ideas for [PROBLEM / CHALLENGE].
+
+Include at least 2 unconventional approaches that break from how this is typically done.
+For each idea: core insight, why it might work, and biggest risk.
+
+After listing all 8, rank the top 3 by [IMPACT / FEASIBILITY / SPEED].</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INSPIRATION -->
+  <div class="panel" id="panel-inspiration">
+
+    <div class="section-label">Prompt Patterns by Category</div>
+    <div class="two-col">
+
+      <div class="card searchable">
+        <h3><span class="card-icon">🔍</span> Analysis and Insights</h3>
+        <ul>
+          <li>"What are the key patterns, risks, or opportunities in [data]?"</li>
+          <li>"Root cause analysis: why does [problem] happen? Trace back through the system."</li>
+          <li>"Compare [A] vs [B]. What are the real trade-offs?"</li>
+          <li>"What would someone unfamiliar with [domain] need to understand about this?"</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">📣</span> Drafting and Communication</h3>
+        <ul>
+          <li>"Draft [message] for [audience]. Goal: [outcome]. Tone: [style]."</li>
+          <li>"Rewrite this to be clearer and more direct. What would you change?"</li>
+          <li>"Give me 3 variants, each labeled by what it prioritizes and trades off."</li>
+          <li>"Write a one-pager: context, recommendation, next steps."</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">🗺️</span> Planning and Project Management</h3>
+        <ul>
+          <li>"Work backwards from [deadline]. What needs to happen when?"</li>
+          <li>"Identify dependencies and bottlenecks. Which tasks must happen sequentially?"</li>
+          <li>"Design a communication plan for [stakeholder group]. What, when, how?"</li>
+          <li>"Flag decision gates and dependency risks in this plan."</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">💬</span> Brainstorming and Ideation</h3>
+        <ul>
+          <li>"Generate 10 ideas. Include at least 2 unconventional approaches."</li>
+          <li>"What am I missing about [topic]? What questions should I be asking?"</li>
+          <li>"If we completely reimagined [process], ignoring current constraints, what would it look like?"</li>
+          <li>"Devil's advocate: what could go wrong with [proposal]?"</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">📝</span> Summarization</h3>
+        <ul>
+          <li>"Summarize in 3 sentences. Highlight key decisions and action items."</li>
+          <li>"Pull out the action items. Who owns each? When is it due?"</li>
+          <li>"What, So What, Now What — distill this into those three buckets."</li>
+          <li>"Extract the top 5 things the reader needs to remember."</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">🎯</span> Decision-Making</h3>
+        <ul>
+          <li>"Should we [A] or [B]? What does the data suggest?"</li>
+          <li>"What's the right decision considering [constraints / values / stakeholders]?"</li>
+          <li>"What am I not considering about this decision?"</li>
+          <li>"What would you do in my position? What's the core trade-off?"</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">🧩</span> Explanation and Learning</h3>
+        <ul>
+          <li>"Explain [concept] like I'm [audience level]. Use concrete examples."</li>
+          <li>"What's the mental model I should have about [topic]?"</li>
+          <li>"What are common misconceptions about [topic]? What's actually true?"</li>
+          <li>"Walk me through how [system] works, step by step."</li>
+        </ul>
+      </div>
+
+      <div class="card searchable">
+        <h3><span class="card-icon">🛡️</span> Stress-Testing Work</h3>
+        <ul>
+          <li>"What's likely to slip in this plan? Where is the timeline too tight?"</li>
+          <li>"Who is a dependency risk? What hasn't been accounted for?"</li>
+          <li>"What will [Grant / Laura / Ryder] push back on? What questions will they ask?"</li>
+          <li>"Where is the logic weak? What assumptions am I making?"</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="section-label">Power Moves Worth Trying</div>
+    <div class="card-grid">
+      <div class="tip-card searchable">
+        <h3>Chain prompts for complex work</h3>
+        <p>Break a large task into sequential prompts. First get the analysis, then ask Claude to build on it. Cleaner than one giant prompt.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Use agents for multi-part projects</h3>
+        <p>Say "use agents" to trigger a parallel team of specialized agents. Best for planning cycles, deck creation, and high-stakes comms.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Ask what you're missing</h3>
+        <p>"What questions should I be asking that I'm not?" surfaces blind spots faster than refining a prompt you've already written.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Label your variants</h3>
+        <p>When requesting multiple drafts, ask Claude to label what each one prioritizes and what it trades off. Makes choosing faster.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Ask for the pushback first</h3>
+        <p>Before finalizing anything for leadership, prompt: "What will [audience] push back on and what are they likely to ask?" Then revise.</p>
+      </div>
+      <div class="tip-card searchable">
+        <h3>Iterate, don't restart</h3>
+        <p>Refine in the same conversation. "Make this more direct." "Shorten the second paragraph." "Try a warmer opening." Claude holds full context.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 30-DAY PLAN -->
+  <div class="panel" id="panel-30day">
+
+    <div class="plan-intro searchable">
+      <h2>AI Orchestration Mastery: 30-Day Plan</h2>
+      <p>The highest-leverage AI skill is knowing how to decompose real work into AI-collaboratable subtasks, design reliable workflows, and iterate systematically on outputs. This plan builds that skill through your actual work at Baton. Daily commitment: 1+ hour of deep practice. Always practice on real work, not toy examples.</p>
+    </div>
+
+    <div class="section-label">Your Workflow Map</div>
+
+    <div class="card-grid" style="margin-bottom:8px;">
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-1">Tier 1: High Frequency, High Complexity</span>
+        <h3>Engagement Survey Analysis</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Custom skill built, but each cycle still requires manual synthesis.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Build a reusable chain: raw data intake → themed clustering → MECE issue tree → exec summary → Slack package. One input, five outputs.</div>
+        </div>
+      </div>
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-1">Tier 1: High Frequency, High Complexity</span>
+        <h3>Cross-Functional Comms</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Draft individually, tone-check with Claude, run sensitive ones by Laura.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Create a "comms pipeline" template with audience/stakes/context slots. Pre-load stakeholder context so each draft starts 80% there.</div>
+        </div>
+      </div>
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-1">Tier 1: High Frequency, High Complexity</span>
+        <h3>OKR Pre-Work and Drafting</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Heavy manual work: issue trees, diagnostic sessions, cross-pod alignment.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Systematize the diagnostic-to-OKR flow. Feed engagement data + pod context → draft KRs with measurement criteria and owner suggestions.</div>
+        </div>
+      </div>
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-2">Tier 2: Recurring, Buildable</span>
+        <h3>Performance Cycle Support</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Manager training materials, assessment drafts, promo committee prep.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Build a "cycle toolkit" workflow: competency framework + individual data → draft assessment scaffolds with evidence prompts for managers.</div>
+        </div>
+      </div>
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-2">Tier 2: Recurring, Buildable</span>
+        <h3>Change Management Comms</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Playbook template exists, but each cascade is bespoke.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Templatize the cascade: change type + stakeholders + timeline → announcement, FAQ, manager talking points, follow-up.</div>
+        </div>
+      </div>
+      <div class="workflow-card searchable">
+        <span class="tier-badge tier-3">Tier 3: Strategic, High-Value</span>
+        <h3>Role Proposals and Business Cases</h3>
+        <div class="workflow-row">
+          <div class="workflow-row-item"><strong>Current State</strong>Strong but labor-intensive. The Senior Manager proposal took significant iteration.</div>
+          <div class="workflow-row-item"><strong>Opportunity</strong>Create a "proposal engine": problem statement + evidence + org context → structured proposal with multiple framing options.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">The 4 Weeks</div>
+
+    <!-- WEEK 1 -->
+    <div class="week-card searchable" id="week1">
+      <div class="week-header" onclick="toggleWeek('week1')">
+        <div class="week-header-left">
+          <div class="week-number">W1</div>
+          <div class="week-meta">
+            <h3>Context Architecture</h3>
+            <p>Days 1-7: Build the foundation that separates mediocre AI use from excellent AI use</p>
+          </div>
+        </div>
+        <span class="week-toggle">▼</span>
+      </div>
+      <div class="week-body">
+        <div class="week-focus">The skill that separates mediocre AI use from excellent is knowing what context to provide and how to structure it. This week builds that muscle deliberately through your actual Baton work. Each day, you are not doing exercises — you are building something you will reuse.</div>
+        <div class="day-item">
+          <div class="day-label">Day 1<br>60 min</div>
+          <div class="day-content">
+            <h4>Audit Your Current Prompting Patterns</h4>
+            <p>Review your last 10-15 Claude conversations. Categorize: which produced great output on the first try? Which needed 3+ iterations? Identify what context was present in the good ones that was missing in the rough ones.</p>
+            <span class="day-deliverable">Deliverable: Personal "context checklist" of 5-7 elements that most improve your results</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 2<br>60 min</div>
+          <div class="day-content">
+            <h4>System Prompt Design</h4>
+            <p>Study your CLAUDE.md and the ashley-comms skill as examples of persistent context. Rewrite your CLAUDE.md with a focus on task-type routing: what does Claude need to know differently for comms vs. analysis vs. planning?</p>
+            <span class="day-deliverable">Deliverable: Updated CLAUDE.md with clearer task-type sections</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 3<br>75 min</div>
+          <div class="day-content">
+            <h4>The Art of Constraints</h4>
+            <p>Take a real upcoming task. Write the prompt three ways: underconstrained, overconstrained, and well-constrained. Compare outputs. Notice what happens when you specify format, length, audience, and tone vs. leaving them open.</p>
+            <span class="day-deliverable">Deliverable: A "constraint calibration" reference you can reuse</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 4<br>60 min</div>
+          <div class="day-content">
+            <h4>Few-Shot Prompting for Your Voice</h4>
+            <p>Collect 3-5 examples of your best actual writing (Slack messages, proposals, emails). Build a prompt that uses these as examples to generate new content in your voice. Test against the ashley-comms skill output. Where does each approach win?</p>
+            <span class="day-deliverable">Deliverable: Refined few-shot template for your most common communication types</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 5<br>60 min</div>
+          <div class="day-content">
+            <h4>Structured Output Design</h4>
+            <p>Practice requesting specific output formats: tables, MECE trees, RACI matrices, tiered recommendations. Give Claude the same input, but request output as prose, then a table, then a decision tree. Note which format best serves which use case.</p>
+            <span class="day-deliverable">Deliverable: A "format selection guide" for your common output types</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 6<br>60 min</div>
+          <div class="day-content">
+            <h4>Context Window Management</h4>
+            <p>Learn what happens when conversations get long. Take a complex multi-part task and try it as one long conversation vs. broken into focused sessions with explicit handoff summaries. Observe quality differences.</p>
+            <span class="day-deliverable">Deliverable: Personal rule of thumb for when to start a new conversation vs. continue</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 7<br>60 min</div>
+          <div class="day-content">
+            <h4>Week 1 Integration</h4>
+            <p>Apply everything from this week to one real task you need to complete at Baton. Document what worked, what did not, and what surprised you.</p>
+            <span class="day-deliverable">Deliverable: First "orchestration playbook" entry</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 2 -->
+    <div class="week-card searchable" id="week2">
+      <div class="week-header" onclick="toggleWeek('week2')">
+        <div class="week-header-left">
+          <div class="week-number">W2</div>
+          <div class="week-meta">
+            <h3>Task Decomposition</h3>
+            <p>Days 8-14: Break complex work into AI-collaboratable steps</p>
+          </div>
+        </div>
+        <span class="week-toggle">▼</span>
+      </div>
+      <div class="week-body">
+        <div class="week-focus">This is the core meta-skill. Most people either give AI tasks that are too big (generic output) or too small (spending all their time managing the process). This week trains the sweet spot. Use your Q2 OKR process as the primary case study throughout.</div>
+        <div class="day-item">
+          <div class="day-label">Day 8<br>60 min</div>
+          <div class="day-content">
+            <h4>The Decomposition Framework</h4>
+            <p>Study this hierarchy: Goal → Workstreams → Tasks → Subtasks → AI-suitable units. Take your Q2 OKR process as a case study. Map it from goal down to the smallest units. Mark each unit: "human only," "AI-assisted," or "AI-first."</p>
+            <span class="day-deliverable">Deliverable: Decomposition map of one major workflow</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 9<br>75 min</div>
+          <div class="day-content">
+            <h4>Sequential Chaining</h4>
+            <p>Practice building multi-step chains where each step's output feeds the next. Example chain: Engagement survey data → Themed insights → Issue tree → Draft KRs → Slack summary. Build and test with real or representative data.</p>
+            <span class="day-deliverable">Deliverable: Your first working multi-step chain</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 10<br>60 min</div>
+          <div class="day-content">
+            <h4>Parallel Processing</h4>
+            <p>Some tasks can be done simultaneously, then merged. Generate three different framings of the same proposal in parallel, then synthesize the best elements. Apply to a real scenario: draft comms for different audiences from the same source material simultaneously.</p>
+            <span class="day-deliverable">Deliverable: Parallel-processing template for multi-audience communications</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 11<br>60 min</div>
+          <div class="day-content">
+            <h4>Human-in-the-Loop Design</h4>
+            <p>Map your decision points: where in a workflow must a human evaluate, approve, or redirect? Practice designing "review gates" where AI produces a draft, you evaluate against criteria, then AI iterates.</p>
+            <span class="day-deliverable">Deliverable: A "review gate" template with evaluation criteria for your most common AI outputs</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 12<br>75 min</div>
+          <div class="day-content">
+            <h4>Error Detection and Recovery</h4>
+            <p>Build your instinct for when AI output is subtly wrong. Give Claude a task where you know the right answer. Intentionally provide misleading context. See how the output shifts. Catalog failure modes: hallucination, sycophancy, missing nuance, over-generalization.</p>
+            <span class="day-deliverable">Deliverable: Personal "red flags" checklist for evaluating AI output</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 13<br>60 min</div>
+          <div class="day-content">
+            <h4>Tool Chaining</h4>
+            <p>Practice combining Claude with your tool ecosystem: Notion, Slack, Google Drive, Craft. Design a workflow that spans multiple tools: pull context from Notion → draft in Claude → format for Slack → log in Craft.</p>
+            <span class="day-deliverable">Deliverable: One fully designed cross-tool workflow</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 14<br>60 min</div>
+          <div class="day-content">
+            <h4>Week 2 Integration</h4>
+            <p>Apply decomposition and chaining to a real complex task. Compare: how long would this have taken without the structured approach?</p>
+            <span class="day-deliverable">Deliverable: Updated orchestration playbook with decomposition patterns</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 3 -->
+    <div class="week-card searchable" id="week3">
+      <div class="week-header" onclick="toggleWeek('week3')">
+        <div class="week-header-left">
+          <div class="week-number">W3</div>
+          <div class="week-meta">
+            <h3>Workflow Automation</h3>
+            <p>Days 15-21: Build reusable systems, not one-off prompts</p>
+          </div>
+        </div>
+        <span class="week-toggle">▼</span>
+      </div>
+      <div class="week-body">
+        <div class="week-focus">The leap from "good at prompting" to "orchestration skill" happens when you stop writing prompts from scratch and start building reusable systems. This week, you build the infrastructure. By the end, you should have a functioning custom skill and a library of templates for your recurring work.</div>
+        <div class="day-item">
+          <div class="day-label">Day 15<br>60 min</div>
+          <div class="day-content">
+            <h4>Template Library Design</h4>
+            <p>Audit your recurring tasks (weekly, monthly, quarterly). For each, design a prompt template with clear slots: [CONTEXT], [AUDIENCE], [CONSTRAINTS], [FORMAT].</p>
+            <span class="day-deliverable">Deliverable: Templates for your top 5 recurring tasks</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 16<br>75 min</div>
+          <div class="day-content">
+            <h4>Skill Architecture</h4>
+            <p>Study the structure of your existing custom skills (survey-analyzer, ashley-comms). Design a new skill for one of your Tier 1 workflows. Focus on: when should it trigger, what context does it need, what should it produce.</p>
+            <span class="day-deliverable">Deliverable: A skill design document ready to build on Day 17</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 17<br>90 min</div>
+          <div class="day-content">
+            <h4>Skill Building</h4>
+            <p>Build the skill you designed yesterday using the skill-creator. Test it against real scenarios. Iterate on the prompt, constraints, and output format until the output is reliably useful without editing.</p>
+            <span class="day-deliverable">Deliverable: A working custom skill</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 18<br>60 min</div>
+          <div class="day-content">
+            <h4>Batch Processing Patterns</h4>
+            <p>Practice handling tasks that involve multiple similar items (reviewing 10 onboarding pages, drafting feedback for 5 managers). Design a batch pattern: consistent input format → parallel processing → aggregated output.</p>
+            <span class="day-deliverable">Deliverable: A batch processing template</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 19<br>60 min</div>
+          <div class="day-content">
+            <h4>Quality Assurance Workflows</h4>
+            <p>Build a "second pass" pattern: use Claude to review Claude's own output against specific criteria. Generate a comms draft, then prompt Claude to evaluate it against your voice guidelines, flag issues, and suggest revisions.</p>
+            <span class="day-deliverable">Deliverable: A self-review prompt template</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 20<br>60 min</div>
+          <div class="day-content">
+            <h4>Documentation as Infrastructure</h4>
+            <p>Every good workflow should document itself. Build prompts that produce both the deliverable AND a log of decisions made, assumptions, and open questions. Connect this to your Craft session logging pattern.</p>
+            <span class="day-deliverable">Deliverable: A "self-documenting workflow" template</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 21<br>60 min</div>
+          <div class="day-content">
+            <h4>Week 3 Integration</h4>
+            <p>Run a full end-to-end workflow using your templates and skills. Time it. Compare to your pre-orchestration baseline.</p>
+            <span class="day-deliverable">Deliverable: Updated orchestration playbook with reusable systems</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WEEK 4 -->
+    <div class="week-card searchable" id="week4">
+      <div class="week-header" onclick="toggleWeek('week4')">
+        <div class="week-header-left">
+          <div class="week-number">W4</div>
+          <div class="week-meta">
+            <h3>Strategic Application</h3>
+            <p>Days 22-30: From skill to strategic advantage</p>
+          </div>
+        </div>
+        <span class="week-toggle">▼</span>
+      </div>
+      <div class="week-body">
+        <div class="week-focus">This week connects your orchestration ability to organizational impact and your career trajectory. The goal is not just to work faster, it is to work on different, higher-leverage things. The Senior Manager proposal becomes more credible every time you can show you are building Baton's AI capability, not just your own.</div>
+        <div class="day-item">
+          <div class="day-label">Day 22<br>75 min</div>
+          <div class="day-content">
+            <h4>Organizational Intelligence Design</h4>
+            <p>Map Baton's information flows: where does knowledge get created, stored, shared, and lost? Identify the top 3 places where AI orchestration could improve organizational intelligence.</p>
+            <span class="day-deliverable">Deliverable: An "AI opportunity map" for Baton's knowledge systems</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 23<br>60 min</div>
+          <div class="day-content">
+            <h4>Change Management + AI</h4>
+            <p>Redesign your change management playbook to incorporate AI orchestration at each stage. For awareness, understanding, adoption, and reinforcement, identify where AI can accelerate or improve quality.</p>
+            <span class="day-deliverable">Deliverable: An AI-augmented change management framework</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 24<br>60 min</div>
+          <div class="day-content">
+            <h4>Manager Enablement Patterns</h4>
+            <p>Design AI-assisted tools that managers could use: performance conversation prep, team health diagnostics, 1:1 agenda generation. Focus on tools that improve manager consistency, a key engagement survey finding.</p>
+            <span class="day-deliverable">Deliverable: 2-3 manager tool concepts with implementation sketches</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 25<br>60 min</div>
+          <div class="day-content">
+            <h4>Measurement and Iteration</h4>
+            <p>Build a system for tracking your AI orchestration effectiveness. Metrics to consider: time saved, iteration count, output quality ratings, error rate.</p>
+            <span class="day-deliverable">Deliverable: A personal measurement dashboard or tracker</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 26<br>75 min</div>
+          <div class="day-content">
+            <h4>Teaching and Scaling</h4>
+            <p>The ultimate test of mastery: can you teach it? Draft a "Getting Started with AI Orchestration" guide for Baton team members. Focus on 3-5 patterns anyone can use, not technical complexity.</p>
+            <span class="day-deliverable">Deliverable: A shareable one-pager or short guide</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 27<br>60 min</div>
+          <div class="day-content">
+            <h4>Portfolio Building</h4>
+            <p>Compile your best orchestration examples from the month. Document each as a case study: problem, approach, result, what you learned. This becomes evidence for your role evolution and the Senior Manager case.</p>
+            <span class="day-deliverable">Deliverable: 3-5 mini case studies</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 28<br>60 min</div>
+          <div class="day-content">
+            <h4>Future-Proofing</h4>
+            <p>Research where AI orchestration is heading: agents, tool use, multi-model systems. Identify which of your new skills transfer directly and which will need updating.</p>
+            <span class="day-deliverable">Deliverable: A "skills evolution" roadmap for the next 6 months</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 29<br>90 min</div>
+          <div class="day-content">
+            <h4>Integration Day</h4>
+            <p>Run your most complex real workflow using everything you have built. This should be a genuine Baton work task, not an exercise. Document the full process from start to finish.</p>
+            <span class="day-deliverable">Deliverable: A comprehensive case study of your best orchestration work</span>
+          </div>
+        </div>
+        <div class="day-item">
+          <div class="day-label">Day 30<br>60 min</div>
+          <div class="day-content">
+            <h4>Retrospective</h4>
+            <p>Review the full month: what stuck, what did not, what surprised you. Update your orchestration playbook into a final, clean version. Set 3 goals for the next 30 days.</p>
+            <span class="day-deliverable">Deliverable: Final orchestration playbook + forward plan</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Guiding Principles</div>
+    <div class="card-grid">
+      <div class="principle-card searchable">
+        <h3><span class="principle-num">1</span> Always practice on real work</h3>
+        <p>Toy examples build toy skills. Every exercise in this plan maps to something you actually need to do at Baton. If an exercise does not connect to a real task, reframe it until it does.</p>
+      </div>
+      <div class="principle-card searchable">
+        <h3><span class="principle-num">2</span> Build systems, not prompts</h3>
+        <p>A great prompt used once is worth less than a mediocre template used fifty times and improved each time. Every good prompt should become a template.</p>
+      </div>
+      <div class="principle-card searchable">
+        <h3><span class="principle-num">3</span> The human judgment layer is the skill</h3>
+        <p>AI orchestration is not about removing yourself from the loop. It is about knowing exactly where your judgment is irreplaceable and focusing your energy there.</p>
+      </div>
+      <div class="principle-card searchable">
+        <h3><span class="principle-num">4</span> Document as you go</h3>
+        <p>Your orchestration playbook is the artifact. It should be a living document that grows with you. Log sessions to Craft. Build the record of what you are learning.</p>
+      </div>
+      <div class="principle-card searchable">
+        <h3><span class="principle-num">5</span> Teach to learn</h3>
+        <p>When you can explain a pattern to Chelsea or a manager at Baton, you have actually internalized it. Day 26 is not optional.</p>
+      </div>
+    </div>
+
+    <div class="section-label">Key Resources</div>
+    <div class="two-col">
+      <div class="card searchable resource-group">
+        <h3>Concepts to Study</h3>
+        <ul>
+          <li><strong>Chain-of-thought prompting:</strong> asking models to reason step by step</li>
+          <li><strong>Constitutional AI / self-critique:</strong> using AI to evaluate AI output</li>
+          <li><strong>RAG (Retrieval-Augmented Generation):</strong> giving AI access to specific knowledge bases</li>
+          <li><strong>Tool use and function calling:</strong> letting AI interact with external systems</li>
+          <li><strong>Multi-agent patterns:</strong> different AI "roles" collaborating on a task</li>
+        </ul>
+      </div>
+      <div class="card searchable resource-group">
+        <h3>Communities and Learning</h3>
+        <ul>
+          <li>Anthropic's prompting documentation (docs.anthropic.com)</li>
+          <li>Latent Space podcast (technical but accessible AI engineering)</li>
+          <li>Simon Willison's blog (practical AI tooling and workflows)</li>
+          <li>Your Craft session log (track what you build and learn)</li>
+          <li>Your custom skills (iterate and improve continuously)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="no-results" class="no-results hidden">
+    <span>🔍</span>
+    No results found. Try a different search term.
+  </div>
+
+</main>
+
+<script>
+  let currentTab = 'best-practices';
+
+  function switchTab(tabId, btn) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + tabId).classList.add('active');
+    btn.classList.add('active');
+    currentTab = tabId;
+    document.getElementById('search').value = '';
+    document.querySelectorAll('.searchable').forEach(el => el.classList.remove('hidden'));
+    document.getElementById('no-results').classList.add('hidden');
+    document.querySelectorAll('.section-label').forEach(el => el.classList.remove('hidden'));
+  }
+
+  function handleSearch(query) {
+    const q = query.toLowerCase().trim();
+    const panels = document.querySelectorAll('.panel');
+    const noResults = document.getElementById('no-results');
+
+    if (!q) {
+      panels.forEach(p => {
+        if (p.classList.contains('active')) {
+          p.querySelectorAll('.searchable').forEach(el => el.classList.remove('hidden'));
+          p.querySelectorAll('.section-label').forEach(el => el.classList.remove('hidden'));
+        }
+      });
+      noResults.classList.add('hidden');
+      return;
+    }
+
+    let anyVisible = false;
+    const activePanel = document.querySelector('.panel.active');
+
+    activePanel.querySelectorAll('.searchable').forEach(el => {
+      const text = el.textContent.toLowerCase();
+      if (text.includes(q)) {
+        el.classList.remove('hidden');
+        anyVisible = true;
+      } else {
+        el.classList.add('hidden');
+      }
+    });
+
+    activePanel.querySelectorAll('.section-label').forEach(el => {
+      el.classList.add('hidden');
+    });
+
+    noResults.classList.toggle('hidden', anyVisible);
+  }
+
+  function toggleWeek(id) {
+    const card = document.getElementById(id);
+    card.classList.toggle('open');
+  }
+
+  function copyPrompt(btn) {
+    const promptText = btn.previousElementSibling.textContent;
+    navigator.clipboard.writeText(promptText).then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '📋 Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
+  }
+</script>
+
+</body>
+</html>
