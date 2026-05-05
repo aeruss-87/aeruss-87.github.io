@@ -254,6 +254,25 @@
   }
   .overlap-card h3 { font-size: 12px; font-weight: 700; color: #AA5020; margin-bottom: 6px; }
   .overlap-card p { font-size: 12px; color: #666; line-height: 1.6; }
+
+  .remote-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(74, 127, 212, 0.08);
+    border-left: 1px dashed rgba(74, 127, 212, 0.32);
+    border-right: 1px dashed rgba(74, 127, 212, 0.32);
+    z-index: 0;
+    cursor: help;
+  }
+
+  .options-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #5A3AAA;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
 </style>
 </head>
 <body>
@@ -276,6 +295,10 @@
     <div class="legend-item"><div class="swatch c-feedback"></div> Feedback</div>
     <div class="legend-item"><div class="swatch c-assess"></div> Assessment</div>
     <div class="legend-item"><div class="swatch c-results"></div> Results</div>
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-group">
+    <div class="legend-item"><div style="width:10px;height:12px;background:rgba(74,127,212,0.10);border:1px dashed rgba(74,127,212,0.40);border-radius:1px;flex-shrink:0"></div> Remote week</div>
   </div>
 </div>
 
@@ -410,6 +433,69 @@
     </div>
   </div>
 
+  <div class="separator" style="margin-top:24px;margin-bottom:4px"></div>
+  <div class="section-head">Proposed Alternatives</div>
+
+  <!-- Option A: Jul 20 kickoff -->
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Option A<br><span style="font-size:10px;font-weight:400;color:#AAA">Jul 20</span></div>
+    <div class="track">
+      <div class="today-marker" style="left:33.97%"></div>
+      <div class="bar c-prep" style="left:43.29%;width:10.68%" title="Prep — Jun 8 – Jul 17">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:54.79%;width:7.12%" title="Option A: Feedback — Jul 20 – Aug 14">
+        <span class="bar-label">Feedback</span>
+      </div>
+      <div class="bar c-assess" style="left:62.47%;width:2.19%" title="Option A: Assessment — Aug 17–24">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-results" style="left:66.30%;width:3.29%" title="Option A: Results — Aug 31 – Sep 11">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Aug 10 kickoff (recommended) -->
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35"><span class="options-label">Option B ★</span><br><span style="font-size:10px;font-weight:400;color:#5A3AAA">Aug 10</span></div>
+    <div class="track" style="outline:2px solid rgba(138,106,212,0.40);outline-offset:2px">
+      <div class="today-marker" style="left:33.97%"></div>
+      <div class="bar c-prep" style="left:43.29%;width:10.68%" title="Prep — Jun 8 – Jul 17">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:60.55%;width:7.12%" title="Option B: Feedback — Aug 10 – Sep 4">
+        <span class="bar-label">Feedback</span>
+      </div>
+      <div class="bar c-assess" style="left:68.22%;width:2.19%" title="Option B: Assessment — Sep 7–14">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-results" style="left:72.05%;width:3.29%" title="Option B: Results — Sep 21 – Oct 2">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option C: Aug 17 kickoff -->
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Option C<br><span style="font-size:10px;font-weight:400;color:#AAA">Aug 17</span></div>
+    <div class="track">
+      <div class="today-marker" style="left:33.97%"></div>
+      <div class="bar c-prep" style="left:43.29%;width:10.68%" title="Prep — Jun 8 – Jul 17">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:62.47%;width:7.12%" title="Option C: Feedback — Aug 17 – Sep 11">
+        <span class="bar-label">Feedback</span>
+      </div>
+      <div class="bar c-assess" style="left:70.14%;width:2.19%" title="Option C: Assessment — Sep 14–21">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-results" style="left:73.97%;width:3.29%" title="Option C: Results — Sep 28 – Oct 9">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- Key triggers -->
@@ -441,6 +527,26 @@
     ];
 
     var tracks = document.querySelectorAll('.track');
+
+    var remoteWeeks = [
+      { left: '33.70%', width: '1.37%', title: 'Remote week: May 4–8' },
+      { left: '43.29%', width: '1.37%', title: 'Remote week: Jun 8–12' },
+      { left: '58.63%', width: '1.37%', title: 'Remote week: Aug 3–7' },
+      { left: '68.22%', width: '1.37%', title: 'Remote week: Sep 7–11' },
+      { left: '89.32%', width: '1.37%', title: 'Remote week: Nov 23–27' },
+      { left: '96.99%', width: '1.37%', title: 'Remote week: Dec 21–25' }
+    ];
+    tracks.forEach(function (track) {
+      remoteWeeks.forEach(function (rw) {
+        var band = document.createElement('div');
+        band.className = 'remote-band';
+        band.style.left  = rw.left;
+        band.style.width = rw.width;
+        band.title = rw.title;
+        track.insertBefore(band, track.firstChild);
+      });
+    });
+
     tracks.forEach(function (track, i) {
       overlaps.forEach(function (o) {
         var band = document.createElement('div');
