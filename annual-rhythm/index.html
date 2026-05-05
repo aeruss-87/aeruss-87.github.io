@@ -259,9 +259,37 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    background: rgba(74, 127, 212, 0.08);
-    border-left: 1px dashed rgba(74, 127, 212, 0.32);
-    border-right: 1px dashed rgba(74, 127, 212, 0.32);
+    background: rgba(220, 80, 130, 0.09);
+    border-left: 1px dashed rgba(210, 70, 120, 0.38);
+    border-right: 1px dashed rgba(210, 70, 120, 0.38);
+    z-index: 0;
+    cursor: help;
+  }
+  .remote-band[title]:hover::after,
+  .holiday-band[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2C2C2C;
+    color: #FFF;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .holiday-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    min-width: 5px;
+    background: rgba(220, 80, 130, 0.15);
+    border-left: 1.5px solid rgba(210, 70, 120, 0.55);
+    border-right: 1.5px solid rgba(210, 70, 120, 0.55);
     z-index: 0;
     cursor: help;
   }
@@ -298,7 +326,7 @@
   </div>
   <div class="legend-sep"></div>
   <div class="legend-group">
-    <div class="legend-item"><div style="width:10px;height:12px;background:rgba(74,127,212,0.10);border:1px dashed rgba(74,127,212,0.40);border-radius:1px;flex-shrink:0"></div> Remote week</div>
+    <div class="legend-item"><div style="width:10px;height:12px;background:rgba(220,80,130,0.12);border:1px dashed rgba(210,70,120,0.50);border-radius:1px;flex-shrink:0"></div> Remote week / Holiday</div>
   </div>
 </div>
 
@@ -536,6 +564,16 @@
       { left: '89.32%', width: '1.37%', title: 'Remote week: Nov 23–27' },
       { left: '96.99%', width: '1.37%', title: 'Remote week: Dec 21–25' }
     ];
+    var holidays = [
+      { left: '39.45%', title: 'Memorial Day — May 25' },
+      { left: '50.14%', title: 'Independence Day (Observed) — Jul 3' },
+      { left: '68.22%', title: 'Labor Day — Sep 7' },
+      { left: '90.14%', title: 'Thanksgiving — Nov 26' },
+      { left: '90.41%', title: 'Day After Thanksgiving — Nov 27' },
+      { left: '97.81%', title: 'Christmas Eve — Dec 24' },
+      { left: '98.08%', title: 'Christmas Day — Dec 25' },
+      { left: '99.73%', title: "New Year's Eve — Dec 31" }
+    ];
     tracks.forEach(function (track) {
       remoteWeeks.forEach(function (rw) {
         var band = document.createElement('div');
@@ -543,6 +581,14 @@
         band.style.left  = rw.left;
         band.style.width = rw.width;
         band.title = rw.title;
+        track.insertBefore(band, track.firstChild);
+      });
+      holidays.forEach(function (h) {
+        var band = document.createElement('div');
+        band.className = 'holiday-band';
+        band.style.left  = h.left;
+        band.style.width = '0.27%';
+        band.title = h.title;
         track.insertBefore(band, track.firstChild);
       });
     });
