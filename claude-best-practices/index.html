@@ -690,6 +690,7 @@
     <button class="tab" onclick="switchTab('prompts', this)">Prompt Templates</button>
     <button class="tab" onclick="switchTab('inspiration', this)">Inspiration</button>
     <button class="tab" onclick="switchTab('30day', this)">30-Day Plan</button>
+    <button class="tab" onclick="switchTab('xml-tags', this)">XML Tags</button>
   </nav>
 </header>
 
@@ -1738,6 +1739,126 @@ After listing all 8, rank the top 3 by [IMPACT / FEASIBILITY / SPEED].</div>
           <li>Your Craft session log (track what you build and learn)</li>
           <li>Your custom skills (iterate and improve continuously)</li>
         </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- XML TAGS -->
+  <div class="panel" id="panel-xml-tags">
+
+    <div class="plan-intro searchable">
+      <h2>XML Tags for Prompting</h2>
+      <p>XML tags are custom labels you wrap around different parts of a prompt to make it unambiguous what is source material, what is the instruction, and what format you want back. There is no official list: name them what they contain, and be consistent. These are the tags most useful for the types of work you do.</p>
+    </div>
+
+    <div class="section-label">Universal (use in any prompt)</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;task&gt;</span></td><td>The actual instruction: what you want Claude to do</td><td>Always. Especially when you are also pasting context or data — separates the ask from the material.</td></tr>
+        <tr><td><span class="code">&lt;context&gt;</span></td><td>Background Claude needs but should not confuse with the instruction</td><td>Any time you are giving situation, history, or framing before the task.</td></tr>
+        <tr><td><span class="code">&lt;output_format&gt;</span></td><td>How you want the response structured: bullets, table, prose, sections</td><td>When format precision matters, such as exec summaries, RACI matrices, or anything you will copy into another doc.</td></tr>
+        <tr><td><span class="code">&lt;constraints&gt;</span></td><td>Rules, tone guidelines, length limits, things to avoid</td><td>Any time you have non-obvious requirements: no em dashes, max 3 sentences, no individual data, etc.</td></tr>
+        <tr><td><span class="code">&lt;examples&gt;</span></td><td>Samples of what good output looks like</td><td>When you need Claude to match a specific voice, format, or standard you already have examples of.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Communications Drafting</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;audience&gt;</span></td><td>Who is receiving the message: name, role, relationship</td><td>Any leadership or cross-functional draft. Grant vs. full team vs. Chelsea require very different registers.</td></tr>
+        <tr><td><span class="code">&lt;draft&gt;</span></td><td>A rough version you want cleaned up or rewritten</td><td>When you have already started something and want Claude to improve it rather than start from scratch.</td></tr>
+        <tr><td><span class="code">&lt;background&gt;</span></td><td>The situation or history behind the message</td><td>When the recipient needs context Claude should weave in without you spelling it out in the ask.</td></tr>
+        <tr><td><span class="code">&lt;ask&gt;</span></td><td>The specific action you need the recipient to take</td><td>Any message with a decision, approval, or deadline. Makes the call to action explicit.</td></tr>
+        <tr><td><span class="code">&lt;tone&gt;</span></td><td>Warm, direct, formal, urgent, candid</td><td>When the default tone will not fit: a difficult message, a leadership send, or something that needs to feel personal.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Survey and Data Analysis</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;survey_data&gt;</span></td><td>The raw responses you are pasting in</td><td>Any engagement analysis. Keeps source data cleanly separated from your instructions.</td></tr>
+        <tr><td><span class="code">&lt;question&gt;</span></td><td>The specific survey question the responses are answering</td><td>When responses need to be interpreted in relation to the prompt that generated them.</td></tr>
+        <tr><td><span class="code">&lt;prior_results&gt;</span></td><td>Previous cycle data for comparison</td><td>Quarter-over-quarter analysis so Claude knows what baseline to compare against.</td></tr>
+        <tr><td><span class="code">&lt;focus&gt;</span></td><td>What you specifically want surfaced: themes, flags, scores, root causes</td><td>When you do not want a general summary but need Claude to dig into a specific angle.</td></tr>
+        <tr><td><span class="code">&lt;guardrails&gt;</span></td><td>Psychological safety rules: no individual identification, aggregate small teams</td><td>Always include in survey analysis. Non-negotiable for protecting respondent safety.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Information Retrieval (Notion, Superhuman)</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;search_goal&gt;</span></td><td>What you are actually trying to find or confirm</td><td>When searching across tools: clarifies intent so Claude does not return tangentially related results.</td></tr>
+        <tr><td><span class="code">&lt;source&gt;</span></td><td>Where to look: Notion, Superhuman, Calendar, Drive</td><td>Any multi-tool search so Claude knows where to focus first.</td></tr>
+        <tr><td><span class="code">&lt;date_range&gt;</span></td><td>The time window to search within</td><td>Email threads, calendar history, or any time-sensitive lookup.</td></tr>
+        <tr><td><span class="code">&lt;person&gt;</span></td><td>The person or people involved</td><td>Deal tracking, relationship summaries, or finding a specific thread with a specific person.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Scheduling and Calendar</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;meeting_details&gt;</span></td><td>Who, what, how long, location or format preferences</td><td>Any scheduling request where Claude needs to know what kind of meeting this is.</td></tr>
+        <tr><td><span class="code">&lt;participants&gt;</span></td><td>Everyone who needs to be included, with their time zones if relevant</td><td>Any multi-person scheduling, especially cross-functional or external.</td></tr>
+        <tr><td><span class="code">&lt;constraints&gt;</span></td><td>Times to avoid, buffer preferences, recurring conflicts</td><td>When your calendar has patterns Claude should know: no early Mondays, no back-to-back with Grant, etc.</td></tr>
+        <tr><td><span class="code">&lt;priority&gt;</span></td><td>How urgent the meeting is and whether it should displace other holds</td><td>When there is a conflict and Claude needs to know which meeting wins.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Building Skills and Tools</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Tag</th><th>What goes inside</th><th>When to use it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">&lt;goal&gt;</span></td><td>What the skill or tool should ultimately accomplish</td><td>Any skill design session. The north star that all other decisions should serve.</td></tr>
+        <tr><td><span class="code">&lt;trigger&gt;</span></td><td>What kicks it off: a phrase, a file type, a workflow step</td><td>When designing the activation logic so the skill fires at the right moment.</td></tr>
+        <tr><td><span class="code">&lt;inputs&gt;</span></td><td>What data or content the skill receives when it runs</td><td>Defines what Claude should expect to work with: pasted text, a file, a person's name, etc.</td></tr>
+        <tr><td><span class="code">&lt;expected_output&gt;</span></td><td>What a good result looks like: format, sections, length</td><td>Sets the bar so you can evaluate whether the skill is working as intended.</td></tr>
+        <tr><td><span class="code">&lt;edge_cases&gt;</span></td><td>Weird inputs, unusual scenarios, things that could break the skill</td><td>Late in skill design, once the core is working, to stress-test reliability.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Full Example</div>
+    <div class="card-grid">
+      <div class="prompt-card searchable" style="grid-column: 1 / -1;">
+        <span class="tag">Communications (XML)</span>
+        <h3>Slack message to managers using full tag structure</h3>
+        <div class="prompt-text">&lt;task&gt;
+Draft a Slack message to the managers channel about the Q2 survey launch.
+&lt;/task&gt;
+
+&lt;context&gt;
+Survey opens Monday. Participation last cycle was 68%. Goal this cycle is 80%.
+&lt;/context&gt;
+
+&lt;audience&gt;
+People managers, ~12 people. Mix of tenured and newer managers.
+&lt;/audience&gt;
+
+&lt;ask&gt;
+Remind their teams to complete the survey by Friday EOD.
+&lt;/ask&gt;
+
+&lt;constraints&gt;
+Warm but direct. No em dashes. Two short paragraphs max. Emojis are fine.
+&lt;/constraints&gt;</div>
+        <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
       </div>
     </div>
 
