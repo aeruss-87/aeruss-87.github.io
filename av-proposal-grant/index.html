@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All-Hands AV Upgrade — Decision Brief</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F5F3EE;--surface:#FFF;--ink:#18160F;--ink2:#4A4640;--ink3:#9A948A;
+  --green:#1A6B52;--gbg:#EAF3EE;--gmid:#B8D9CC;
+  --amber:#A05C10;--abg:#FBF0E2;
+  --red:#B03030;--rbg:#FBF0F0;
+  --blue:#1E4FAD;--bbg:#EAF0FB;
+  --border:#E4E0D8;--borderS:#C8C4BC;
+}
+body{font-family:'Geist',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;display:flex;flex-direction:column}
+
+.shell{display:flex;flex-direction:column;min-height:100vh;max-width:1000px;margin:0 auto;width:100%;padding:0 20px}
+
+/* Header */
+.hdr{padding:28px 0 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-end;flex-shrink:0}
+.hdr-left h1{font-family:'Fraunces',serif;font-size:26px;font-weight:300;line-height:1.1}
+.hdr-left h1 em{font-style:italic;color:var(--green)}
+.hdr-meta{font-size:12px;color:var(--ink3);margin-top:4px}
+.hdr-pills{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.pill{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;letter-spacing:0.02em}
+.p-green{background:var(--gbg);color:var(--green)}
+.p-amber{background:var(--abg);color:var(--amber)}
+.p-neutral{background:var(--surface);color:var(--ink2);border:1px solid var(--border)}
+
+/* Stat strip */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border);flex-shrink:0}
+.stat{padding:14px 16px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.sl{font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:4px}
+.sv{font-family:'Fraunces',serif;font-size:19px;font-weight:400}
+.sv-tbd{font-family:'Fraunces',serif;font-size:16px;font-weight:400;color:var(--amber)}
+.sv-small{font-family:'Fraunces',serif;font-size:14px;font-weight:400;color:var(--ink3);font-style:italic}
+.sh{font-size:10px;color:var(--ink3);margin-top:1px}
+
+/* Tab nav */
+.tabnav{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0;scrollbar-width:none}
+.tabnav::-webkit-scrollbar{display:none}
+.tab{padding:12px 16px;font-size:12px;font-weight:500;color:var(--ink3);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color 0.15s,border-color 0.15s;user-select:none;background:none;border-top:none;border-left:none;border-right:none}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--green);border-bottom-color:var(--green)}
+
+/* Panels */
+.panels{flex:1;overflow-y:auto;padding:28px 0 48px}
+.panel{display:none}
+.panel.active{display:block}
+
+/* Typography */
+.panel-title{font-family:'Fraunces',serif;font-size:26px;font-weight:300;margin-bottom:6px}
+.panel-title em{font-style:italic;color:var(--green)}
+.panel-sub{font-size:14px;color:var(--ink3);margin-bottom:28px;line-height:1.5}
+.section-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink3);margin-bottom:10px;font-weight:500}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:10px}
+.card-title{font-size:14px;font-weight:500;margin-bottom:4px}
+.card-note{font-size:13px;color:var(--ink2);line-height:1.6}
+.card-tag{display:inline-block;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.07em;padding:2px 7px;border-radius:3px;margin-bottom:8px}
+.t-green{background:var(--gbg);color:var(--green)}
+.t-amber{background:var(--abg);color:var(--amber)}
+.t-blue{background:var(--bbg);color:var(--blue)}
+.t-red{background:var(--rbg);color:var(--red)}
+.t-gray{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+
+/* Grid */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* Yes questions */
+.yes-block{background:var(--surface);border:1px solid var(--gmid);border-radius:10px;padding:20px 24px;margin-bottom:24px}
+.yes-title{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--green);font-weight:500;margin-bottom:14px}
+.yes-q{display:flex;gap:14px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.yes-q:last-child{border-bottom:none;padding-bottom:0}
+.yes-num{font-family:'Fraunces',serif;font-size:24px;color:var(--gmid);flex-shrink:0;line-height:1}
+.yes-text{font-size:14px;color:var(--ink2);line-height:1.6;padding-top:4px}
+
+/* Decisions needed */
+.decisions-needed{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:24px}
+.dn-header{padding:14px 18px;border-bottom:1px solid var(--border);font-size:13px;font-weight:500;color:var(--ink)}
+.dn-item{display:flex;align-items:flex-start;gap:14px;padding:12px 18px;border-bottom:1px solid var(--border)}
+.dn-item:last-child{border-bottom:none}
+.dn-num{font-family:'Fraunces',serif;font-size:22px;color:var(--border);flex-shrink:0;width:26px;line-height:1;padding-top:2px}
+.dn-body{flex:1}
+.dn-q{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.dn-hint{font-size:12px;color:var(--ink3);line-height:1.5}
+.dn-tag{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:3px;white-space:nowrap;flex-shrink:0;align-self:center}
+.dt-decide{background:var(--abg);color:var(--amber)}
+.dt-confirm{background:var(--gbg);color:var(--green)}
+
+/* Verdict */
+.verdict{background:var(--gbg);border:1px solid var(--gmid);border-radius:10px;padding:16px 20px;margin-bottom:12px}
+.verdict-title{font-size:14px;font-weight:500;color:var(--green);margin-bottom:4px}
+.verdict-note{font-size:13px;color:#2A7060;line-height:1.6}
+
+.warning{background:var(--abg);border:1px solid #E8C070;border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.warning-title{font-size:13px;font-weight:500;color:var(--amber);margin-bottom:3px}
+.warning-note{font-size:13px;color:#7A4810;line-height:1.5}
+
+.info{background:var(--bbg);border:1px solid #C0D0F0;border-radius:10px;padding:14px 18px;margin-bottom:12px}
+.info-title{font-size:13px;font-weight:500;color:var(--blue);margin-bottom:3px}
+.info-note{font-size:13px;color:#2A3A7A;line-height:1.5}
+
+/* Action items */
+.action{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px}
+.action-box{width:18px;height:18px;border:1.5px solid var(--borderS);border-radius:4px;flex-shrink:0;margin-top:1px}
+.action-text{font-size:13px;color:var(--ink2);line-height:1.5;flex:1}
+.action-owner{font-size:11px;font-weight:500;padding:2px 7px;border-radius:3px;white-space:nowrap;margin-top:2px}
+.ao-c{background:var(--gbg);color:var(--green)}
+.ao-m{background:var(--bbg);color:var(--blue)}
+.ao-l{background:var(--abg);color:var(--amber)}
+
+/* Compare table */
+.compare{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:10px}
+.compare th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);padding:8px 14px;border-bottom:1px solid var(--border);font-weight:500}
+.compare th:not(:first-child){text-align:center}
+.compare td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--ink2);vertical-align:top;line-height:1.5}
+.compare td:not(:first-child){text-align:center}
+.compare tr:last-child td{border-bottom:none}
+.compare tr:hover td{background:#FAFAF8}
+.compare td:first-child{font-weight:500;color:var(--ink)}
+.check{color:var(--green);font-weight:500}
+.cross{color:var(--red);font-weight:500}
+.partial{color:var(--amber);font-weight:500}
+.winner{background:var(--gbg)}
+.compare-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:12px}
+
+/* Budget */
+.budget-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}
+.budget-row:last-child{border-bottom:none}
+.budget-label{font-size:13px;color:var(--ink2)}
+.budget-val{font-family:'Fraunces',serif;font-size:16px;color:var(--ink)}
+.budget-total-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0 0;margin-top:4px}
+.budget-total-label{font-size:14px;font-weight:500;color:var(--ink)}
+.budget-total-val{font-family:'Fraunces',serif;font-size:24px;color:var(--green)}
+
+/* Timeline */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:7px;top:8px;bottom:8px;width:1px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:22px}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface)}
+.tl-dot.done{background:var(--green);border-color:var(--green)}
+.tl-dot.active{background:var(--amber);border-color:var(--amber)}
+.tl-dot.pending{background:var(--surface);border-color:var(--border)}
+.tl-label{font-size:11px;text-transform:uppercase;letter-spacing:0.07em;color:var(--ink3);margin-bottom:3px}
+.tl-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tl-note{font-size:13px;color:var(--ink2);line-height:1.5}
+
+/* Risk */
+.risk{display:flex;gap:12px;align-items:flex-start;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.risk-badge{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;padding:2px 7px;border-radius:3px;white-space:nowrap;margin-top:2px;flex-shrink:0}
+.rb-amber{background:var(--abg);color:var(--amber)}
+.rb-red{background:var(--rbg);color:var(--red)}
+.rb-gray{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+.rb-green{background:var(--gbg);color:var(--green)}
+.risk-body .risk-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.risk-body .risk-note{font-size:13px;color:var(--ink2);line-height:1.5}
+
+/* Open decision cards */
+.od-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px}
+.od-head{padding:16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px}
+.od-q{font-family:'Fraunces',serif;font-size:18px;font-weight:400;line-height:1.3}
+.od-q em{font-style:italic;color:var(--amber)}
+.od-body{padding:16px 18px}
+.od-context{font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:14px}
+.options{display:flex;flex-direction:column;gap:6px}
+.option{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink2);padding:9px 12px;background:var(--bg);border-radius:6px;line-height:1.5}
+.opt-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:1px}
+.ol-rec{background:var(--gbg);color:var(--green)}
+.ol-alt{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+.ol-tbd{background:var(--abg);color:var(--amber)}
+
+/* Feature list */
+.feature{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--border)}
+.feature:last-child{border-bottom:none}
+.f-check{color:var(--green);font-size:16px;flex-shrink:0;margin-top:2px}
+.f-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.f-note{font-size:13px;color:var(--ink2);line-height:1.5}
+.f-grant{font-size:11px;color:var(--ink3);margin-top:4px;font-style:italic}
+
+/* Collapsible */
+.collapsible-btn{width:100%;text-align:left;background:none;border:none;padding:12px 0;cursor:pointer;font-size:12px;color:var(--ink3);font-family:'Geist',sans-serif;display:flex;align-items:center;gap:6px}
+.collapsible-btn:hover{color:var(--ink2)}
+.collapsible-content{display:none}
+.collapsible-content.open{display:block}
+
+@media(max-width:640px){
+  .g2{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .hdr{flex-direction:column;align-items:flex-start;gap:10px}
+  .hdr-pills{justify-content:flex-start}
+  .od-head{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- Header -->
+  <div class="hdr">
+    <div class="hdr-left">
+      <h1>All-Hands <em>AV Upgrade</em></h1>
+      <div class="hdr-meta">Chelsea Boyle &nbsp;·&nbsp; Baton &nbsp;·&nbsp; Phase 3 &nbsp;·&nbsp; May 2026</div>
+    </div>
+    <div class="hdr-pills">
+      <span class="pill p-green">CTI recommended</span>
+      <span class="pill p-amber">Platform TBD</span>
+      <span class="pill p-amber">5 decisions needed</span>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="sl">Budget (all-in)</div>
+      <div class="sv">~$56K</div>
+      <div class="sh">CTI quote + room setup</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Deadline</div>
+      <div class="sv">July 6</div>
+      <div class="sh">Before OKR week July 13</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Vendor</div>
+      <div class="sv">CTI</div>
+      <div class="sh">Recommended</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Platform</div>
+      <div class="sv-tbd">Your call</div>
+      <div class="sh">Teams or Google Meet</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Quote status</div>
+      <div class="sv-small">Update pending</div>
+      <div class="sh">CTI adding touchpad option</div>
+    </div>
+  </div>
+
+  <!-- Tab nav -->
+  <div class="tabnav" id="tabnav">
+    <button class="tab active" data-tab="ask">The Ask</button>
+    <button class="tab" data-tab="cti">Why CTI</button>
+    <button class="tab" data-tab="decisions">Open Decisions</button>
+    <button class="tab" data-tab="timeline">Timeline + Budget</button>
+    <button class="tab" data-tab="risks">Risks + Next Steps</button>
+  </div>
+
+  <!-- Panels -->
+  <div class="panels">
+
+    <!-- ============================================================ THE ASK -->
+    <div class="panel active" id="panel-ask">
+      <div class="panel-title">The <em>Ask</em></div>
+      <div class="panel-sub">Phase 3 of Baton's AV refresh. Conference rooms are done. This is the all-hands space: TGIT, full-company meetings, and hybrid demos. It needs to work reliably for everyone in the room and on the call.</div>
+
+      <div class="yes-block">
+        <div class="yes-title">Three things we already agree on</div>
+        <div class="yes-q">
+          <div class="yes-num">1</div>
+          <div class="yes-text">Hybrid meetings are a KTR priority. Right now, remote participants in TGIT consistently struggle to hear and be heard. That's the problem this solves.</div>
+        </div>
+        <div class="yes-q">
+          <div class="yes-num">2</div>
+          <div class="yes-text">Any AV investment we make should be able to move with us. We don't want to pay twice if Baton relocates in the next few years.</div>
+        </div>
+        <div class="yes-q">
+          <div class="yes-num">3</div>
+          <div class="yes-text">We want the space ready before OKR week on July 13. That's the first major use case and it needs to work.</div>
+        </div>
+      </div>
+
+      <div class="decisions-needed">
+        <div class="dn-header">Five things we need from you</div>
+        <div class="dn-item">
+          <div class="dn-num">1</div>
+          <div class="dn-body">
+            <div class="dn-q">Approve CTI as our AV vendor</div>
+            <div class="dn-hint">CTI is platform-agnostic, IP-based (fully portable), and includes 1-yr proactive support. Details in the Why CTI tab.</div>
+          </div>
+          <div class="dn-tag dt-confirm">Confirm</div>
+        </div>
+        <div class="dn-item">
+          <div class="dn-num">2</div>
+          <div class="dn-body">
+            <div class="dn-q">Choose the meeting platform: Teams or Google Meet?</div>
+            <div class="dn-hint">CTI's system works with both. Once you decide, CTI adds a dedicated room touchpad for that platform to the updated quote.</div>
+          </div>
+          <div class="dn-tag dt-decide">Decide</div>
+        </div>
+        <div class="dn-item">
+          <div class="dn-num">3</div>
+          <div class="dn-body">
+            <div class="dn-q">Display: 98" TV or projector?</div>
+            <div class="dn-hint">TV is in the base quote and fully portable. Projector adds ~$8,500 and involves electrical work. Details in Open Decisions tab.</div>
+          </div>
+          <div class="dn-tag dt-decide">Decide</div>
+        </div>
+        <div class="dn-item">
+          <div class="dn-num">4</div>
+          <div class="dn-body">
+            <div class="dn-q">Align on July 6 timeline and understand the risks</div>
+            <div class="dn-hint">We're targeting July 6. If CTI's install schedule slips, the fallback is keeping the current setup for OKR week and cutting over after. No gap in operations.</div>
+          </div>
+          <div class="dn-tag dt-confirm">Align</div>
+        </div>
+        <div class="dn-item">
+          <div class="dn-num">5</div>
+          <div class="dn-body">
+            <div class="dn-q">Where does the gaming area go?</div>
+            <div class="dn-hint">Pool table and couches need to move to reach 60-100 person capacity. Three options in the Open Decisions tab.</div>
+          </div>
+          <div class="dn-tag dt-decide">Decide</div>
+        </div>
+      </div>
+
+      <div class="info">
+        <div class="info-title">Updated CTI quote coming</div>
+        <div class="info-note">CTI is revising their scope to include a dedicated Teams or Google Meet touchpad for room-based meeting join (one tap, no personal laptop required). The updated quote arrives once you decide on platform. Current quote: $46,788.85.</div>
+      </div>
+
+      <div class="section-label" style="margin-top:8px">After you approve — Chelsea owns all of this</div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Award CTI and initiate 60% deposit (~$28,073) to begin procurement. Flag deposit timing with Brett.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Add handheld mic to CTI scope before signing (adds cost — amount to be confirmed with CTI).</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Confirm with CTI: shipping, extra wiring, and all labor are included in the quote with no hidden costs.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Verify storage room outlet and wall backing on-site. Price any electrical work if needed.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Confirm CTI install date is achievable before July 6. If not, activate the OKR week fallback plan.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Coordinate gaming area move and furniture removal in parallel with CTI procurement.</div><div class="action-owner ao-c">Chelsea</div></div>
+    </div>
+
+    <!-- ============================================================ WHY CTI -->
+    <div class="panel" id="panel-cti">
+      <div class="panel-title">Why <em>CTI</em></div>
+      <div class="panel-sub">Two vendors were fully evaluated. CTI is the right choice: platform-agnostic, IP-based, built to move with us, and proactive support included from day one.</div>
+
+      <div class="verdict">
+        <div class="verdict-title">Recommendation: CTI at $46,788.85 (updated quote pending)</div>
+        <div class="verdict-note">CTI is ~$2,768 more than Young Electric. That premium buys meaningful long-term value: the system moves with us if Baton relocates, supports any meeting platform, and 1-yr proactive support is included at no extra cost. Young Electric's proposal is Zoom Room-based, which directly conflicts with Baton's Teams requirement and Ryder alignment.</div>
+      </div>
+
+      <div class="section-label">What CTI delivers — mapped to your original requirements</div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px 12px;margin-bottom:16px">
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">Platform-agnostic BYOD system</div>
+            <div class="f-note">Anyone plugs in via USB-C or HDMI. The room recognizes their laptop as a camera, mic, and speaker — and works with Teams, Google Meet, Zoom, or Webex. No platform lock-in. Once you choose a platform, CTI adds a dedicated room touchpad for one-tap join.</div>
+            <div class="f-grant">Your ask: "Standardizing on a single technology solution for hybrid meetings"</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">Two PTZ cameras: presenter view and audience view</div>
+            <div class="f-note">One camera tracks the presenter. One captures the audience. Remote participants see both. That's the actual hybrid experience, not a static wide shot.</div>
+            <div class="f-grant">Your ask: "Remote staff should be able to present to the local and remote audience"</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">Ceiling speakers with full-room coverage</div>
+            <div class="f-note">Four QSC ceiling speakers distribute audio evenly across the space. No dead spots. Remote participants and local audio both come through clearly from any seat.</div>
+            <div class="f-grant">Your ask: "Speakers should be audible through the TGIT space"</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">Wireless lavalier mics plus Catchbox audience mic</div>
+            <div class="f-note">Two Shure wireless bodypacks for presenters (presenter can move freely, not fixed to a podium). Catchbox (owner-furnished) for audience participation and Q&amp;A. Acoustic echo cancellation and automatic mic mixing are built in. Note: a handheld mic is not in the current CTI quote — Chelsea is adding it before award.</div>
+            <div class="f-grant">Your ask: "Support for at least 4 microphones. The presenter would ideally be able to walk around."</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">IP-based architecture: fully portable</div>
+            <div class="f-note">Everything runs over the network. Camera, speakers, display, DSP — all connected via standard Cat6 cable. If Baton moves, we unplug the network switch and all devices, load them on a truck, and reconnect at the new space. No cables stay in the walls.</div>
+            <div class="f-grant">Your ask: protecting the investment against a future office move</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">Touch panel control — anyone can run the room</div>
+            <div class="f-note">Tabletop QSC touch panel handles volume, mic mute, camera presets, and power. No IT support needed to run a meeting. Pre-configured camera presets (presenter, audience, full room) make it straightforward for any host.</div>
+            <div class="f-grant">Your ask: "The TGIT space should be a meeting room that is reservable in our calendar system"</div>
+          </div>
+        </div>
+        <div class="feature">
+          <div class="f-check">✓</div>
+          <div>
+            <div class="f-title">1-yr CTI Complete proactive support — included</div>
+            <div class="f-note">Remote monitoring, on-demand service, a dedicated care team, and critical meeting support for the first year. Young Electric includes no ongoing support.</div>
+            <div class="f-grant">Your ask: reliability for TGIT and all-hands events without depending on ad hoc IT fixes</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="warning">
+        <div class="warning-title">Young Electric: Zoom-centric, hardwired</div>
+        <div class="warning-note">Young Electric's proposal is built around a Zoom Room with a Logi TAP Zoom Controller. Their quote pre-dates the Teams requirement. Zoom is out of scope per the original ask. Their hardwired architecture also means speaker and camera cables stay in the building if Baton moves. Young is ~$2,768 less ($44,021 vs. $46,788.85), has no upfront deposit, and is a local SF contractor. It remains a viable fallback only if the CTI deposit becomes a cash flow blocker.</div>
+      </div>
+
+      <button class="collapsible-btn" onclick="toggleCompare()">
+        <span id="compare-label">+ Show full vendor comparison (TL;DR reference)</span>
+      </button>
+      <div class="collapsible-content" id="compare-content">
+        <div class="compare-wrap" style="margin-top:8px">
+          <table class="compare">
+            <thead><tr><th>Category</th><th style="color:var(--ink2)">Young Electric</th><th style="color:var(--green)">CTI (Recommended)</th></tr></thead>
+            <tbody>
+              <tr><td>Total cost</td><td>$44,021</td><td class="winner">$46,788.85</td></tr>
+              <tr><td>Architecture</td><td>Hardwired</td><td class="winner">IP-based (portable)</td></tr>
+              <tr><td>Platform</td><td class="cross">Zoom Room (locked)</td><td class="winner">BYOD: any platform</td></tr>
+              <tr><td>Cameras</td><td>1 (presenter only)</td><td class="winner">2 (presenter + audience)</td></tr>
+              <tr><td>Speakers</td><td>4 wall-mounted, right side</td><td class="winner">4 ceiling, even coverage</td></tr>
+              <tr><td>Presenter mics</td><td class="check">Handheld + 2 headworn</td><td class="partial">2 lavalier (handheld to be added)</td></tr>
+              <tr><td>Ongoing support</td><td class="cross">None included</td><td class="winner">1-yr CTI Complete</td></tr>
+              <tr><td>Deposit required</td><td class="check">None upfront</td><td class="partial">60% (~$28K) on award</td></tr>
+              <tr><td>Portability if we move</td><td class="cross">Cables stay in walls</td><td class="check">Unplug and take everything</td></tr>
+              <tr><td>Company scale</td><td>Regional SF contractor</td><td class="winner">Largest private AV integrator in US (43 offices)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-size:11px;color:var(--ink3);padding:4px 0 16px">Some comparison details are based on vendor materials and have not been independently verified.</div>
+      </div>
+    </div>
+
+    <!-- ============================================================ OPEN DECISIONS -->
+    <div class="panel" id="panel-decisions">
+      <div class="panel-title"><em>Open Decisions</em></div>
+      <div class="panel-sub">Three questions we need you to answer. The vendor recommendation is CTI. These are your calls.</div>
+
+      <div class="od-card">
+        <div class="od-head">
+          <div class="od-q">Platform: <em>Teams or Google Meet?</em></div>
+          <div class="dn-tag dt-decide" style="flex-shrink:0">Your decision</div>
+        </div>
+        <div class="od-body">
+          <div class="od-context">CTI's BYOD system supports both platforms out of the box — anyone can plug in their laptop and run any meeting. The decision affects the dedicated room controller: once you choose, CTI includes a Teams Room touchpad or a Google Meet touchpad in the updated quote, enabling one-tap meeting join without a personal laptop.</div>
+          <div class="options">
+            <div class="option">
+              <span class="opt-label ol-tbd">Option A</span>
+              <span><strong>Microsoft Teams</strong> — Ryder is already on Teams, which simplifies Ryder-Baton meeting join and matches your original AV requirements. Requires a Teams Room license (~$480/yr) and IT coordination with Ryder to provision the room account. Strongest alignment with the Ryder relationship.</span>
+            </div>
+            <div class="option">
+              <span class="opt-label ol-tbd">Option B</span>
+              <span><strong>Google Meet</strong> — Baton's primary internal platform. No room license fee. Simpler to set up independently from Ryder IT. The tradeoff: Ryder participants join through Teams, not Google Meet, so there's no unified room controller experience for Ryder-facing meetings.</span>
+            </div>
+          </div>
+          <div class="info" style="margin-top:14px;margin-bottom:0">
+            <div class="info-title">Context on the original scope</div>
+            <div class="info-note">The original AV requirements said "Zoom and Google Meet are out of scope" — written for conference rooms with Ryder in mind. For the all-hands space, used mostly for Baton-internal events (TGIT, demos, company meetings), Google Meet is also a reasonable choice. This is your call to make with Ryder alignment as the key factor.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="od-card">
+        <div class="od-head">
+          <div class="od-q">Display: <em>98" TV or projector?</em></div>
+          <div class="dn-tag dt-decide" style="flex-shrink:0">Your decision</div>
+        </div>
+        <div class="od-body">
+          <div class="od-context">A 98" commercial TV is included in CTI's base quote at no additional cost. A projector is not in CTI's current scope (it was a Young Electric add-on at +$8,500) and would require electrical work and light removal, which likely needs landlord approval and is not portable.</div>
+          <div class="options">
+            <div class="option">
+              <span class="opt-label ol-rec">Rec.</span>
+              <span><strong>98" commercial TV</strong> — included in base quote. Works in ambient light without dimming. Fully portable if Baton moves. No electrical work, no landlord coordination, no bulb replacements. 98" is roughly 7 feet wide, ideal for rooms up to about 30 feet deep. Confirm room depth before closing this out.</span>
+            </div>
+            <div class="option">
+              <span class="opt-label ol-alt">Alt.</span>
+              <span><strong>Projector + screen</strong> — larger image for deeper rooms, more of an event feel. Downsides: requires dimming, electrical work, light removal, likely landlord approval, not portable, adds ~$8,500. Only worth considering if the room is deeper than 30-35 feet and back-row visibility is a real concern.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="od-card">
+        <div class="od-head">
+          <div class="od-q">Gaming area: <em>where does it go?</em></div>
+          <div class="dn-tag dt-decide" style="flex-shrink:0">Your decision</div>
+        </div>
+        <div class="od-body">
+          <div class="od-context">The current all-hands space doubles as the gaming area. To reach 60-100 person capacity, the pool table and couches need to move. Three options:</div>
+          <div class="options">
+            <div class="option">
+              <span class="opt-label ol-rec">Rec.</span>
+              <span><strong>Near the front door</strong> — cleanest separation. All-hands space becomes fully dedicated. Gaming becomes a culture signal at the entrance for visitors and guests. One check before committing: confirm the front area has roughly 14x17 feet of clearance including cue space.</span>
+            </div>
+            <div class="option">
+              <span class="opt-label ol-alt">Alt.</span>
+              <span><strong>Dining room</strong> — flexible if the front area is too small. Pool table and couches move to dining. TV on wheels follows. Dining room loses its primary function during gaming hours and would likely need a second TV.</span>
+            </div>
+            <div class="option">
+              <span class="opt-label ol-alt">Skip</span>
+              <span><strong>Keep in same space</strong> — least disruption, but limits capacity and creates an awkward vibe during all-hands. Not recommended if we're targeting 60-100 people.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ TIMELINE + BUDGET -->
+    <div class="panel" id="panel-timeline">
+      <div class="panel-title">Timeline <em>&amp; Budget</em></div>
+      <div class="panel-sub">Working backward from July 6. The timeline is achievable but has no slack. A fallback plan is in place if install timing slips past the deadline.</div>
+
+      <div class="g2" style="margin-bottom:16px">
+        <div>
+          <div class="section-label">Project timeline</div>
+          <div class="timeline">
+            <div class="tl-item">
+              <div class="tl-dot done"></div>
+              <div class="tl-label">Complete</div>
+              <div class="tl-title">Vendor research and comparison</div>
+              <div class="tl-note">Two full quotes received and evaluated. CTI selected as recommendation.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot active"></div>
+              <div class="tl-label">Now — awaiting your approval</div>
+              <div class="tl-title">Leadership decisions</div>
+              <div class="tl-note">Vendor, platform, display, gaming area, and budget. Updated CTI quote to follow once platform is decided.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot pending"></div>
+              <div class="tl-label">End of this week or early next week</div>
+              <div class="tl-title">Award CTI and initiate deposit</div>
+              <div class="tl-note">60% deposit (~$28,073) triggers procurement. Exact timing depends on which products CTI orders and delivery lead times. Earlier award = more install buffer.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot pending"></div>
+              <div class="tl-label">Parallel track</div>
+              <div class="tl-title">Room prep and furniture removal</div>
+              <div class="tl-note">Gaming area moved. Furniture removed. Soundproofing rugs ordered. Custom cushions ordered early — lead times can run long.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot pending"></div>
+              <div class="tl-label">TBD — confirm with CTI after award</div>
+              <div class="tl-title">CTI installation and tuning</div>
+              <div class="tl-note">IP-based systems require configuration and post-install tuning. CTI provides end-user training on completion. Install window must commit to finishing before July 6.</div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot pending"></div>
+              <div class="tl-label">Target: July 6</div>
+              <div class="tl-title">Space ready for all-hands use</div>
+              <div class="tl-note">Full hybrid-ready system operational. First major use case: TGIT and OKR week starting July 13.</div>
+            </div>
+          </div>
+
+          <div class="info" style="margin-top:8px">
+            <div class="info-title">Fallback plan if install timing slips</div>
+            <div class="info-note">If CTI cannot commit to completing installation before July 6, the plan is to keep the current setup for OKR week (July 13) and cut over to the new CTI system for the next all-hands event. No gap in operations. This is the responsible contingency, not a failure mode.</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-label">Budget breakdown</div>
+          <div class="card">
+            <div class="card-tag t-green">CTI quote (current, update pending)</div>
+            <div style="margin-top:8px">
+              <div class="budget-row"><span class="budget-label">Equipment</span><span class="budget-val">$26,198.02</span></div>
+              <div class="budget-row"><span class="budget-label">Implementation services</span><span class="budget-val">$17,951.18</span></div>
+              <div class="budget-row"><span class="budget-label">Tax</span><span class="budget-val">$2,639.65</span></div>
+              <div class="budget-total-row"><span class="budget-total-label">CTI subtotal</span><span class="budget-total-val">$46,788.85</span></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:10px">
+            <div class="card-tag t-amber">Additional spend (estimated)</div>
+            <div style="margin-top:8px">
+              <div class="budget-row"><span class="budget-label">Soundproofing rugs</span><span class="budget-val">TBD</span></div>
+              <div class="budget-row"><span class="budget-label">Furniture and setup</span><span class="budget-val">TBD</span></div>
+              <div class="budget-row"><span class="budget-label">Moving and furniture removal</span><span class="budget-val">TBD</span></div>
+              <div class="budget-row"><span class="budget-label">Handheld mic (add to CTI scope)</span><span class="budget-val">TBD</span></div>
+              <div class="budget-row"><span class="budget-label">Storage room outlet (if needed)</span><span class="budget-val">TBD</span></div>
+              <div class="budget-row"><span class="budget-label">Teams Room license (if Teams chosen)</span><span class="budget-val">$480/yr</span></div>
+            </div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin-top:10px;margin-bottom:10px">
+            <div class="budget-total-row" style="padding-top:0"><span class="budget-total-label">All-in estimate</span><span class="budget-total-val">~$56,000</span></div>
+            <div style="font-size:12px;color:var(--ink3);margin-top:6px">Budget will firm up once updated CTI quote is received and room prep costs are confirmed.</div>
+          </div>
+          <div class="warning">
+            <div class="warning-title">60% deposit due on award (~$28,073)</div>
+            <div class="warning-note">Due immediately upon awarding CTI to initiate procurement. Remaining 40% (~$18,716) invoiced on completion. Flag with Brett before committing.</div>
+          </div>
+          <div class="warning">
+            <div class="warning-title">Add ~10% contingency</div>
+            <div class="warning-note">Both vendors' T&amp;Cs allow change orders for on-site discoveries. Building in ~$5,600 contingency is advisable.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ RISKS + NEXT STEPS -->
+    <div class="panel" id="panel-risks">
+      <div class="panel-title">Risks <em>&amp; Next Steps</em></div>
+      <div class="panel-sub">Flagged risks that could affect scope, cost, or timeline. Most are Chelsea's to resolve before award. Nothing here should block approval.</div>
+
+      <div class="section-label">Resolve before signing</div>
+      <div class="risk"><span class="risk-badge rb-red">Resolve before award</span><div class="risk-body"><div class="risk-title">Storage room outlet: confirm and price</div><div class="risk-note">Both vendors need an outlet in the storage room for the equipment rack. If one doesn't exist on that wall, electrical work is a change order not priced in either quote. Chelsea to verify on-site and get a cost estimate before signing.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-amber">Resolve before award</span><div class="risk-body"><div class="risk-title">Wall backing for TV mount</div><div class="risk-note">If the front wall lacks structural backing, that's a change order neither vendor has priced. Verify before install day to avoid surprises and schedule impact.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-amber">Resolve before award</span><div class="risk-body"><div class="risk-title">Add handheld mic to CTI scope</div><div class="risk-note">CTI's current quote includes 2 lavalier mics only. A handheld mic is standard for all-hands Q&amp;A. Adding it will increase cost slightly. Chelsea is confirming the amount before signing.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-amber">Resolve before award</span><div class="risk-body"><div class="risk-title">Confirm no hidden costs in CTI quote</div><div class="risk-note">Shipping, extra wiring or conduit, and labor beyond the base quote should be explicitly confirmed with CTI before signing. Both vendors' T&amp;Cs allow change orders for on-site discoveries. Chelsea to get written confirmation.</div></div></div>
+
+      <div class="section-label" style="margin-top:20px">Monitor</div>
+      <div class="risk"><span class="risk-badge rb-amber">Monitor</span><div class="risk-body"><div class="risk-title">Install timeline to be confirmed with CTI</div><div class="risk-note">IP-based systems require configuration and post-install tuning — more than a hardwired install. Chelsea to confirm CTI can commit to completion before July 6. Fallback plan in place if the date slips: keep current setup for OKR week, cut over after.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-amber">Monitor</span><div class="risk-body"><div class="risk-title">Product delivery timelines affect award speed</div><div class="risk-note">Which products CTI orders affects lead times and how quickly we can proceed. Award ideally happens end of this week or early next week. Every week of delay compresses the install window with no buffer before July 6.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-amber">Budget buffer</span><div class="risk-body"><div class="risk-title">Change order triggers</div><div class="risk-note">Both vendors' T&amp;Cs flag change orders for overtime, weekend work, out-of-scope discoveries, and delays caused by other trades. Build ~10% contingency (~$5,600) into the approved budget.</div></div></div>
+
+      <div class="section-label" style="margin-top:20px">Low risk / FYI</div>
+      <div class="risk"><span class="risk-badge rb-green">Low risk</span><div class="risk-body"><div class="risk-title">Network compatibility</div><div class="risk-note">CTI's system runs AV-over-IP and requires low-latency network support. Baton recently upgraded its network, so this is expected to be a non-issue. Martin (Jones IT) to confirm before install as a precaution.</div></div></div>
+      <div class="risk"><span class="risk-badge rb-gray">FYI</span><div class="risk-body"><div class="risk-title">Projector option may trigger landlord approval</div><div class="risk-note">If projector is chosen instead of the TV, associated electrical work and light removal would likely require landlord coordination. The TV avoids this entirely and is the recommendation.</div></div></div>
+
+      <div class="section-label" style="margin-top:20px">Immediate next steps after approval</div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Award CTI and initiate 60% deposit (~$28,073). Flag deposit timing with Brett first.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Add handheld mic and platform touchpad to CTI scope. Get updated quote with final numbers.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Verify storage room outlet and wall backing. Price any electrical work needed before signing.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Confirm shipping, extra wiring, and all labor are included in the quote (no hidden costs).</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Confirm CTI install date is achievable before July 6. If not, activate OKR week fallback.</div><div class="action-owner ao-c">Chelsea</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Confirm Baton's network supports CTI's AV-over-IP requirements.</div><div class="action-owner ao-m">Martin (Jones IT)</div></div>
+      <div class="action"><div class="action-box"></div><div class="action-text">Coordinate gaming area move and furniture removal in parallel with CTI procurement.</div><div class="action-owner ao-c">Chelsea</div></div>
+    </div>
+
+  </div><!-- end panels -->
+</div><!-- end shell -->
+
+<script>
+  const tabs = document.querySelectorAll('.tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+      document.querySelector('.panels').scrollTop = 0;
+    });
+  });
+
+  function toggleCompare() {
+    const content = document.getElementById('compare-content');
+    const label = document.getElementById('compare-label');
+    content.classList.toggle('open');
+    label.textContent = content.classList.contains('open')
+      ? '- Hide vendor comparison'
+      : '+ Show full vendor comparison (TL;DR reference)';
+  }
+</script>
+</body>
+</html>
