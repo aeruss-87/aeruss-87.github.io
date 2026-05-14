@@ -107,6 +107,48 @@
 
     footer { margin-top: 32px; padding: 0 40px 24px; font-size: 0.75rem; color: var(--text-muted); text-align: center; }
 
+    /* ROADMAP */
+    .roadmap-intro { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+    .roadmap-intro strong { color: var(--text-main); }
+    .roadmap-category { margin-bottom: 28px; }
+    .roadmap-category h3 { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    .roadmap-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .roadmap-card-title { font-size: 0.875rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+    .roadmap-card-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+    .roadmap-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .tag-soon { background: var(--teal-light); color: var(--teal-dark); }
+    .tag-planned { background: #e8edf2; color: #4a6070; }
+    .roadmap-cta {
+      margin-top: 32px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .roadmap-cta p { font-size: 0.875rem; margin: 0; }
+    .roadmap-cta a { color: var(--seafoam); font-weight: 600; text-decoration: none; }
+    .roadmap-cta a:hover { text-decoration: underline; }
+
     @media (max-width: 640px) {
       header { padding: 20px 16px 0; }
       main { padding: 20px 16px; }
@@ -127,6 +169,7 @@
     <button class="tab-btn" onclick="showTab('travel', this)">Travel <span class="badge">3</span></button>
     <button class="tab-btn" onclick="showTab('threads', this)">Open Threads <span class="badge badge-red">2</span></button>
     <button class="tab-btn" onclick="showTab('prep', this)">Needs Prep <span class="badge badge-red">13</span></button>
+    <button class="tab-btn" onclick="showTab('roadmap', this)">Roadmap</button>
   </div>
 </header>
 
@@ -546,6 +589,94 @@
       </tr>
     </tbody>
   </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: ROADMAP                                                  -->
+<!-- ============================================================ -->
+<div id="tab-roadmap" class="tab-panel">
+  <div class="section-label">What's coming to Exec Pulse</div>
+
+  <p class="roadmap-intro">This is an <strong>MVP</strong> built for the Baton AI Hackathon. The features below are planned for upcoming releases. Have a request? Send it to <a href="mailto:ashley@baton.io" style="color:var(--teal);font-weight:600;">ashley@baton.io</a>.</p>
+
+  <div class="roadmap-category">
+    <h3>Smarter Calendar</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">Back-to-Back Flag</div>
+        <div class="roadmap-card-desc">Automatically detect days with 3 or more consecutive meetings and surface them as a focus risk.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">Meeting Load Score</div>
+        <div class="roadmap-card-desc">A daily focus-time score showing how much unblocked thinking time your exec has each day.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">New Face Alert</div>
+        <div class="roadmap-card-desc">Flag first-time attendees your exec hasn't met before so you can prep context or a brief bio.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>Deeper Email Intelligence</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">VIP Inbox Filter</div>
+        <div class="roadmap-card-desc">Define a list of VIP senders. Their threads always surface first, regardless of thread age.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Pending Approvals</div>
+        <div class="roadmap-card-desc">Detect emails explicitly requesting a decision, approval, or sign-off from your exec.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Decision Backlog</div>
+        <div class="roadmap-card-desc">Track decisions your exec has been asked to make that haven't received a clear yes/no yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>Meeting Prep</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Auto Prep Brief</div>
+        <div class="roadmap-card-desc">For meetings flagged as Needs Prep, generate a one-paragraph context brief from prior meeting notes and email threads.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Action Item Extraction</div>
+        <div class="roadmap-card-desc">Pull open action items assigned to your exec from recent meeting transcripts (Fathom, Granola, Otter).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>EA Workload</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Delegation Tracker</div>
+        <div class="roadmap-card-desc">Track tasks your exec delegated and flag ones with no follow-up confirmation after 5+ days.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">EA To-Dos Tab</div>
+        <div class="roadmap-card-desc">A personal section just for the EA: outstanding tasks, pending logistics, and things to confirm before week's end.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-cta">
+    <p>Built by Ashley Russell, People Ops at Baton &middot; This is an MVP. Feedback shapes what ships next.</p>
+    <p>Request a feature: <a href="mailto:ashley@baton.io">ashley@baton.io</a></p>
   </div>
 </div>
 
