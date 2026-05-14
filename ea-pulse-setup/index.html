@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EA Weekly Pulse &mdash; Setup Guide</title>
+  <style>
+    :root {
+      --navy: #1a2332;
+      --navy-light: #253347;
+      --teal: #2d8b8b;
+      --teal-dark: #236f6f;
+      --teal-light: #c8eced;
+      --seafoam: #a8dadc;
+      --cream: #f1faee;
+      --text-main: #1a2332;
+      --text-muted: #4a6070;
+      --border: #c8eced;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 40px 40px 36px;
+    }
+
+    .header-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--seafoam);
+      margin-bottom: 10px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--cream);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 15px;
+      color: var(--seafoam);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    .header-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover { background: var(--teal-dark); }
+
+    .btn-secondary {
+      display: inline-block;
+      background: transparent;
+      color: var(--seafoam);
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1px solid var(--seafoam);
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { background: var(--navy-light); color: var(--cream); }
+
+    /* MAIN */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 48px 40px;
+    }
+
+    /* SECTION LABELS */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 16px;
+    }
+
+    /* WHAT IT DOES */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+
+    .feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .feature-card .icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    .feature-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .feature-card p {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* STEPS */
+    .steps { margin-bottom: 48px; }
+
+    .step {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .step-num {
+      flex-shrink: 0;
+      width: 32px;
+      height: 32px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 50%;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .step-body h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .step-body p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+
+    .step-body p:last-child { margin-bottom: 0; }
+
+    .step-body a { color: var(--teal); text-decoration: none; }
+    .step-body a:hover { text-decoration: underline; }
+
+    /* CODE BLOCKS */
+    .code-block {
+      background: var(--navy);
+      color: var(--seafoam);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 10px 0;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .copy-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* MCP TABLE */
+    .mcp-table-wrap {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 12px 0 28px;
+    }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th { background: var(--navy); color: var(--cream); text-align: left; padding: 10px 14px; font-weight: 600; }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-main); }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #f8fefe; }
+
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .tag-required { background: #fde8e8; color: #c0392b; }
+    .tag-optional { background: var(--teal-light); color: var(--teal-dark); }
+
+    /* TABS PREVIEW */
+    .preview-wrap {
+      background: var(--navy);
+      border-radius: 12px;
+      padding: 20px 20px 0;
+      margin: 12px 0 28px;
+    }
+
+    .preview-title {
+      color: var(--cream);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .preview-sub {
+      color: var(--seafoam);
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+
+    .preview-tabs {
+      display: flex;
+      gap: 4px;
+    }
+
+    .preview-tab {
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--seafoam);
+      border-radius: 8px 8px 0 0;
+      background: transparent;
+    }
+
+    .preview-tab.active {
+      background: var(--cream);
+      color: var(--navy);
+    }
+
+    .preview-badge {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 10px;
+      padding: 1px 6px;
+      margin-left: 4px;
+    }
+
+    .preview-badge-red { background: #c0392b; }
+
+    /* FAQ */
+    .faq { margin-bottom: 48px; }
+
+    .faq-item {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin-bottom: 10px;
+    }
+
+    .faq-item h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .faq-item p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    footer {
+      padding: 16px 40px 32px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 640px) {
+      header { padding: 28px 20px 24px; }
+      main { padding: 32px 20px; }
+      .feature-grid { grid-template-columns: 1fr 1fr; }
+      .step { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-eyebrow">Claude Code Skill</div>
+  <h1>EA Weekly Pulse</h1>
+  <p>A Claude skill that reads your executive's calendar, email, and Slack, then generates a weekly dashboard covering every meeting, travel detail, open thread, and prep gap.</p>
+  <div class="header-actions">
+    <a class="btn-primary" href="/ea-pulse-setup/SKILL.md" download="SKILL.md">Download SKILL.md</a>
+    <a class="btn-secondary" href="/exec-pulse/">See a live example</a>
+  </div>
+</header>
+
+<main>
+
+  <!-- WHAT IT DOES -->
+  <div class="section-label">What it generates</div>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="icon">&#128197;</div>
+      <h3>This Week</h3>
+      <p>Every meeting, chronological, with attendee count, location, and flagged conflicts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">&#9992;&#65039;</div>
+      <h3>Travel</h3>
+      <p>Flights and hotels pulled from the calendar by flight number or confirmation code.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">&#128172;</div>
+      <h3>Open Threads</h3>
+      <p>Email and Slack threads your exec was asked something in and hasn't replied to.</p>
+    </div>
+    <div class="feature-card">
+      <div class="icon">&#128203;</div>
+      <h3>Needs Prep</h3>
+      <p>Multi-attendee meetings with no prep block in the 48 hours before them.</p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD PREVIEW -->
+  <div class="section-label">What the output looks like</div>
+  <div class="preview-wrap">
+    <div class="preview-title">Grant's Weekly Pulse</div>
+    <div class="preview-sub">May 14 &ndash; May 21, 2026 &middot; Generated May 14, 2026</div>
+    <div class="preview-tabs">
+      <div class="preview-tab active">This Week <span class="preview-badge">35</span></div>
+      <div class="preview-tab">Travel <span class="preview-badge">3</span></div>
+      <div class="preview-tab">Open Threads <span class="preview-badge preview-badge-red">2</span></div>
+      <div class="preview-tab">Needs Prep <span class="preview-badge preview-badge-red">13</span></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:48px;">
+    Output is a self-contained HTML file saved to your Desktop. Open it in any browser. <a href="/exec-pulse/">See the full live example &rarr;</a>
+  </p>
+
+  <!-- PREREQUISITES -->
+  <div class="section-label">What you need before you start</div>
+  <div class="mcp-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Tool</th>
+          <th>What it unlocks</th>
+          <th>Required?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Claude Code</strong><br><span style="font-size:12px;color:var(--text-muted)">Desktop app or CLI</span></td>
+          <td>Runs the skill. Download at <a href="https://claude.ai/download" style="color:var(--teal)">claude.ai/download</a> or install via <code style="font-size:12px;background:#f0f0f0;padding:1px 5px;border-radius:4px;">npm install -g @anthropic-ai/claude-code</code></td>
+          <td><span class="tag tag-required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>Google Calendar MCP</strong></td>
+          <td>Calendar events, travel detection, prep gap analysis</td>
+          <td><span class="tag tag-required">Required</span></td>
+        </tr>
+        <tr>
+          <td><strong>Gmail MCP</strong></td>
+          <td>Open email threads awaiting exec response</td>
+          <td><span class="tag tag-optional">Optional</span></td>
+        </tr>
+        <tr>
+          <td><strong>Slack MCP</strong></td>
+          <td>Unanswered mentions in specified channels</td>
+          <td><span class="tag tag-optional">Optional</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13px;color:var(--text-muted);margin-bottom:48px;">The skill configures itself to whatever tools you have connected. If Google Calendar is your only MCP, you still get a full This Week, Travel, and Needs Prep view.</p>
+
+  <!-- SETUP STEPS -->
+  <div class="section-label">Installation</div>
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <h3>Download the skill file</h3>
+        <p>Open Terminal and run this command. It creates the skills folder and downloads the SKILL.md file into the right place.</p>
+        <div class="code-block">mkdir -p ~/.claude/skills/ea-weekly-pulse && curl -o ~/.claude/skills/ea-weekly-pulse/SKILL.md https://aeruss-87.github.io/ea-pulse-setup/SKILL.md</div>
+        <p class="copy-hint">Paste this as one line. It works on Mac and Linux.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <h3>Connect your MCP servers in Claude Code</h3>
+        <p>In Claude Code, open Settings and connect the MCPs for the tools you use. At minimum, connect Google Calendar. Gmail and Slack are optional but unlock the Open Threads section.</p>
+        <p>If you are not sure how to add an MCP, type <code style="font-size:13px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">/update-config</code> in Claude Code and ask it to help you add the Google Calendar MCP.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <h3>Run the skill for the first time</h3>
+        <p>Open Claude Code and type:</p>
+        <div class="code-block">/ea-weekly-pulse</div>
+        <p>Claude will ask you 8 setup questions (your exec's name, email, which tools you use, which Slack channels to monitor, how many days to look ahead). This only runs once. After that, just type <code style="font-size:13px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">/ea-weekly-pulse</code> and the dashboard generates automatically.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <h3>Open your dashboard</h3>
+        <p>When it finishes, a file named <code style="font-size:13px;background:#f0f0f0;padding:2px 6px;border-radius:4px;">ea-pulse-[date].html</code> appears on your Desktop. Open it in any browser. Four tabs: This Week, Travel, Open Threads, and Needs Prep.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FAQ -->
+  <div class="section-label">Common questions</div>
+  <div class="faq">
+
+    <div class="faq-item">
+      <h4>How do I reset or change my setup answers?</h4>
+      <p>Delete the config file by running <code style="font-size:12px;background:#f0f0f0;padding:1px 5px;border-radius:4px;">rm ~/.claude/ea-pulse-config.json</code> in Terminal. The next time you run <code style="font-size:12px;background:#f0f0f0;padding:1px 5px;border-radius:4px;">/ea-weekly-pulse</code>, it will walk you through setup again.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>I manage multiple executives. Can I run this for each one?</h4>
+      <p>Not at the same time with one config file. For now, reset the config to switch execs. A multi-exec version is a potential future update.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Can I schedule it to run automatically every Monday?</h4>
+      <p>Yes. After the skill runs, it will offer to set this up. Type <code style="font-size:12px;background:#f0f0f0;padding:1px 5px;border-radius:4px;">/schedule</code> in Claude Code and describe the task as: "Run /ea-weekly-pulse every Monday at 8am."</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>What if I don't have Gmail or Slack connected?</h4>
+      <p>The skill skips those sections entirely and tells you what was and wasn't checked. You still get a full calendar view, travel items, and prep gaps from Google Calendar alone.</p>
+    </div>
+
+    <div class="faq-item">
+      <h4>Does this send anything anywhere?</h4>
+      <p>No. Everything stays local. The dashboard is a plain HTML file on your Desktop. Nothing is posted, emailed, or synced automatically.</p>
+    </div>
+
+  </div>
+
+  <!-- DOWNLOAD AGAIN -->
+  <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+    <div>
+      <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;">Ready to install?</div>
+      <div style="font-size:13px;color:var(--text-muted);">Download the SKILL.md file and follow the steps above.</div>
+    </div>
+    <a class="btn-primary" href="/ea-pulse-setup/SKILL.md" download="SKILL.md">Download SKILL.md</a>
+  </div>
+
+</main>
+
+<footer>
+  Built with Claude Code &middot; <a href="/" style="color:var(--teal);text-decoration:none;">Back to all tools</a>
+</footer>
+
+</body>
+</html>
