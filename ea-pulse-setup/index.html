@@ -307,6 +307,26 @@
       line-height: 1.6;
     }
 
+    /* CALLOUT */
+    .callout {
+      background: var(--teal-light);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+    }
+    .callout-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      margin-bottom: 6px;
+    }
+    .callout p {
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+
     footer {
       padding: 16px 40px 32px;
       font-size: 12px;
@@ -416,6 +436,10 @@
   <p style="font-size:13px;color:var(--text-muted);margin-bottom:48px;">The skill configures itself to whatever tools you have connected. If Google Calendar is your only MCP, you still get a full This Week, Travel, and Needs Prep view.</p>
 
   <!-- SETUP STEPS -->
+  <div class="callout">
+    <div class="callout-title">Works with whatever tools you have</div>
+    <p>On first run, the skill walks you through a short setup: your exec's name and email, which calendar and email systems you use, whether Slack is connected, which channels to monitor, and how many days ahead to look. Your answers are saved locally so every future run is one command. The skill only uses the tools you confirm you have connected — if you skip Gmail or Slack, those sections are simply omitted from the dashboard.</p>
+  </div>
   <div class="section-label">Installation</div>
   <div class="steps">
 
