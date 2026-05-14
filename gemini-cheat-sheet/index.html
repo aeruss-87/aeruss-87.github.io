@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gemini for EAs: Cheat Sheet</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #1a1a2e;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+      color: white;
+      padding: 32px 40px 28px;
+    }
+
+    header h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+
+    header .resources {
+      font-size: 13px;
+      opacity: 0.85;
+    }
+
+    header .resources a {
+      color: #a8d1ff;
+      text-decoration: none;
+      margin-right: 16px;
+    }
+
+    header .resources a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      border-top: 3px solid #1a73e8;
+    }
+
+    .card.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .card h2 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a73e8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    /* Ecosystem table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    th {
+      background: #e8f0fe;
+      color: #1a73e8;
+      font-weight: 700;
+      text-align: left;
+      padding: 9px 12px;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:nth-child(even) td { background: #fafbff; }
+
+    td strong { color: #1a1a2e; font-weight: 600; }
+
+    /* CRAFT framework */
+    .craft-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .craft-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+
+    .craft-list li:last-child { border-bottom: none; }
+
+    .craft-letter {
+      background: #1a73e8;
+      color: white;
+      font-weight: 800;
+      font-size: 13px;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .craft-label {
+      font-weight: 600;
+      color: #1a1a2e;
+    }
+
+    /* Pro tip */
+    .pro-tip {
+      background: #e8f0fe;
+      border-left: 3px solid #1a73e8;
+      border-radius: 0 8px 8px 0;
+      padding: 10px 14px;
+      font-size: 13px;
+      margin-top: 14px;
+      color: #1a3a6e;
+    }
+
+    .pro-tip strong { color: #1a73e8; }
+
+    /* Gems */
+    .gem-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .gem {
+      background: #f8faff;
+      border-radius: 8px;
+      padding: 12px 14px;
+      border: 1px solid #d2e3fc;
+    }
+
+    .gem-name {
+      font-weight: 700;
+      color: #1a73e8;
+      font-size: 14px;
+      margin-bottom: 3px;
+    }
+
+    .gem-desc {
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* Use cases */
+    .use-case {
+      margin-bottom: 18px;
+    }
+
+    .use-case:last-child { margin-bottom: 0; }
+
+    .use-case h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a73e8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 6px;
+    }
+
+    .use-case .context {
+      font-size: 12.5px;
+      color: #666;
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+
+    .prompt-box {
+      background: #f8faff;
+      border: 1px solid #d2e3fc;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-family: "SF Mono", "Fira Code", "Courier New", monospace;
+      font-size: 12px;
+      color: #1a3a6e;
+      margin-bottom: 6px;
+      line-height: 1.5;
+    }
+
+    /* Prompt library */
+    .prompt-table td:first-child {
+      font-weight: 600;
+      color: #1a1a2e;
+      white-space: nowrap;
+      width: 140px;
+    }
+
+    .prompt-table .prompt-box {
+      margin-bottom: 0;
+    }
+
+    /* Security */
+    .security-box {
+      background: #e8f0fe;
+      border-left: 3px solid #1a73e8;
+      border-radius: 0 8px 8px 0;
+      padding: 14px 16px;
+      font-size: 13.5px;
+      color: #1a3a6e;
+    }
+
+    .security-box strong { color: #1a73e8; }
+
+    .security-box a {
+      color: #1a73e8;
+      font-size: 12.5px;
+      display: block;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 700px) {
+      .container { grid-template-columns: 1fr; }
+      .card.full-width { grid-column: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Gemini for EAs: Cheat Sheet</h1>
+    <div class="resources">
+      <a href="https://gemini.google.com" target="_blank">gemini.google.com</a>
+      <a href="https://notebooklm.google.com" target="_blank">notebooklm.google.com</a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- 1. Ecosystem -->
+    <div class="card full-width">
+      <h2>1. The Gemini Ecosystem</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Purpose</th>
+            <th>Best Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Gemini Enterprise</strong></td>
+            <td>The "Agentic" Business Backbone; a platform for multi-step work.</td>
+            <td>Building automated workflows and complex task management.</td>
+          </tr>
+          <tr>
+            <td><strong>Gemini in Chrome</strong></td>
+            <td>The "Auto-Browsing" Web Assistant in your side panel.</td>
+            <td>Interacting with live web tabs, comparing options, and synthesis.</td>
+          </tr>
+          <tr>
+            <td><strong>Gemini in Workspace</strong></td>
+            <td>Integrated "Help me write/design/organize" layer.</td>
+            <td>Drafting docs, summarizing emails, and organizing data in sheets.</td>
+          </tr>
+          <tr>
+            <td><strong>NotebookLM</strong></td>
+            <td>The Research &amp; Synthesis "Walled Garden" for grounded intelligence.</td>
+            <td>Mastering complex topics and research based on your specific files.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. EA Mindset & CRAFT -->
+    <div class="card">
+      <h2>2. The EA Mindset &amp; Prompting</h2>
+      <p style="font-size:13.5px; color:#555; margin-bottom:14px;">Move from one-off questions to <strong>Data Synthesis</strong>. Use Gemini to reason across disparate systems.</p>
+      <p style="font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:10px;">The C.R.A.F.T. Framework</p>
+      <ul class="craft-list">
+        <li>
+          <span class="craft-letter">C</span>
+          <span><span class="craft-label">Context:</span> Give Gemini the background.</span>
+        </li>
+        <li>
+          <span class="craft-letter">R</span>
+          <span><span class="craft-label">Role:</span> Assign a persona (e.g., "You are an expert Chief of Staff").</span>
+        </li>
+        <li>
+          <span class="craft-letter">A</span>
+          <span><span class="craft-label">Action:</span> State the specific task.</span>
+        </li>
+        <li>
+          <span class="craft-letter">F</span>
+          <span><span class="craft-label">Format:</span> Specify the output (e.g., table, email draft).</span>
+        </li>
+        <li>
+          <span class="craft-letter">T</span>
+          <span><span class="craft-label">Target:</span> Define the audience or specific constraints.</span>
+        </li>
+      </ul>
+      <div class="pro-tip">
+        <strong>Pro Tip:</strong> Use "Canvas Mode" in Gemini Enterprise for iterative editing and better control over long-form content.
+      </div>
+    </div>
+
+    <!-- 3. Gems -->
+    <div class="card">
+      <h2>3. Gemini Gems: Your AI Specialized Team</h2>
+      <p style="font-size:13px; color:#555; margin-bottom:14px;">Gems are custom versions of Gemini with "locked in" instructions and knowledge.</p>
+      <div class="gem-list">
+        <div class="gem">
+          <div class="gem-name">The Ghostwriter</div>
+          <div class="gem-desc">Mimics your Executive's voice for drafts, memos, and posts.</div>
+        </div>
+        <div class="gem">
+          <div class="gem-name">The Logistics Architect</div>
+          <div class="gem-desc">Focuses on optimization, buffer times, and "plan B" travel thinking.</div>
+        </div>
+        <div class="gem">
+          <div class="gem-name">The Briefing Partner</div>
+          <div class="gem-desc">Scans attendee lists to provide bios and suggested icebreakers.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. High-Impact Use Cases -->
+    <div class="card full-width">
+      <h2>4. High-Impact Use Cases &amp; Prompts</h2>
+
+      <div class="use-case">
+        <h3>Multi-Tab Synthesis (Gemini in Chrome)</h3>
+        <p class="context">Pin tabs (e.g., Expense/Travel System, Gmail, Calendar) and use these prompts:</p>
+        <div class="prompt-box">"Analyze my pinned travel confirmations and the session invites on [Name] calendar. Create a new doc with a comprehensive travel itinerary for [City name] including flight times, hotel address, and a chronological list of the confirmed sessions. Flag any overlapping events."</div>
+        <div class="prompt-box">"Create calendar invites for the flights and hotel on [Executive Name] calendar."</div>
+      </div>
+
+      <div class="use-case">
+        <h3>Intelligent Availability Search</h3>
+        <p class="context">Visible Tab: Your executive's calendar.</p>
+        <div class="prompt-box">"Please list all available 30-minute windows for a meeting this week. I'd like you to consider all focus time blocks and all meetings color coded in Flamingo (if applicable)."</div>
+      </div>
+
+      <div class="use-case">
+        <h3>Offsite Ideation &amp; Planning</h3>
+        <div class="prompt-box">"My team of 12 needs a three-day off-site. We have a moderate budget. Generate three locations and some scrappy fun event ideas, along with thematic concepts for each that align with our team's goals."</div>
+        <div class="prompt-box">"I'm thinking about October for these locations, is there anything I should consider?"</div>
+      </div>
+
+      <div class="use-case">
+        <h3>Summit Session Management</h3>
+        <div class="prompt-box">"Please create calendar invites for these sessions based on the open agenda tab."</div>
+      </div>
+    </div>
+
+    <!-- 5. Starter Prompt Library -->
+    <div class="card full-width">
+      <h2>5. Starter Prompt Library</h2>
+      <table class="prompt-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Prompt</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Travel Research</strong></td>
+            <td><div class="prompt-box">"Create a table comparing 3 hotel options in NYC based on proximity to [Office Address] and 'Executive' amenities."</div></td>
+          </tr>
+          <tr>
+            <td><strong>Scheduling</strong></td>
+            <td><div class="prompt-box">"Find a 45-minute gap next week for a 1:1 that doesn't conflict with my Exec's 'Deep Work' blocks or school pickup."</div></td>
+          </tr>
+          <tr>
+            <td><strong>Email Triage (Gem)</strong></td>
+            <td><div class="prompt-box">"Analyze this text and categorize it into: Urgent (Action today), Needs Review, or Low Priority. Draft a polite 'no' for the low-priority ones."</div></td>
+          </tr>
+          <tr>
+            <td><strong>Coordination</strong></td>
+            <td><div class="prompt-box">"Find a 30-min slot for these attendees next week, prioritizing EMEA-friendly times. Draft a reply with 3 options and hold the best one."</div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 6. Security -->
+    <div class="card full-width">
+      <h2>6. Security &amp; Data Protection</h2>
+      <div class="security-box">
+        <strong>Enterprise-Grade Protection:</strong> Data used in Gemini Business and Enterprise versions is NOT used to train public models. Your executive's sensitive information remains private within your organization.
+        <a href="https://workspace.google.com/intl/en/terms/user_features.html" target="_blank">How Gemini for Google Workspace protects your data</a>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
