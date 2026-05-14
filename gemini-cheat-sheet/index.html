@@ -5,19 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gemini for EAs: Cheat Sheet</title>
   <style>
+    :root {
+      --navy: #1a2332;
+      --teal: #2d8b8b;
+      --seafoam: #a8dadc;
+      --cream: #f1faee;
+      --teal-dark: #236f6f;
+      --teal-light: #c8eced;
+      --navy-light: #253347;
+      --text-main: #1a2332;
+      --text-muted: #4a6070;
+      --border: #c8eced;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #f5f7fa;
-      color: #1a1a2e;
+      background: var(--cream);
+      color: var(--text-main);
       font-size: 15px;
       line-height: 1.6;
     }
 
     header {
-      background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
-      color: white;
+      background: var(--navy);
+      color: var(--cream);
       padding: 32px 40px 28px;
     }
 
@@ -34,7 +47,7 @@
     }
 
     header .resources a {
-      color: #a8d1ff;
+      color: var(--seafoam);
       text-decoration: none;
       margin-right: 16px;
     }
@@ -55,7 +68,7 @@
       border-radius: 12px;
       padding: 24px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      border-top: 3px solid #1a73e8;
+      border-top: 3px solid var(--teal);
     }
 
     .card.full-width {
@@ -65,7 +78,7 @@
     .card h2 {
       font-size: 15px;
       font-weight: 700;
-      color: #1a73e8;
+      color: var(--teal);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 16px;
@@ -79,8 +92,8 @@
     }
 
     th {
-      background: #e8f0fe;
-      color: #1a73e8;
+      background: var(--teal-light);
+      color: var(--teal-dark);
       font-weight: 700;
       text-align: left;
       padding: 9px 12px;
@@ -91,15 +104,15 @@
 
     td {
       padding: 10px 12px;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--border);
       vertical-align: top;
     }
 
     tr:last-child td { border-bottom: none; }
 
-    tr:nth-child(even) td { background: #fafbff; }
+    tr:nth-child(even) td { background: #f8fdfd; }
 
-    td strong { color: #1a1a2e; font-weight: 600; }
+    td strong { color: var(--text-main); font-weight: 600; }
 
     /* CRAFT framework */
     .craft-list {
@@ -112,14 +125,14 @@
       align-items: flex-start;
       gap: 10px;
       padding: 8px 0;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid var(--border);
       font-size: 14px;
     }
 
     .craft-list li:last-child { border-bottom: none; }
 
     .craft-letter {
-      background: #1a73e8;
+      background: var(--teal);
       color: white;
       font-weight: 800;
       font-size: 13px;
@@ -135,21 +148,21 @@
 
     .craft-label {
       font-weight: 600;
-      color: #1a1a2e;
+      color: var(--text-main);
     }
 
     /* Pro tip */
     .pro-tip {
-      background: #e8f0fe;
-      border-left: 3px solid #1a73e8;
+      background: var(--teal-light);
+      border-left: 3px solid var(--teal);
       border-radius: 0 8px 8px 0;
       padding: 10px 14px;
       font-size: 13px;
       margin-top: 14px;
-      color: #1a3a6e;
+      color: var(--navy);
     }
 
-    .pro-tip strong { color: #1a73e8; }
+    .pro-tip strong { color: var(--teal-dark); }
 
     /* Gems */
     .gem-list {
@@ -159,22 +172,22 @@
     }
 
     .gem {
-      background: #f8faff;
+      background: var(--cream);
       border-radius: 8px;
       padding: 12px 14px;
-      border: 1px solid #d2e3fc;
+      border: 1px solid var(--border);
     }
 
     .gem-name {
       font-weight: 700;
-      color: #1a73e8;
+      color: var(--teal);
       font-size: 14px;
       margin-bottom: 3px;
     }
 
     .gem-desc {
       font-size: 13px;
-      color: #555;
+      color: var(--text-muted);
     }
 
     /* Use cases */
@@ -187,7 +200,7 @@
     .use-case h3 {
       font-size: 13px;
       font-weight: 700;
-      color: #1a73e8;
+      color: var(--teal);
       text-transform: uppercase;
       letter-spacing: 0.4px;
       margin-bottom: 6px;
@@ -195,19 +208,19 @@
 
     .use-case .context {
       font-size: 12.5px;
-      color: #666;
+      color: var(--text-muted);
       margin-bottom: 6px;
       font-style: italic;
     }
 
     .prompt-box {
-      background: #f8faff;
-      border: 1px solid #d2e3fc;
+      background: var(--cream);
+      border: 1px solid var(--border);
       border-radius: 6px;
       padding: 10px 12px;
       font-family: "SF Mono", "Fira Code", "Courier New", monospace;
       font-size: 12px;
-      color: #1a3a6e;
+      color: var(--navy);
       margin-bottom: 6px;
       line-height: 1.5;
     }
@@ -220,9 +233,9 @@
       gap: 5px;
       font-size: 11.5px;
       font-weight: 600;
-      color: #1a73e8;
+      color: var(--teal);
       background: none;
-      border: 1px solid #d2e3fc;
+      border: 1px solid var(--border);
       padding: 4px 10px;
       border-radius: 6px;
       cursor: pointer;
@@ -230,8 +243,8 @@
     }
 
     .copy-btn:hover {
-      background: #e8f0fe;
-      border-color: #1a73e8;
+      background: var(--teal-light);
+      border-color: var(--teal);
     }
 
     .copy-btn.copied {
@@ -243,7 +256,7 @@
     /* Prompt library */
     .prompt-table td:first-child {
       font-weight: 600;
-      color: #1a1a2e;
+      color: var(--text-main);
       white-space: nowrap;
       width: 140px;
     }
@@ -254,18 +267,18 @@
 
     /* Security */
     .security-box {
-      background: #e8f0fe;
-      border-left: 3px solid #1a73e8;
+      background: var(--teal-light);
+      border-left: 3px solid var(--teal);
       border-radius: 0 8px 8px 0;
       padding: 14px 16px;
       font-size: 13.5px;
-      color: #1a3a6e;
+      color: var(--navy);
     }
 
-    .security-box strong { color: #1a73e8; }
+    .security-box strong { color: var(--teal-dark); }
 
     .security-box a {
-      color: #1a73e8;
+      color: var(--teal);
       font-size: 12.5px;
       display: block;
       margin-top: 6px;
@@ -328,8 +341,8 @@
     <!-- 2. EA Mindset & CRAFT -->
     <div class="card">
       <h2>2. The EA Mindset &amp; Prompting</h2>
-      <p style="font-size:13.5px; color:#555; margin-bottom:14px;">Move from one-off questions to <strong>Data Synthesis</strong>. Use Gemini to reason across disparate systems.</p>
-      <p style="font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:10px;">The C.R.A.F.T. Framework</p>
+      <p style="font-size:13.5px; color:#4a6070; margin-bottom:14px;">Move from one-off questions to <strong>Data Synthesis</strong>. Use Gemini to reason across disparate systems.</p>
+      <p style="font-size:13px; font-weight:700; color:#1a2332; margin-bottom:10px;">The C.R.A.F.T. Framework</p>
       <ul class="craft-list">
         <li>
           <span class="craft-letter">C</span>
@@ -360,7 +373,7 @@
     <!-- 3. Gems -->
     <div class="card">
       <h2>3. Gemini Gems: Your AI Specialized Team</h2>
-      <p style="font-size:13px; color:#555; margin-bottom:14px;">Gems are custom versions of Gemini with "locked in" instructions and knowledge.</p>
+      <p style="font-size:13px; color:#4a6070; margin-bottom:14px;">Gems are custom versions of Gemini with "locked in" instructions and knowledge.</p>
       <div class="gem-list">
         <div class="gem">
           <div class="gem-name">The Ghostwriter</div>
