@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ryan Weekly Pulse - 2026-05-14</title>
+  <style>
+    :root {
+      --navy: #1a2332;
+      --navy-light: #253347;
+      --teal: #2d8b8b;
+      --teal-dark: #236f6f;
+      --teal-light: #c8eced;
+      --seafoam: #a8dadc;
+      --cream: #f1faee;
+      --text-main: #1a2332;
+      --text-muted: #4a6070;
+      --border: #c8eced;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--cream);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    header {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 28px 40px 0;
+    }
+
+    .header-top { margin-bottom: 20px; }
+    .header-top h1 { font-size: 22px; font-weight: 700; color: var(--cream); letter-spacing: -0.3px; }
+    .header-top p { font-size: 13px; color: var(--seafoam); margin-top: 4px; }
+
+    /* TABS inside header */
+    .tab-nav { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--seafoam);
+      cursor: pointer;
+      border-radius: 8px 8px 0 0;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .tab-btn:hover:not(.active) { color: var(--cream); background: var(--navy-light); }
+    .tab-btn.active { background: var(--cream); color: var(--navy); font-weight: 700; }
+
+    .badge {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      padding: 1px 7px;
+      margin-left: 5px;
+      font-weight: 700;
+    }
+    .tab-btn.active .badge { background: var(--teal-dark); color: #fff; }
+    .badge-red { background: #c0392b; }
+    .tab-btn.active .badge-red { background: #c0392b; }
+
+    /* MAIN */
+    main { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
+
+    /* TAB PANELS */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--teal);
+      margin-bottom: 14px;
+    }
+
+    /* TABLES */
+    .table-wrap {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { background: var(--navy); color: var(--cream); text-align: left; padding: 10px 14px; font-weight: 600; white-space: nowrap; font-size: 12px; letter-spacing: 0.3px; }
+    td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-main); }
+    tr:nth-child(even) td { background: #f8fefe; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--teal-light); transition: background 0.1s; }
+
+    .day-label { font-weight: 700; white-space: nowrap; color: var(--navy); }
+    .location-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; display: block; margin-top: 2px; }
+    .conflict { color: #c0392b; font-size: 0.75rem; font-weight: 700; display: block; margin-top: 3px; }
+    .slack-note { font-size: 0.8rem; color: var(--text-muted); font-style: italic; padding: 12px 14px; }
+
+    footer { margin-top: 32px; padding: 0 40px 24px; font-size: 0.75rem; color: var(--text-muted); text-align: center; }
+
+    /* ROADMAP */
+    .roadmap-intro { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+    .roadmap-intro strong { color: var(--text-main); }
+    .roadmap-category { margin-bottom: 28px; }
+    .roadmap-category h3 { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 10px; }
+    .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+    .roadmap-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .roadmap-card-title { font-size: 0.875rem; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
+    .roadmap-card-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+    .roadmap-tag {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .tag-soon { background: var(--teal-light); color: var(--teal-dark); }
+    .tag-planned { background: #e8edf2; color: #4a6070; }
+    .roadmap-cta {
+      margin-top: 32px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .roadmap-cta p { font-size: 0.875rem; margin: 0; }
+    .roadmap-cta a { color: var(--seafoam); font-weight: 600; text-decoration: none; }
+    .roadmap-cta a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      header { padding: 20px 16px 0; }
+      main { padding: 20px 16px; }
+      .tab-btn { font-size: 0.75rem; padding: 8px 10px; }
+      th, td { padding: 7px 10px; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <h1>Ryan's Weekly Pulse</h1>
+    <p>May 14 &ndash; May 21, 2026 &middot; Generated May 14, 2026</p>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="showTab('week', this)">This Week <span class="badge">35</span></button>
+    <button class="tab-btn" onclick="showTab('travel', this)">Travel <span class="badge">3</span></button>
+    <button class="tab-btn" onclick="showTab('threads', this)">Open Threads <span class="badge badge-red">2</span></button>
+    <button class="tab-btn" onclick="showTab('prep', this)">Needs Prep <span class="badge badge-red">13</span></button>
+    <button class="tab-btn" onclick="showTab('roadmap', this)">Roadmap</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============================================================ -->
+<!-- TAB: THIS WEEK                                               -->
+<!-- ============================================================ -->
+<div id="tab-week" class="tab-panel active">
+  <div class="section-label">Calendar &middot; May 14 &ndash; May 21</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th style="width:110px">Day</th>
+        <th style="width:130px">Time</th>
+        <th>Meeting</th>
+        <th style="width:60px">People</th>
+        <th>Location / Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="day-label">Thu 5/14<span class="location-note">NYC</span></td>
+        <td>5:00a &ndash; 2:00p</td>
+        <td>Industry Summit 2026</td>
+        <td>1</td>
+        <td>Javits Center, 655 W 34th St</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:00 &ndash; 11:45a</td>
+        <td>TGIF All-Hands</td>
+        <td>36</td>
+        <td>Conf-A-Horizon<span class="location-note">Ryan joining remote from NYC</span></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>5:30 &ndash; 7:30p</td>
+        <td>Leadership Social</td>
+        <td>4</td>
+        <td>Conf-A-Horizon</td>
+      </tr>
+      <tr>
+        <td class="day-label">Fri 5/15<span class="location-note">Portland</span></td>
+        <td>10:30 &ndash; 11:00a</td>
+        <td>chat: ryan + alex</td>
+        <td>2</td>
+        <td>Zoom</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:00a &ndash; 12:00p</td>
+        <td>MK &lt;&gt; Ryan 1:1</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>12:00 &ndash; 1:00p</td>
+        <td>Review Platform Technology Roadmap</td>
+        <td>14</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>12:30 &ndash; 1:00p</td>
+        <td>Weekly Planning Review</td>
+        <td>3</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>1:30 &ndash; 2:00p</td>
+        <td>Logistics Market Analysis</td>
+        <td>4</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>2:30 &ndash; 3:00p</td>
+        <td>Chris &lt;&gt; Ryan 1:1</td>
+        <td>4</td>
+        <td>Conf-A-Summit</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>3:00 &ndash; 3:30p</td>
+        <td>Marcus &lt;&gt; Ryan 1:1</td>
+        <td>4</td>
+        <td>Conf-A-Velocity</td>
+      </tr>
+      <tr>
+        <td class="day-label">Mon 5/18<span class="location-note">PDX &rarr; LA</span></td>
+        <td>8:00 &ndash; 8:45a</td>
+        <td>Forrester Briefing: Competitive Analysis on Supply Chain Tech</td>
+        <td>8</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>9:30 &ndash; 10:00a</td>
+        <td>David &lt;&gt; Ryan Follow Up</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>10:00 &ndash; 11:00a</td>
+        <td>Talent Acquisition Pod Sync</td>
+        <td>10</td>
+        <td>Conf-A-Velocity</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:00 &ndash; 11:30a</td>
+        <td>Customer Advisory Board Initiative: AI Update</td>
+        <td>9</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:30a &ndash; 12:30p</td>
+        <td>Fieldvision &lt;&gt; Omni Logistics Monthly Alignment</td>
+        <td>10</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>2:00 &ndash; 2:30p</td>
+        <td>All-Hands Planning Review</td>
+        <td>5</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="day-label">Tue 5/19<span class="location-note">LA</span></td>
+        <td>10:00 &ndash; 11:00a</td>
+        <td>Jordan &lt;&gt; Ryan 1:1</td>
+        <td>4</td>
+        <td>Conf-A-Summit</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>12:00 &ndash; 1:00p</td>
+        <td>*QBR</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>12:00 &ndash; 1:00p</td>
+        <td>NexusTrack Cost Analysis: Review and Discussion<span class="conflict">&#9888; CONFLICT with *QBR</span></td>
+        <td>7</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>1:00 &ndash; 2:30p</td>
+        <td>LeadTeam</td>
+        <td>13</td>
+        <td>Fieldvision HQ Boardroom</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>2:30 &ndash; 3:30p</td>
+        <td>Tyler &lt;&gt; Ryan 1:1</td>
+        <td>4</td>
+        <td>Conf-A-North</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>4:00 &ndash; 5:00p</td>
+        <td>Sam &lt;&gt; Ryan 1:1</td>
+        <td>5</td>
+        <td>Conf-A-Anchor</td>
+      </tr>
+      <tr>
+        <td class="day-label">Wed 5/20<span class="location-note">LA</span></td>
+        <td>9:00 &ndash; 9:30a</td>
+        <td>NexusTrack CSE Team / Fieldvision Performance Review Process</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>10:00 &ndash; 11:00a</td>
+        <td>MK &lt;&gt; Ryan 1:1</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:00a &ndash; 12:00p</td>
+        <td>Fieldvision Monthly Meeting<span class="conflict">&#9888; CONFLICT with Talent Sync</span></td>
+        <td>19</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>11:00a &ndash; 12:00p</td>
+        <td>Hiring Manager &lt;&gt; Talent Sync<span class="conflict">&#9888; CONFLICT with Fieldvision Monthly Meeting</span></td>
+        <td>21</td>
+        <td>Conf-A-Boardroom</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>12:00 &ndash; 1:00p</td>
+        <td>RTL! (Random Team Lunch)</td>
+        <td>3</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>1:00 &ndash; 1:30p</td>
+        <td>Diane Chen &lt;&gt; Ryan Bi-weekly 1:1</td>
+        <td>3</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>2:00 &ndash; 2:30p</td>
+        <td>Eric &lt;&gt; Ryan Skip Level</td>
+        <td>4</td>
+        <td>Conf-A-Synergy</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>2:30 &ndash; 3:00p</td>
+        <td>Priya &lt;&gt; Ryan 1:1</td>
+        <td>4</td>
+        <td>Conf-A-Anchor</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>3:00 &ndash; 4:00p</td>
+        <td>Interview: Michael Torres, VP of Engineering</td>
+        <td>4</td>
+        <td>Conf-A-Boardroom</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>4:00 &ndash; 5:00p</td>
+        <td>Nina &lt;&gt; Ryan 1:1</td>
+        <td>5</td>
+        <td>Conf-A-Anchor</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>4:30 &ndash; 5:00p</td>
+        <td>Debrief: Michael Torres<span class="conflict">&#9888; CONFLICT with Nina 1:1</span></td>
+        <td>6</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="day-label">Thu 5/21<span class="location-note">LA</span></td>
+        <td>9:00 &ndash; 10:00a</td>
+        <td>Brainstorm Core Lite / Transactional Offering (Biweekly)</td>
+        <td>7</td>
+        <td>Microsoft Teams</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>10:30 &ndash; 11:00a</td>
+        <td>Sandra &lt;&gt; Ryan Weekly Update</td>
+        <td>4</td>
+        <td>Microsoft Teams</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: TRAVEL                                                  -->
+<!-- ============================================================ -->
+<div id="tab-travel" class="tab-panel">
+  <div class="section-label">Flights &amp; Hotels &middot; Next 21 days</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th style="width:180px">Date</th>
+        <th>Details</th>
+        <th style="width:170px">Confirmation</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Thu May 14</td>
+        <td>UA 1432 EWR &rarr; PDX &middot; Departs 6:45 PM</td>
+        <td>K7BXMN</td>
+      </tr>
+      <tr>
+        <td>Mon May 18</td>
+        <td>UA 0581 PDX &rarr; LAX &middot; Departs 4:55 PM, arrives 7:12 PM</td>
+        <td>PQ2RS7</td>
+      </tr>
+      <tr>
+        <td>Mon May 18 &ndash; Thu May 21</td>
+        <td>Loews Hollywood Hotel &middot; Los Angeles</td>
+        <td>823641TX019482</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: OPEN THREADS                                            -->
+<!-- ============================================================ -->
+<div id="tab-threads" class="tab-panel">
+  <div class="section-label">Email &amp; Slack &middot; Last 14 days</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th style="width:70px">Urgency</th>
+        <th>Subject</th>
+        <th style="width:180px">From</th>
+        <th style="width:90px">Waiting</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="font-size:1.1rem">&#128308;</td>
+        <td>RE: Platform Roadmap Deck &mdash; Sandra replied May 8, no response from Ryan</td>
+        <td>Sandra Park (Nexus Group)</td>
+        <td>6 days</td>
+      </tr>
+      <tr>
+        <td style="font-size:1.1rem">&#128308;</td>
+        <td>RE: 5/11/26 Fieldvision Weekly Update &mdash; Sandra asked for an updated org chart</td>
+        <td>Sandra Park (Nexus Group)</td>
+        <td>3 days</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="slack-note">Slack: No open threads found in #exec-leadership or #budget-ops in the last 7 days.</p>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: NEEDS PREP                                              -->
+<!-- ============================================================ -->
+<div id="tab-prep" class="tab-panel">
+  <div class="section-label">Multi-attendee meetings with no prep block found</div>
+  <div class="table-wrap"><table>
+    <thead>
+      <tr>
+        <th style="width:170px">Date / Time</th>
+        <th>Meeting</th>
+        <th style="width:70px">People</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Fri 5/15 &middot; 12:00 PM</td>
+        <td>Review Platform Technology Roadmap</td>
+        <td>14</td>
+      </tr>
+      <tr>
+        <td>Mon 5/18 &middot; 8:00 AM</td>
+        <td>Forrester Briefing: Competitive Analysis on Supply Chain Tech</td>
+        <td>8</td>
+      </tr>
+      <tr>
+        <td>Mon 5/18 &middot; 10:00 AM</td>
+        <td>Talent Acquisition Pod Sync</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>Mon 5/18 &middot; 11:00 AM</td>
+        <td>Customer Advisory Board Initiative: AI Update</td>
+        <td>9</td>
+      </tr>
+      <tr>
+        <td>Mon 5/18 &middot; 11:30 AM</td>
+        <td>Fieldvision &lt;&gt; Omni Logistics Monthly Alignment</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <td>Mon 5/18 &middot; 2:00 PM</td>
+        <td>All-Hands Planning Review</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>Tue 5/19 &middot; 12:00 PM</td>
+        <td>NexusTrack Cost Analysis: Review and Discussion<span class="conflict">&#9888; CONFLICT with *QBR at same time</span></td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>Tue 5/19 &middot; 1:00 PM</td>
+        <td>LeadTeam</td>
+        <td>13</td>
+      </tr>
+      <tr>
+        <td>Wed 5/20 &middot; 11:00 AM</td>
+        <td>Fieldvision Monthly Meeting<span class="conflict">&#9888; CONFLICT with Talent Sync at same time</span></td>
+        <td>19</td>
+      </tr>
+      <tr>
+        <td>Wed 5/20 &middot; 11:00 AM</td>
+        <td>Hiring Manager &lt;&gt; Talent Sync<span class="conflict">&#9888; CONFLICT with Fieldvision Monthly Meeting at same time</span></td>
+        <td>21</td>
+      </tr>
+      <tr>
+        <td>Wed 5/20 &middot; 3:00 PM</td>
+        <td>Interview: Michael Torres, VP of Engineering</td>
+        <td>4</td>
+      </tr>
+      <tr>
+        <td>Thu 5/21 &middot; 9:00 AM</td>
+        <td>Brainstorm Core Lite / Transactional Offering</td>
+        <td>7</td>
+      </tr>
+      <tr>
+        <td>Thu 5/21 &middot; 10:30 AM</td>
+        <td>Sandra &lt;&gt; Ryan Weekly Update</td>
+        <td>4</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- TAB: ROADMAP                                                  -->
+<!-- ============================================================ -->
+<div id="tab-roadmap" class="tab-panel">
+  <div class="section-label">What's coming to Exec Pulse</div>
+
+  <p class="roadmap-intro">This is an <strong>MVP</strong> built for the EA Rise AI Hackathon. The features below are planned for upcoming releases. Have a request? Send it to <a href="mailto:ashley@baton.io" style="color:var(--teal);font-weight:600;">ashley@baton.io</a>.</p>
+
+  <div class="roadmap-category">
+    <h3>Smarter Calendar</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">Back-to-Back Flag</div>
+        <div class="roadmap-card-desc">Automatically detect days with 3 or more consecutive meetings and surface them as a focus risk.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">Meeting Load Score</div>
+        <div class="roadmap-card-desc">A daily focus-time score showing how much unblocked thinking time your exec has each day.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">New Face Alert</div>
+        <div class="roadmap-card-desc">Flag first-time attendees your exec hasn't met before so you can prep context or a brief bio.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>Deeper Email Intelligence</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-soon">Coming soon</span>
+        <div class="roadmap-card-title">VIP Inbox Filter</div>
+        <div class="roadmap-card-desc">Define a list of VIP senders. Their threads always surface first, regardless of thread age.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Pending Approvals</div>
+        <div class="roadmap-card-desc">Detect emails explicitly requesting a decision, approval, or sign-off from your exec.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Decision Backlog</div>
+        <div class="roadmap-card-desc">Track decisions your exec has been asked to make that haven't received a clear yes/no yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>Meeting Prep</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Auto Prep Brief</div>
+        <div class="roadmap-card-desc">For meetings flagged as Needs Prep, generate a one-paragraph context brief from prior meeting notes and email threads.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Action Item Extraction</div>
+        <div class="roadmap-card-desc">Pull open action items assigned to your exec from recent meeting transcripts (Fathom, Granola, Otter).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-category">
+    <h3>EA Workload</h3>
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">Delegation Tracker</div>
+        <div class="roadmap-card-desc">Track tasks your exec delegated and flag ones with no follow-up confirmation after 5+ days.</div>
+      </div>
+      <div class="roadmap-card">
+        <span class="roadmap-tag tag-planned">Planned</span>
+        <div class="roadmap-card-title">EA To-Dos Tab</div>
+        <div class="roadmap-card-desc">A personal section just for the EA: outstanding tasks, pending logistics, and things to confirm before week's end.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="roadmap-cta">
+    <p>Built by Ashley Russell, People Ops at Baton &middot; This is an MVP. Feedback shapes what ships next.</p>
+    <p>Request a feature: <a href="mailto:ashley@baton.io">ashley@baton.io</a></p>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <p>Data from: Google Calendar &middot; Gmail &middot; Slack (#exec-leadership, #budget-ops) &middot; Generated May 14, 2026 at 4:08 PM PDT</p>
+</footer>
+
+<script>
+  function showTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+
+</body>
+</html>
