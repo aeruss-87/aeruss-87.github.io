@@ -149,6 +149,83 @@
     .roadmap-cta a { color: var(--seafoam); font-weight: 600; text-decoration: none; }
     .roadmap-cta a:hover { text-decoration: underline; }
 
+    /* GET STARTED TAB */
+    .gs-hero { margin-bottom: 32px; }
+    .gs-hero h2 { font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .gs-hero p { font-size: 14px; color: var(--text-muted); line-height: 1.7; max-width: 640px; }
+    .gs-feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .gs-feature-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .gs-feature-card .icon { font-size: 20px; margin-bottom: 8px; }
+    .gs-feature-card h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 3px; }
+    .gs-feature-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+    .gs-callout {
+      background: var(--teal-light);
+      border-left: 4px solid var(--teal);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px;
+      margin-bottom: 28px;
+      font-size: 13px;
+      color: var(--text-main);
+      line-height: 1.6;
+    }
+    .gs-callout strong { color: var(--teal-dark); }
+    .gs-steps { margin-bottom: 32px; }
+    .gs-step { display: flex; gap: 18px; margin-bottom: 24px; }
+    .gs-step-num {
+      flex-shrink: 0;
+      width: 30px; height: 30px;
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 50%;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 2px;
+    }
+    .gs-step-body h3 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 5px; }
+    .gs-step-body p { font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px; }
+    .gs-step-body p:last-child { margin-bottom: 0; }
+    .gs-code {
+      background: var(--navy);
+      color: var(--seafoam);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 8px 0;
+      overflow-x: auto;
+    }
+    .gs-download-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .btn-dl {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      padding: 9px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-dl:hover { background: var(--teal-dark); }
+    .gs-note { font-size: 12px; color: var(--text-muted); }
+
     @media (max-width: 640px) {
       header { padding: 20px 16px 0; }
       main { padding: 20px 16px; }
@@ -165,7 +242,8 @@
     <p>May 14 &ndash; May 21, 2026 &middot; Generated May 14, 2026</p>
   </div>
   <div class="tab-nav">
-    <button class="tab-btn active" onclick="showTab('week', this)">This Week <span class="badge">35</span></button>
+    <button class="tab-btn active" onclick="showTab('start', this)">Get Started</button>
+    <button class="tab-btn" onclick="showTab('week', this)">This Week <span class="badge">35</span></button>
     <button class="tab-btn" onclick="showTab('travel', this)">Travel <span class="badge">3</span></button>
     <button class="tab-btn" onclick="showTab('threads', this)">Open Threads <span class="badge badge-red">2</span></button>
     <button class="tab-btn" onclick="showTab('prep', this)">Needs Prep <span class="badge badge-red">13</span></button>
@@ -176,9 +254,102 @@
 <main>
 
 <!-- ============================================================ -->
+<!-- TAB: GET STARTED                                             -->
+<!-- ============================================================ -->
+<div id="tab-start" class="tab-panel active">
+  <div class="section-label">What is Exec Pulse?</div>
+
+  <div class="gs-hero">
+    <h2>A weekly dashboard for executive assistants, built with Claude</h2>
+    <p>Exec Pulse is a Claude Code skill that reads your executive's calendar, email, and Slack, then generates a self-contained HTML dashboard you can open in any browser. This is a demo built for the EA Rise AI Hackathon using anonymized data. The tabs above show what the real output looks like.</p>
+  </div>
+
+  <div class="section-label">What it generates</div>
+  <div class="gs-feature-grid">
+    <div class="gs-feature-card">
+      <div class="icon">&#128197;</div>
+      <h3>This Week</h3>
+      <p>Every meeting, chronological, with attendee count, location, and flagged scheduling conflicts.</p>
+    </div>
+    <div class="gs-feature-card">
+      <div class="icon">&#9992;&#65039;</div>
+      <h3>Travel</h3>
+      <p>Flights and hotels pulled from the calendar by flight number or confirmation code.</p>
+    </div>
+    <div class="gs-feature-card">
+      <div class="icon">&#128172;</div>
+      <h3>Open Threads</h3>
+      <p>Email and Slack threads your exec was asked something in and hasn't replied to yet.</p>
+    </div>
+    <div class="gs-feature-card">
+      <div class="icon">&#128203;</div>
+      <h3>Needs Prep</h3>
+      <p>Multi-attendee meetings with no prep block in the 48 hours before them.</p>
+    </div>
+  </div>
+
+  <div class="gs-callout">
+    <strong>Works with whatever tools you have.</strong> On first run, the skill walks you through a short setup: your exec's name and email, which calendar and email systems you use, whether Slack is connected, which channels to monitor, and how far ahead to look. Your answers are saved locally so every future run is one command. The skill only uses the tools you confirm are connected.
+  </div>
+
+  <div class="section-label">How to install</div>
+  <div class="gs-steps">
+
+    <div class="gs-step">
+      <div class="gs-step-num">1</div>
+      <div class="gs-step-body">
+        <h3>Download Claude Code</h3>
+        <p>Install the Claude desktop app or CLI if you haven't already. Available at claude.ai/download or via npm.</p>
+        <div class="gs-code">npm install -g @anthropic-ai/claude-code</div>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">2</div>
+      <div class="gs-step-body">
+        <h3>Download the skill file</h3>
+        <p>Open Terminal and run this command. It creates the skills folder and installs SKILL.md in the right place.</p>
+        <div class="gs-code">mkdir -p ~/.claude/skills/ea-weekly-pulse && curl -o ~/.claude/skills/ea-weekly-pulse/SKILL.md https://aeruss-87.github.io/ea-pulse-setup/SKILL.md</div>
+        <div class="gs-download-row">
+          <a class="btn-dl" href="https://aeruss-87.github.io/ea-pulse-setup/SKILL.md" download="SKILL.md">Download SKILL.md</a>
+          <span class="gs-note">Or use the command above to install it automatically.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">3</div>
+      <div class="gs-step-body">
+        <h3>Connect your MCP servers</h3>
+        <p>In Claude Code settings, connect the MCPs for the tools you use. Google Calendar is required. Gmail and Slack are optional but unlock the Open Threads section.</p>
+      </div>
+    </div>
+
+    <div class="gs-step">
+      <div class="gs-step-num">4</div>
+      <div class="gs-step-body">
+        <h3>Run the skill</h3>
+        <p>Open Claude Code and type:</p>
+        <div class="gs-code">/ea-weekly-pulse</div>
+        <p>Claude walks you through 8 setup questions on first run, then saves your config. After that, one command generates your dashboard and saves it to your Desktop.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;">
+    <div>
+      <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:3px;">Questions or feature requests?</div>
+      <div style="font-size:13px;color:var(--text-muted);">Built by Ashley Russell, People Ops at Baton. This is an MVP — feedback shapes what ships next.</div>
+    </div>
+    <a class="btn-dl" href="mailto:ashley@baton.io">ashley@baton.io</a>
+  </div>
+</div>
+
+<!-- ============================================================ -->
 <!-- TAB: THIS WEEK                                               -->
 <!-- ============================================================ -->
-<div id="tab-week" class="tab-panel active">
+<div id="tab-week" class="tab-panel">
   <div class="section-label">Calendar &middot; May 14 &ndash; May 21</div>
   <div class="table-wrap"><table>
     <thead>
