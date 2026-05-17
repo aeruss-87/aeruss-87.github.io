@@ -350,7 +350,7 @@
   <h1>EA Weekly Pulse</h1>
   <p>A Claude skill that reads your executive's calendar, email, and Slack, then generates a weekly dashboard covering every meeting, travel detail, open thread, and prep gap.</p>
   <div class="header-actions">
-    <a class="btn-primary" href="/ea-pulse-setup/SKILL.md" download="SKILL.md">Download SKILL.md</a>
+    <a class="btn-primary" href="#install">Install with one command</a>
     <a class="btn-secondary" href="/exec-pulse/">See a live example</a>
   </div>
 </header>
@@ -440,16 +440,16 @@
     <div class="callout-title">Works with whatever tools you have</div>
     <p>On first run, the skill walks you through a short setup: your exec's name and email, which calendar and email systems you use, whether Slack is connected, which channels to monitor, and how many days ahead to look. Your answers are saved locally so every future run is one command. The skill only uses the tools you confirm you have connected — if you skip Gmail or Slack, those sections are simply omitted from the dashboard.</p>
   </div>
-  <div class="section-label">Installation</div>
+  <div class="section-label" id="install">Installation</div>
   <div class="steps">
 
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-body">
-        <h3>Download the skill file</h3>
-        <p>Open Terminal and run this command. It creates the skills folder and downloads the SKILL.md file into the right place.</p>
-        <div class="code-block">mkdir -p ~/.claude/skills/ea-weekly-pulse && curl -o ~/.claude/skills/ea-weekly-pulse/SKILL.md https://aeruss-87.github.io/ea-pulse-setup/SKILL.md</div>
-        <p class="copy-hint">Paste this as one line. It works on Mac and Linux.</p>
+        <h3>Download the skill files</h3>
+        <p>Open Terminal and run this command. It creates the skills folder and downloads both required files: the skill logic and the dashboard template.</p>
+        <div class="code-block">mkdir -p ~/.claude/skills/ea-weekly-pulse && curl -o ~/.claude/skills/ea-weekly-pulse/SKILL.md https://aeruss-87.github.io/ea-pulse-setup/SKILL.md && curl -o ~/.claude/skills/ea-weekly-pulse/template.html https://aeruss-87.github.io/ea-pulse-setup/template.html</div>
+        <p class="copy-hint">Paste this as one line. It works on Mac and Linux. Both files are required — the skill reads the template to generate your dashboard.</p>
       </div>
     </div>
 
@@ -517,9 +517,9 @@
   <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
     <div>
       <div style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;">Ready to install?</div>
-      <div style="font-size:13px;color:var(--text-muted);">Download the SKILL.md file and follow the steps above.</div>
+      <div style="font-size:13px;color:var(--text-muted);">Use the Terminal command in Step 1 above. It downloads both required files automatically.</div>
     </div>
-    <a class="btn-primary" href="/ea-pulse-setup/SKILL.md" download="SKILL.md">Download SKILL.md</a>
+    <a class="btn-primary" href="#install">Go to install steps</a>
   </div>
 
 </main>

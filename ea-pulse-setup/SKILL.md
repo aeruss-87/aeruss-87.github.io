@@ -5,7 +5,7 @@ description: EA-agnostic weekly executive dashboard. Configures itself to any EA
 
 # EA Weekly Pulse
 
-You are an AI chief of staff for an executive assistant. Your job is to generate a comprehensive weekly dashboard covering the EA's executive. The output is a self-contained HTML file saved to the Desktop.
+You are an AI chief of staff for an executive assistant. Generate a weekly dashboard for the EA's executive and save it as a self-contained HTML file to the Desktop.
 
 Follow these steps in order. Do not skip steps.
 
@@ -13,329 +13,143 @@ Follow these steps in order. Do not skip steps.
 
 ## Step 1: Check for existing config
 
-Use the Bash tool to check: `cat ~/.claude/ea-pulse-config.json 2>/dev/null`
+Run: `cat ~/.claude/ea-pulse-config.json 2>/dev/null`
 
-- If it returns valid JSON with an `exec_name` field: load it, skip to **Step 3**.
-- If it returns an error or empty: proceed to **Step 2**.
+- Valid JSON with `exec_name` field: load it, skip to Step 3.
+- Empty or error: proceed to Step 2.
 
 ---
 
-## Step 2: Setup Interview (first run only)
+## Step 2: Setup interview (first run only)
 
-Say this to the user:
+Say:
+> "Welcome to EA Weekly Pulse. I'll ask you 8 quick questions to configure your dashboard. This only runs once — after setup, just type /ea-weekly-pulse and your dashboard generates automatically."
 
-> "Welcome to EA Weekly Pulse. I'll ask you 8 quick questions to configure your dashboard for your executive. This only runs once — after setup, just type /ea-weekly-pulse and your dashboard generates automatically."
+Ask ONE question at a time. Wait for the full answer before asking the next.
 
-Ask each question ONE AT A TIME. Wait for the user's full answer before asking the next. Do not present all questions at once.
+1. What is your executive's first name?
+2. What is your executive's email address?
+3. Which email system do you use? Gmail / Superhuman / Outlook / I don't manage their inbox
+4. Which calendar system? Google Calendar / Outlook Calendar / No direct access
+5. Meeting notes tool? Fathom / Granola / Otter / Notion / None
+6. Is Slack connected to your Claude? (yes/no)
+7. Which Slack channels to monitor? Comma-separated, e.g. #leadership, #budget-team. Leave blank to skip.
+8. How many days ahead should the dashboard look? (default: 7)
 
-**Q1:** "What is your executive's first name?"
-
-**Q2:** "What is your executive's email address? (I'll use this to find threads where they haven't responded.)"
-
-**Q3:** "Which email system do you use to manage their inbox?
-- Gmail (Google Workspace)
-- Superhuman
-- Outlook / Microsoft 365
-- I don't manage their inbox directly"
-
-**Q4:** "Which calendar system do you manage for them?
-- Google Calendar
-- Outlook Calendar
-- I don't have direct calendar access"
-
-**Q5:** "Do you use a meeting notes or transcript tool?
-- Fathom
-- Granola
-- Otter
-- Notion (we write notes there)
-- None"
-
-**Q6:** "Is Slack connected to your Claude? (yes or no)"
-
-**Q7:** "Which Slack channels should I check for threads your exec hasn't responded to? List the channel names separated by commas (e.g., #leadership, #budget-team). Leave blank to skip Slack thread tracking."
-
-**Q8:** "How many days out should the dashboard look for upcoming meetings? (default: 7 days)"
-
-After all 8 answers, save a config file using the Bash tool:
+Save config using the Bash tool:
 
 ```bash
 cat > ~/.claude/ea-pulse-config.json << 'ENDOFCONFIG'
 {
-  "exec_name": "[ANSWER_1]",
-  "exec_email": "[ANSWER_2]",
+  "exec_name": "[Q1]",
+  "exec_email": "[Q2]",
   "email_system": "[gmail|superhuman|outlook|none]",
   "calendar_system": "[google|outlook|none]",
   "notes_system": "[fathom|granola|otter|notion|none]",
   "slack_connected": [true|false],
   "slack_channels": ["[channel1]", "[channel2]"],
-  "lookahead_days": [ANSWER_8_NUMBER],
-  "configured_at": "[TODAY_DATE]"
+  "lookahead_days": [Q8_number],
+  "configured_at": "[YYYY-MM-DD]"
 }
 ENDOFCONFIG
 ```
 
-Fill in each bracket with the actual answer. Use today's date (YYYY-MM-DD) for `configured_at`.
-
-Tell the user: "Config saved. Building your first dashboard now..."
-
-Proceed to Step 3.
+Say: "Config saved. Building your first dashboard now..." then proceed to Step 3.
 
 ---
 
-## Step 3: Collect data from connected systems
+## Step 3: Collect data
 
-Read the config. Use ONLY the tools that match what the user said they have. Skip any section where the system is "none" or the tool is not available. Do not error out if a tool is unavailable — simply note "no data available" for that section and continue.
+Use ONLY tools matching the config. Skip any section where the system is "none" or the tool is unavailable. On failure, note "no data available" for that section and continue. Run all pulls in parallel.
 
-Run as many data pulls in parallel as possible for speed.
-
-**Note the date range:**
-- Upcoming meetings and prep gaps: today through `lookahead_days` from now
-- Travel: today through 21 days from now
+**Date ranges:**
+- Meetings and prep gaps: today through `lookahead_days`
+- Travel: today through 21 days out
 - Open threads: last 14 days
 
-### Calendar (if calendar_system is "google")
+### Calendar (google)
 
-Use `Google_Calendar__list_calendars` to find the exec's calendar (look for their name or email in the calendar list). Then:
+1. `Google_Calendar__list_calendars` — find exec's calendar by name or email.
+2. `Google_Calendar__list_events` — next `lookahead_days` days. **Return at most 30 events.**
+3. For each event with 3+ attendees: check for a prep block in the 48h before it (title contains: prep, review, pre-read, briefing, or "1:1 prep"). No prep block = flag as Needs Prep.
+4. Scan next 21 days for travel. Flag only if title contains a flight number pattern (e.g. "DL 688", "AA1234") or confirmation code (5–8 char alphanumeric after # or "Conf"). Do not flag on generic keywords like "hotel" or "travel" alone.
 
-1. `Google_Calendar__list_events` for the next `lookahead_days` days on that calendar.
-2. For each event with 3 or more attendees, check if there is a prep block anywhere in the 48 hours before it (look for events titled with "prep," "review," "pre-read," "briefing," or "1:1 prep").
-3. Flag any multi-attendee event with no prep block as **Needs Prep**.
-4. Separately, scan all events in the next 21 days for travel. Flag an event as travel ONLY if its title contains a flight number pattern (e.g., "DL 688", "AA1234", "UA 456" — two-letter airline code followed by digits) OR a confirmation number pattern (e.g., "Confirmation#", "Conf#", or a standalone alphanumeric code of 5-8 characters following a #). Do not flag events based on general keywords like "hotel" or "travel."
+### Email — Gmail
 
-### Email (if email_system is "gmail")
+`Gmail__search_threads`: query `to:[exec_email] OR from:[exec_email] newer_than:14d` — **limit to 15 results. Return subject, sender, and date only — do not fetch full thread bodies.**
+Flag threads where exec is last recipient with no reply from them. Sort oldest first.
 
-Use the Gmail MCP to:
-- `Gmail__search_threads` with query: `to:[exec_email] OR from:[exec_email] newer_than:14d` 
-- From the results, identify threads where the exec's email is the last recipient but no reply exists from them. These are open threads awaiting response.
-- Note the subject, sender, and how many days ago it was sent.
-- Sort by age, oldest first.
+### Email — Superhuman
 
-### Email (if email_system is "superhuman")
+`Superhuman_Mail__list_threads` — **limit to 15 results.** `Superhuman_Mail__get_read_status_feed` for opened-but-not-replied threads. Return subject, sender, days waiting only.
 
-Use the Superhuman MCP to:
-- `Superhuman_Mail__list_threads` to get recent threads
-- Look for threads where the exec is a recipient but hasn't replied in the last 14 days
-- Use `Superhuman_Mail__get_read_status_feed` to identify emails the exec has opened but not responded to
-- Note subject, sender, days waiting
+### Slack
 
-### Slack (if slack_connected is true and slack_channels is not empty)
-
-Use the Slack MCP to search each channel listed in `slack_channels`. Run all channel searches in parallel, one query per channel:
-- `in:[channel] after:[7 days ago]`
-
-From the results, surface only threads where the exec was mentioned or directly asked something and has not replied. Skip threads the exec already responded to. Note the channel, who asked, and what was asked.
-
-If `slack_channels` is empty or not set, skip this section entirely.
+For each channel in `slack_channels`, run in parallel — `slack_search_public` with query `in:[channel] after:[7 days ago]` — **limit to 10 results per channel.**
+Surface only threads where exec was mentioned or directly asked something and has not replied. Skip threads the exec already responded to.
+If `slack_channels` is empty, skip this section entirely.
 
 ---
 
-## Step 4: Synthesize the data into dashboard sections
+## Step 4: Synthesize
 
-Organize everything you collected into four clean sections:
+Organize into four sections:
 
-### Section 1: This Week
-All calendar events in the lookahead window.
-For each: title, date/time, attendee count, location (if any), prep status (prep found / no prep found).
-Sort chronologically.
+**This Week:** All events in lookahead window. Per event: title, date/time, attendee count, location, prep status. Sort chronologically.
 
-### Section 2: Travel
-All travel items found in calendar or travel system.
-For each: type (flight/hotel/car), date, details from the invite.
-If nothing found: display "No travel in the next 3 weeks."
+**Travel:** All flagged travel items. Per item: type, date, details. If none: "No travel in the next 3 weeks."
 
-### Section 3: Open Threads
-All email and Slack threads awaiting exec response.
-For each: subject/thread title, who it's from, how long it's been waiting.
-Urgency: 🔴 48h+ | 🟡 24-48h | 🟢 under 24h
-Sort by urgency (most overdue first).
+**Open Threads:** Email and Slack threads awaiting exec response. Per thread: subject, sender, days waiting. Urgency: 🔴 48h+ | 🟡 24–48h | 🟢 under 24h. Sort most overdue first.
 
-### Section 4: Needs Prep
-All multi-attendee meetings in the lookahead window with no prep block found.
-For each: meeting title, date/time, attendee count, why it flagged.
-Sort by date (soonest first).
+**Needs Prep:** Multi-attendee meetings with no prep block. Per meeting: title, date/time, attendee count. Sort soonest first.
 
 ---
 
 ## Step 5: Generate the HTML dashboard
 
-Generate a complete, self-contained HTML file using the data above. Use the template spec below exactly — do not use external libraries or CDN links. Everything must work offline.
+Read the template:
+```bash
+cat ~/.claude/skills/ea-weekly-pulse/template.html
+```
 
-Save it using the Bash tool:
+Replace each placeholder comment with generated content:
+
+| Placeholder | Replace with |
+|---|---|
+| `<!-- EXEC_NAME -->` | Executive's first name |
+| `<!-- DATE_RANGE -->` | e.g. "May 14 – May 21, 2026" |
+| `<!-- GENERATED_DATE -->` | Today's date |
+| `<!-- WEEK_COUNT -->` | Number of This Week events |
+| `<!-- TRAVEL_COUNT -->` | Number of travel items |
+| `<!-- THREADS_COUNT -->` | Number of open threads |
+| `<!-- PREP_COUNT -->` | Number of meetings needing prep |
+| `<!-- THIS_WEEK_ROWS -->` | `<tr>` rows for This Week table |
+| `<!-- TRAVEL_ROWS -->` | `<tr>` rows for Travel table |
+| `<!-- THREADS_ROWS -->` | `<tr>` rows for Open Threads table |
+| `<!-- PREP_ROWS -->` | `<tr>` rows for Needs Prep table |
+| `<!-- SLACK_NOTE -->` | Slack status note, or leave empty |
+| `<!-- DATA_SOURCES -->` | Comma-separated list of systems used |
+| `<!-- GENERATED_DATETIME -->` | Full date and time of generation |
+
+**Row patterns:**
+- This Week: `<tr><td class="day-label">Thu 5/14<span class="location-note">NYC</span></td><td>9:00 AM</td><td>Board Prep<span class="conflict">&#9888; CONFLICT with Investor Call at same time</span></td><td>12</td><td>Prep found</td></tr>`
+- Travel: `<tr><td>Mon 5/18</td><td>DL 688 SFO → JFK · Departs 7:30 AM</td><td>ABC123</td></tr>`
+- Open Threads: `<tr><td>&#128308;</td><td>Q2 Budget Sign-off</td><td>Brett Finance</td><td>3 days</td></tr>`
+- Needs Prep: `<tr><td>Thu 5/14 · 2:00 PM</td><td>Board Presentation</td><td>24</td></tr>`
+- Empty section: `<tr><td colspan="5" class="empty">Nothing here this week.</td></tr>`
+
+Save using the Bash tool:
 ```bash
 cat > ~/Desktop/ea-pulse-$(date +%Y-%m-%d).html << 'ENDOFHTML'
-[YOUR GENERATED HTML HERE]
+[COMPLETED HTML WITH ALL PLACEHOLDERS REPLACED]
 ENDOFHTML
 ```
 
-### HTML Template Spec
-
-Generate a self-contained HTML file with clickable tabs. No external links. Everything works offline.
-
-**Color palette (CSS variables):**
-```css
-:root {
-  --navy: #1a2332;
-  --navy-light: #253347;
-  --teal: #2d8b8b;
-  --teal-dark: #236f6f;
-  --teal-light: #c8eced;
-  --seafoam: #a8dadc;
-  --cream: #f1faee;
-  --text-main: #1a2332;
-  --text-muted: #4a6070;
-  --border: #c8eced;
-}
-```
-
-**Page structure:**
-```
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>[Exec Name] Weekly Pulse - [date]</title>
-  <style>/* all CSS inline — see spec below */</style>
-</head>
-<body>
-
-  <header>  <!-- navy background, tabs at bottom -->
-    <div class="header-top">
-      <h1>[Exec Name]'s Weekly Pulse</h1>
-      <p>[date range] · Generated [today]</p>
-    </div>
-    <div class="tab-nav">
-      <button class="tab-btn active" onclick="showTab('week', this)">This Week <span class="badge">N</span></button>
-      <button class="tab-btn" onclick="showTab('travel', this)">Travel <span class="badge">N</span></button>
-      <button class="tab-btn" onclick="showTab('threads', this)">Open Threads <span class="badge badge-red">N</span></button>
-      <button class="tab-btn" onclick="showTab('prep', this)">Needs Prep <span class="badge badge-red">N</span></button>
-    </div>
-  </header>
-
-  <main>
-
-    <div id="tab-week" class="tab-panel active">
-      <div class="section-label">Calendar · [date range]</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Day</th><th>Time</th><th>Meeting</th><th>People</th><th>Location / Notes</th></tr></thead>
-          <tbody><!-- one row per event --></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="tab-travel" class="tab-panel">
-      <div class="section-label">Flights & Hotels · Next 21 days</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Date</th><th>Details</th><th>Confirmation</th></tr></thead>
-          <tbody><!-- one row per travel item --></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div id="tab-threads" class="tab-panel">
-      <div class="section-label">Email & Slack · Last 14 days</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Urgency</th><th>Subject</th><th>From</th><th>Waiting</th></tr></thead>
-          <tbody><!-- one row per thread --></tbody>
-        </table>
-      </div>
-      <p class="slack-note"><!-- slack status note --></p>
-    </div>
-
-    <div id="tab-prep" class="tab-panel">
-      <div class="section-label">Multi-attendee meetings with no prep block found</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>Date / Time</th><th>Meeting</th><th>People</th></tr></thead>
-          <tbody><!-- one row per meeting --></tbody>
-        </table>
-      </div>
-    </div>
-
-  </main>
-
-  <footer>
-    <p>Data from: [list systems] · Generated [datetime]</p>
-  </footer>
-
-  <script>
-    function showTab(id, btn) {
-      document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
-      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-      document.getElementById('tab-' + id).classList.add('active');
-      btn.classList.add('active');
-    }
-  </script>
-
-</body>
-</html>
-```
-
-**Full CSS (inline in `<style>`):**
-```css
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--cream); color: var(--text-main); min-height: 100vh; }
-
-header { background: var(--navy); color: var(--cream); padding: 28px 40px 0; }
-.header-top { margin-bottom: 20px; }
-.header-top h1 { font-size: 22px; font-weight: 700; color: var(--cream); letter-spacing: -0.3px; }
-.header-top p { font-size: 13px; color: var(--seafoam); margin-top: 4px; }
-
-.tab-nav { display: flex; gap: 4px; }
-.tab-btn { padding: 10px 20px; font-size: 13px; font-weight: 500; color: var(--seafoam); cursor: pointer; border-radius: 8px 8px 0 0; border: none; background: transparent; font-family: inherit; transition: all 0.2s; white-space: nowrap; }
-.tab-btn:hover:not(.active) { color: var(--cream); background: var(--navy-light); }
-.tab-btn.active { background: var(--cream); color: var(--navy); font-weight: 700; }
-
-.badge { display: inline-block; background: var(--teal); color: #fff; border-radius: 10px; font-size: 0.7rem; padding: 1px 7px; margin-left: 5px; font-weight: 700; }
-.tab-btn.active .badge { background: var(--teal-dark); }
-.badge-red { background: #c0392b; }
-.tab-btn.active .badge-red { background: #c0392b; }
-
-main { padding: 32px 40px; max-width: 1100px; margin: 0 auto; }
-.tab-panel { display: none; }
-.tab-panel.active { display: block; }
-
-.section-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--teal); margin-bottom: 14px; }
-.table-wrap { background: #fff; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-
-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-th { background: var(--navy); color: var(--cream); text-align: left; padding: 10px 14px; font-weight: 600; white-space: nowrap; font-size: 12px; letter-spacing: 0.3px; }
-td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
-tr:nth-child(even) td { background: #f8fefe; }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--teal-light); transition: background 0.1s; }
-
-.day-label { font-weight: 700; white-space: nowrap; color: var(--navy); }
-.location-note { font-size: 0.75rem; color: var(--text-muted); font-style: italic; display: block; margin-top: 2px; }
-.conflict { color: #c0392b; font-size: 0.75rem; font-weight: 700; display: block; margin-top: 3px; }
-.slack-note { font-size: 0.8rem; color: var(--text-muted); font-style: italic; padding: 12px 14px; }
-.empty { font-style: italic; color: var(--text-muted); text-align: center; padding: 20px; }
-
-footer { padding: 16px 40px 24px; font-size: 0.75rem; color: var(--text-muted); text-align: center; }
-
-@media (max-width: 640px) {
-  header { padding: 20px 16px 0; }
-  main { padding: 20px 16px; }
-  .tab-btn { font-size: 0.75rem; padding: 8px 10px; }
-  th, td { padding: 7px 10px; font-size: 0.8rem; }
-}
-```
-
-**Row patterns:**
-- Day label cell: `<td class="day-label">Thu 5/14<span class="location-note">NYC</span></td>`
-- Conflict note: `<span class="conflict">&#9888; CONFLICT with [meeting] at same time</span>` inside the meeting name `<td>`
-- Urgency cells: `&#128308;` (red), `&#128993;` (yellow), `&#128994;` (green)
-- Empty section: `<tr><td colspan="N" class="empty">Nothing here this week.</td></tr>`
-
 ---
 
-## Step 6: Confirm and offer scheduling
+## Step 6: Confirm
 
-After saving the file, tell the user:
-
+Say:
 > "Your Exec Pulse dashboard is ready. Open this file in your browser:
 > `~/Desktop/ea-pulse-[date].html`
 >
@@ -343,16 +157,14 @@ After saving the file, tell the user:
 >
 > Want this to run automatically every Monday morning? Type `/schedule` and describe the task as: 'Run /ea-weekly-pulse every Monday at 8am'"
 
-If the user asks to re-run or refresh: skip Step 2, use the saved config, and regenerate the dashboard with fresh data.
-
-If the user wants to change their config: delete `~/.claude/ea-pulse-config.json` using the Bash tool and start from Step 2.
+To re-run: skip Step 2, use saved config, regenerate with fresh data.
+To reset config: `rm ~/.claude/ea-pulse-config.json` then run again.
 
 ---
 
 ## Error handling
 
-- If a calendar MCP call fails or returns no results: include the section header with "Unable to retrieve data from [system]. Check that your MCP connection is active." in small gray text.
-- If email search returns no threads: display the empty state.
-- If Slack is connected but no mentions found: display "No open Slack asks found this week."
-- Never fail silently — always tell the user which systems returned data and which didn't.
-- If NO MCPs are connected at all: tell the user which connections would unlock each dashboard section, and suggest they run `/update-config` to configure MCP servers.
+- MCP failure: include the section header with "Unable to retrieve data from [system]. Check that your MCP connection is active." in small gray text. Never skip the section silently.
+- Empty results: show the empty state row.
+- Slack connected but no mentions found: "No open Slack asks found this week."
+- No MCPs connected at all: list which connections unlock each section and suggest running `/update-config`.
