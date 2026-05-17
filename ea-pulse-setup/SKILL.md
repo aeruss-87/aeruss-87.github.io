@@ -71,8 +71,13 @@ Use ONLY tools matching the config. Skip any section where the system is "none" 
 
 1. `Google_Calendar__list_calendars` — find exec's calendar by name or email.
 2. `Google_Calendar__list_events` — next `lookahead_days` days. **Return at most 30 events.**
-3. For each event with 3+ attendees: check for a prep block in the 48h before it (title contains: prep, review, pre-read, briefing, or "1:1 prep"). No prep block = flag as Needs Prep.
-4. Scan next 21 days for travel. Flag only if title contains a flight number pattern (e.g. "DL 688", "AA1234") or confirmation code (5–8 char alphanumeric after # or "Conf"). Do not flag on generic keywords like "hotel" or "travel" alone.
+3. The result may be large. If it was saved to a file, extract only the fields you need using the Bash tool:
+```bash
+jq -r '.events[] | [.summary, (.start.dateTime // .start.date), (.attendees | length), (.location // "")] | @tsv' < [path-to-saved-file]
+```
+Work from this compact TSV output — do not read the raw JSON file directly.
+4. For each event with 3+ attendees: check for a prep block in the 48h before it (title contains: prep, review, pre-read, briefing, or "1:1 prep"). No prep block = flag as Needs Prep.
+5. Scan for travel. Flag only if title contains a flight number pattern (e.g. "DL 688", "AA1234") or confirmation code (5–8 char alphanumeric after # or "Conf"). Do not flag on generic keywords like "hotel" or "travel" alone.
 
 ### Email — Gmail
 
