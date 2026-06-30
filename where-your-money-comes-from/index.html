@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where Your Money Comes From - Baton / Ryder Parental Leave</title>
+<style>
+  :root { --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeedeb; --text: #1a1a1a; --text2: #6b6b68; --text3: #9a9a97; --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.2); --info-bg: #e6f1fb; --info-text: #185fa5; --warn-bg: #faeeda; --warn-text: #854f0b; --danger-bg: #fcebeb; --danger-text: #a32d2d; --chart-bg: #fafaf8; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1a1a1a; --bg2: #2c2c2a; --bg3: #3a3a38; --text: #e8e8e5; --text2: #a0a09d; --text3: #707070; --border: rgba(255,255,255,0.12); --border2: rgba(255,255,255,0.2); --info-bg: #0c447c; --info-text: #b5d4f4; --warn-bg: #633806; --warn-text: #faeeda; --danger-bg: #501313; --danger-text: #f7c1c1; --chart-bg: #222220; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 1060px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  h2 { font-size: 18px; font-weight: 500; margin: 2rem 0 1rem; }
+  .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 1.5rem; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tabs button { padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); transition: all .15s; font-family: inherit; }
+  .tabs button.active { background: var(--info-bg); color: var(--info-text); border-color: transparent; }
+  .tabs.small button { padding: 6px 14px; font-size: 12px; }
+  .tabs.small button.active { background: var(--bg2); color: var(--text); }
+  .salary-input { display: flex; align-items: center; gap: 8px; background: var(--bg2); border-radius: 8px; padding: 6px 14px; }
+  .salary-input label { font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .salary-input input[type="number"] { width: 100px; border: 1px solid var(--border2); border-radius: 4px; padding: 4px 8px; font-size: 13px; font-family: inherit; background: var(--bg); color: var(--text); }
+  .salary-input input[type="range"] { width: 120px; accent-color: var(--info-text); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 1.5rem; font-size: 12px; color: var(--text2); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Chart */
+  .chart-container { background: var(--chart-bg); border-radius: 12px; padding: 24px 24px 12px; border: 0.5px solid var(--border); margin-bottom: 1.5rem; overflow-x: auto; }
+  .chart-inner { min-width: 920px; }
+  .phase-bar { display: flex; margin-bottom: 16px; height: 32px; border-radius: 6px; overflow: hidden; gap: 2px; }
+  .phase-segment { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 8px; border-radius: 4px; }
+  .chart-area { position: relative; height: 380px; display: flex; align-items: flex-end; gap: 2px; }
+  .y-axis { position: absolute; left: 0; top: 0; bottom: 36px; width: 40px; display: flex; flex-direction: column; justify-content: space-between; }
+  .y-label { font-size: 10px; color: var(--text3); text-align: right; transform: translateY(5px); }
+  .bars-area { display: flex; align-items: flex-end; gap: 3px; flex: 1; margin-left: 44px; height: 100%; position: relative; padding-bottom: 32px; padding-top: 28px; }
+  .ref-line { position: absolute; left: 0; right: 0; border-top: 1.5px dashed var(--border2); z-index: 1; pointer-events: none; }
+  .ref-line span { position: absolute; right: 0; top: -16px; font-size: 10px; color: var(--text3); }
+  .bar-col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; position: relative; min-width: 36px; cursor: pointer; z-index: 2; }
+  .bar-col:hover { filter: brightness(1.08); }
+  .bar-seg { width: 100%; border-radius: 2px 2px 0 0; transition: height 0.3s ease; position: relative; min-height: 0; }
+  .bar-seg:first-child { border-radius: 3px 3px 0 0; }
+  .bar-pct { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); font-size: 11px; font-weight: 600; color: var(--text); white-space: nowrap; z-index: 3; }
+  .bar-week { text-align: center; font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.3; }
+  .bar-week .wk-num { font-weight: 500; }
+  .cliff-marker { position: absolute; top: -22px; left: 50%; transform: translateX(-50%); background: var(--danger-bg); color: var(--danger-text); font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; white-space: nowrap; z-index: 5; }
+  .cliff-marker::after { content: ''; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--danger-bg); }
+
+  /* Tooltip */
+  .tooltip { display: none; position: fixed; background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 12px 16px; font-size: 12px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.15); max-width: 280px; pointer-events: none; }
+  .tooltip.show { display: block; }
+  .tooltip-title { font-weight: 600; margin-bottom: 6px; font-size: 13px; }
+  .tooltip-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 2px 0; }
+  .tooltip-row .src { display: flex; align-items: center; gap: 6px; }
+  .tooltip-row .dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+  .tooltip-row .amt { font-weight: 500; font-variant-numeric: tabular-nums; }
+  .tooltip-total { border-top: 1px solid var(--border); margin-top: 4px; padding-top: 4px; font-weight: 600; display: flex; justify-content: space-between; }
+
+  /* Summary */
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 1.5rem 0; }
+  .summary-card { background: var(--bg2); border-radius: 8px; padding: 14px 16px; }
+  .summary-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 500; }
+  .summary-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .callout { font-size: 13px; color: var(--text2); line-height: 1.7; padding: 14px 18px; background: var(--bg2); border-radius: 8px; margin-top: 1rem; }
+  .callout strong { color: var(--text); }
+  .callout-warn { background: var(--warn-bg); color: var(--warn-text); }
+  .callout-warn strong { color: var(--warn-text); }
+  .callout-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .callout-danger strong { color: var(--danger-text); }
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text3); }
+  @media (max-width: 700px) { .summary-grid { grid-template-columns: 1fr 1fr; } body { padding: 1rem; } }
+  @media (max-width: 480px) { .summary-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Where your money comes from</h1>
+<p class="subtitle">Week-by-week income breakdown during parental leave. Baton / Ryder employees in California.</p>
+
+<div class="controls">
+  <div class="tabs" id="scenario-tabs">
+    <button class="active" onclick="setScenario('vaginal')">Vaginal</button>
+    <button onclick="setScenario('csection')">C-section</button>
+  </div>
+  <div class="tabs small" id="tenure-tabs">
+    <button onclick="setTenure('under1')">Under 1 year</button>
+    <button class="active" onclick="setTenure('over1')">1+ year at Ryder</button>
+  </div>
+  <div class="tabs small" id="sf-tabs">
+    <button class="active" onclick="setSF(false)">Outside SF</button>
+    <button onclick="setSF(true)">SF resident</button>
+  </div>
+  <div class="tabs small" id="prebirth-tabs">
+    <button class="active" onclick="setPreBirthSTD(false)">Standard</button>
+    <button onclick="setPreBirthSTD(true)">Pre-birth STD (assumed)</button>
+  </div>
+  <div class="salary-input">
+    <label>Annual salary</label>
+    <span style="font-size:13px;color:var(--text)">$</span>
+    <input type="number" id="salary-num" value="120000" min="30000" max="500000" step="5000" onchange="setSalary(this.value)">
+    <input type="range" id="salary-range" min="30000" max="400000" step="5000" value="120000" oninput="setSalary(this.value)">
+  </div>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<div class="chart-container">
+  <div class="chart-inner">
+    <div id="phase-bar" class="phase-bar"></div>
+    <div class="chart-area">
+      <div id="bars-area" class="bars-area"></div>
+    </div>
+  </div>
+</div>
+
+<div class="summary-grid" id="summary"></div>
+<div id="insights"></div>
+
+<div class="footer">
+  This tool is a planning estimate, not a benefits determination. CA SDI/PFL rates reflect 2026 SB 951 tiers ($1,765/wk cap). Ryder STD rates per Lincoln Financial policy (general benefit: 5 months; maternity: 12 weeks). SF PPLO per Ryder HR 03.32 POL. Baton top-up per Baton Handbook parental leave policy (12 months eligibility, 12 weeks birthing parent). "Pre-birth STD (assumed)" scenario models an unconfirmed assumption: that pre-delivery disability is classified under Ryder's general STD benefit as a separate claim from the maternity STD benefit. Confirm all details with your People Ops team, Ryder HR, and Lincoln Financial.<br>
+  Companion to: Maternity Leave Timeline Guide | April 2026
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+let scenario = 'vaginal', tenure = 'over1', sfResident = false, salary = 120000, preBirthSTD = false;
+
+const COLORS = {
+  'Pre-birth STD': '#D4A5D6',
+  'Ryder STD': '#ED93B1',
+  'CA SDI': '#FAC775',
+  'CA PFL': '#F0997B',
+  'SF PPLO': '#64C8C8',
+  'Baton top-up': '#97C459',
+  'Gap': '#B4B2A9'
+};
+const TEXT_COLORS = {
+  'Pre-birth STD': '#3B1A3D',
+  'Ryder STD': '#4B1528',
+  'CA SDI': '#412402',
+  'CA PFL': '#4A1B0C',
+  'SF PPLO': '#0A3D3D',
+  'Baton top-up': '#173404',
+  'Gap': '#2C2C2A'
+};
+
+function setScenario(s) {
+  scenario = s;
+  document.querySelectorAll('#scenario-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&s==='vaginal')||(i===1&&s==='csection')));
+  render();
+}
+function setTenure(t) {
+  tenure = t;
+  document.querySelectorAll('#tenure-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&t==='under1')||(i===1&&t==='over1')));
+  render();
+}
+function setSF(v) {
+  sfResident = v;
+  document.querySelectorAll('#sf-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&!v)||(i===1&&v)));
+  render();
+}
+function setSalary(v) {
+  salary = Math.max(30000, Math.min(500000, parseInt(v) || 120000));
+  document.getElementById('salary-num').value = salary;
+  document.getElementById('salary-range').value = Math.min(salary, 400000);
+  render();
+}
+function setPreBirthSTD(v) {
+  preBirthSTD = v;
+  document.querySelectorAll('#prebirth-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&!v)||(i===1&&v)));
+  render();
+}
+
+function fmt$(n) { return '$' + Math.round(n).toLocaleString(); }
+function fmtPct(n) { return Math.round(n) + '%'; }
+
+function computeWeeks() {
+  const weeklySalary = salary / 52;
+  const preWks = 4;
+  const disWks = scenario === 'vaginal' ? 6 : 8;
+  const totalDis = preWks + disWks;
+  const bondWks = 8;
+  const stdRate = tenure === 'under1' ? 0.80 : 1.00;
+  const hasBatonTopup = tenure === 'over1';
+  const batonBondingLimit = 12; // Baton's 12-wk parental leave (separate bucket from STD)
+
+  // Pre-birth STD approved: maternity STD 12-wk clock starts at birth, not leave start.
+  // Pre-delivery weeks use the general STD benefit (separate claim).
+  const effectiveStdMax = preBirthSTD ? preWks + 12 : 12;
+  // Strategic PFL delay: file PFL only after STD exhausts to maximize total coverage
+  const pflStart = preBirthSTD ? effectiveStdMax + 1 : totalDis + 1;
+  const pflEnd = pflStart + bondWks - 1;
+
+  // SDI/PFL rate: 90% if salary < ~$76,440, else 70%
+  const stateRate = (salary < 76440) ? 0.90 : 0.70;
+  const SDI_CAP = 1765;
+  const PFL_CAP = 1765;
+
+  const weeks = [];
+  const showWeeks = pflEnd + 3; // show a few unpaid weeks after PFL ends
+
+  for (let w = 1; w <= showWeeks; w++) {
+    const sources = {};
+    let phase, phaseShort;
+
+    if (w <= preWks) {
+      phase = 'Pre-delivery disability';
+      phaseShort = 'Pre';
+    } else if (w <= totalDis) {
+      phase = 'Post-delivery disability';
+      phaseShort = 'Recovery';
+    } else if (w <= pflEnd) {
+      phase = 'Bonding';
+      phaseShort = 'Bonding';
+    } else {
+      phase = 'Extended leave';
+      phaseShort = 'Unpaid';
+    }
+
+    // Which programs are active this week?
+    const stdActive = w <= effectiveStdMax;
+    const sdiActive = w <= totalDis;                      // SDI: disability weeks only
+    const pflActive = w >= pflStart && w <= pflEnd;       // PFL: bonding weeks (possibly delayed)
+    const bondWeek = w > totalDis ? w - totalDis : 0;     // which bonding week (1-indexed)
+
+    if (stdActive && !pflActive) {
+      // STD-covered weeks: disability, or STD-covered bonding (when PFL is strategically delayed)
+      const isPreBirthClaim = preBirthSTD && w <= preWks;
+      const stdPay = weeklySalary * stdRate;
+      const sdiPay = sdiActive ? Math.min(weeklySalary * stateRate, SDI_CAP) : 0;
+
+      if (stdPay >= sdiPay) {
+        sources[isPreBirthClaim ? 'Pre-birth STD' : 'Ryder STD'] = stdPay;
+      } else {
+        sources['CA SDI'] = sdiPay;
+      }
+
+      // Baton top-up (check bonding limit if we're in bonding phase)
+      if (hasBatonTopup && (bondWeek === 0 || bondWeek <= batonBondingLimit)) {
+        const paid = Math.max(stdPay, sdiPay);
+        const topup = Math.max(0, weeklySalary - paid);
+        if (topup > 0.50) sources['Baton top-up'] = topup;
+      }
+    } else if (stdActive && pflActive) {
+      // STD and PFL overlap (rare in preBirthSTD mode, common in standard mode)
+      const stdPay = weeklySalary * stdRate;
+      const pflPay = Math.min(weeklySalary * stateRate, PFL_CAP);
+      if (stdPay >= pflPay) {
+        sources['Ryder STD'] = stdPay;
+      } else {
+        sources['CA PFL'] = pflPay;
+      }
+      if (hasBatonTopup && bondWeek <= batonBondingLimit) {
+        const paid = Math.max(stdPay, pflPay);
+        const topup = Math.max(0, weeklySalary - paid);
+        if (topup > 0.50) sources['Baton top-up'] = topup;
+      } else if (sfResident) {
+        const paid = Math.max(stdPay, pflPay);
+        const pplo = Math.max(0, weeklySalary - paid);
+        if (pplo > 0.50) sources['SF PPLO'] = pplo;
+      }
+    } else if (pflActive) {
+      // Pure PFL bonding (STD exhausted)
+      const pflPay = Math.min(weeklySalary * stateRate, PFL_CAP);
+      sources['CA PFL'] = pflPay;
+
+      // SF PPLO: tops PFL up to 100%
+      if (sfResident) {
+        const pplo = Math.max(0, weeklySalary - pflPay);
+        if (pplo > 0.50) sources['SF PPLO'] = pplo;
+      }
+
+      // Baton top-up during bonding
+      if (hasBatonTopup && bondWeek <= batonBondingLimit) {
+        const alreadyCovered = pflPay + (sources['SF PPLO'] || 0);
+        const topup = Math.max(0, weeklySalary - alreadyCovered);
+        if (topup > 0.50) sources['Baton top-up'] = topup;
+      }
+    }
+    // Extended leave (beyond PFL): no sources
+
+    const totalPaid = Object.values(sources).reduce((a, b) => a + b, 0);
+    const gap = Math.max(0, weeklySalary - totalPaid);
+    if (gap > 0.50) sources['Gap'] = gap;
+
+    // Relative week label: pre-delivery weeks are negative, birth = week 0
+    const relNum = w <= preWks ? -(preWks - w + 1) : (w - preWks - 1);
+    const relLabel = relNum < 0 ? String(relNum) : relNum === 0 ? '0' : '+' + relNum;
+
+    weeks.push({
+      week: w,
+      relLabel,
+      phase,
+      phaseShort,
+      sources,
+      totalPaid,
+      weeklySalary,
+      pct: Math.min(100, (totalPaid / weeklySalary) * 100)
+    });
+  }
+
+  return weeks;
+}
+
+function render() {
+  const weeks = computeWeeks();
+  const weeklySalary = salary / 52;
+  const preWks = 4;
+  const disWks = scenario === 'vaginal' ? 6 : 8;
+  const totalDis = preWks + disWks;
+  const bondWks = 8;
+  const hasBatonTopup = tenure === 'over1';
+  const effectiveStdMax = preBirthSTD ? preWks + 12 : 12;
+  const pflStart = preBirthSTD ? effectiveStdMax + 1 : totalDis + 1;
+  const pflEnd = pflStart + bondWks - 1;
+  const totalCoveredWeeks = pflEnd;
+
+  // Determine which sources are active
+  const activeSources = new Set();
+  weeks.forEach(w => Object.keys(w.sources).forEach(s => activeSources.add(s)));
+
+  // Legend
+  const sourceOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+  let legendHtml = '';
+  sourceOrder.forEach(s => {
+    if (activeSources.has(s)) {
+      legendHtml += `<div class="legend-item"><div class="legend-swatch" style="background:${COLORS[s]}"></div>${s}</div>`;
+    }
+  });
+  document.getElementById('legend').innerHTML = legendHtml;
+
+  // Phase bar
+  const phases = [];
+  let currentPhase = '', startIdx = 0;
+  weeks.forEach((w, i) => {
+    if (w.phase !== currentPhase) {
+      if (currentPhase) phases.push({ phase: currentPhase, start: startIdx, end: i });
+      currentPhase = w.phase;
+      startIdx = i;
+    }
+  });
+  if (currentPhase) phases.push({ phase: currentPhase, start: startIdx, end: weeks.length });
+
+  const phaseColors = {
+    'Pre-delivery disability': '#5DCAA5',
+    'Post-delivery disability': '#85B7EB',
+    'Bonding': '#F0997B',
+    'Extended leave': '#B4B2A9'
+  };
+
+  let phaseHtml = '';
+  phases.forEach(p => {
+    const span = p.end - p.start;
+    const shortLabel = p.phase === 'Pre-delivery disability' ? 'Pre'
+      : p.phase === 'Post-delivery disability' ? 'Recovery'
+      : p.phase === 'Bonding' ? 'Bonding'
+      : 'Unpaid';
+    const fullLabel = p.phase === 'Pre-delivery disability' ? `Pre-delivery (${span} wks)`
+      : p.phase === 'Post-delivery disability' ? `Recovery (${span} wks)`
+      : p.phase === 'Bonding' ? `Bonding (${span} wks)`
+      : `Unpaid`;
+    // Use short label for narrow segments (3 or fewer weeks)
+    const label = span <= 3 ? shortLabel : fullLabel;
+    phaseHtml += `<div class="phase-segment" style="flex:${span};background:${phaseColors[p.phase]}">${label}</div>`;
+  });
+  document.getElementById('phase-bar').innerHTML = phaseHtml;
+
+  // Bars
+  const barsArea = document.getElementById('bars-area');
+  const barMaxH = 280; // px for 100% salary
+  const bottomPad = 32; // matches padding-bottom of bars-area
+
+  // Reference lines
+  let barsHtml = '';
+  barsHtml += `<div class="ref-line" style="bottom:${barMaxH + bottomPad}px"><span>100% salary (${fmt$(weeklySalary)}/wk)</span></div>`;
+  barsHtml += `<div class="ref-line" style="bottom:${Math.round(barMaxH * 0.7) + bottomPad}px;border-top-style:dotted;opacity:0.5"><span style="right:auto;left:0">70%</span></div>`;
+  if (tenure === 'under1') {
+    barsHtml += `<div class="ref-line" style="bottom:${Math.round(barMaxH * 0.8) + bottomPad}px;border-top-style:dotted;opacity:0.5"><span style="right:auto;left:0">80%</span></div>`;
+  }
+
+  // Detect cliffs
+  const cliffs = [];
+  for (let i = 1; i < weeks.length; i++) {
+    const drop = weeks[i-1].pct - weeks[i].pct;
+    if (drop >= 10) {
+      cliffs.push({ idx: i, from: weeks[i-1].pct, to: weeks[i].pct });
+    }
+  }
+
+  weeks.forEach((w, i) => {
+    let segs = '';
+
+    // Build segments bottom-up (primary source at bottom)
+    const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+    renderOrder.forEach(src => {
+      const amt = w.sources[src] || 0;
+      if (amt < 0.50) return;
+      const pct = amt / w.weeklySalary;
+      const h = Math.max(1, Math.round(pct * barMaxH));
+      segs += `<div class="bar-seg" style="height:${h}px;background:${COLORS[src]}" data-src="${src}" data-amt="${amt.toFixed(2)}"></div>`;
+    });
+
+    // Cliff marker (only on the bar where the drop happens)
+    let cliffHtml = '';
+    const cliff = cliffs.find(c => c.idx === i);
+    if (cliff) {
+      const dropAmt = Math.round(cliff.from - cliff.to);
+      cliffHtml = `<div class="cliff-marker">${dropAmt > 50 ? 'Unpaid' : '↓' + dropAmt + '%'}</div>`;
+    }
+
+    // Only show % label when it CHANGES from the previous week, or on first/last bar
+    const prevPct = i > 0 ? Math.round(weeks[i-1].pct) : -1;
+    const currPct = Math.round(w.pct);
+    const nextPct = i < weeks.length - 1 ? Math.round(weeks[i+1].pct) : -1;
+    const showLabel = (i === 0) || (currPct !== prevPct) || (i === weeks.length - 1);
+
+    const pctLabel = w.pct >= 99.5 ? '100%' : fmtPct(w.pct);
+    const labelColor = w.pct < 50 ? 'var(--danger-text)' : w.pct < 90 ? 'var(--warn-text)' : 'var(--text)';
+
+    barsHtml += `<div class="bar-col" data-week="${i}" onmouseenter="showTip(event,${i})" onmouseleave="hideTip()">`;
+    if (cliff) {
+      barsHtml += cliffHtml;
+    } else if (showLabel) {
+      barsHtml += `<div class="bar-pct" style="color:${labelColor}">${pctLabel}</div>`;
+    }
+    barsHtml += segs;
+    barsHtml += `<div class="bar-week"><span class="wk-num">${w.relLabel}</span></div>`;
+    barsHtml += `</div>`;
+  });
+
+  barsArea.innerHTML = barsHtml;
+
+  // Summary cards
+  const totalEarned = weeks.reduce((a, w) => a + w.totalPaid, 0);
+  const totalFull = weeks.length * weeklySalary;
+  const totalGap = totalFull - totalEarned;
+  const weeksAt100 = weeks.filter(w => w.pct >= 99.5).length;
+  const weeksPartial = weeks.filter(w => w.pct > 0.5 && w.pct < 99.5).length;
+  const weeksUnpaid = weeks.filter(w => w.pct < 0.5).length;
+  const avgPct = weeks.length > 0 ? weeks.reduce((a, w) => a + w.pct, 0) / weeks.length : 0;
+
+  // Find first cliff week
+  const firstCliff = cliffs.length > 0 ? cliffs[0] : null;
+
+  let sumHtml = '';
+  sumHtml += `<div class="summary-card"><div class="summary-label">Total leave earnings</div><div class="summary-value">${fmt$(totalEarned)}</div><div class="summary-sub">Over ${weeks.length} weeks of leave</div></div>`;
+  sumHtml += `<div class="summary-card"><div class="summary-label">Gap to full salary</div><div class="summary-value" style="color:${totalGap > 1000 ? 'var(--danger-text)' : 'var(--text)'}">${fmt$(totalGap)}</div><div class="summary-sub">${fmtPct(100 - avgPct)} average weekly gap</div></div>`;
+  sumHtml += `<div class="summary-card"><div class="summary-label">Weeks at 100%</div><div class="summary-value">${weeksAt100}</div><div class="summary-sub">${weeksPartial} partial + ${weeksUnpaid} unpaid</div></div>`;
+
+  if (firstCliff) {
+    const cliffWeek = weeks[firstCliff.idx];
+    sumHtml += `<div class="summary-card"><div class="summary-label">First income drop</div><div class="summary-value">Week ${cliffWeek.relLabel}</div><div class="summary-sub">${fmtPct(firstCliff.from)} to ${fmtPct(firstCliff.to)} (${fmtPct(firstCliff.from - firstCliff.to)} drop)</div></div>`;
+  } else {
+    sumHtml += `<div class="summary-card"><div class="summary-label">Income stability</div><div class="summary-value">Steady</div><div class="summary-sub">No major drops during covered weeks</div></div>`;
+  }
+
+  document.getElementById('summary').innerHTML = sumHtml;
+
+  // Insights
+  let insHtml = '';
+
+  if (preBirthSTD) {
+    const stdBondingWks = effectiveStdMax - totalDis;
+    insHtml += `<div class="callout" style="margin-bottom:12px;background:var(--info-bg);color:var(--info-text)"><strong>Pre-birth STD scenario (not yet confirmed).</strong> This view <em>assumes</em> pre-delivery disability is classified under Ryder's general STD benefit, making it a separate claim from the maternity STD benefit. If that assumption holds, the maternity 12-week clock starts at birth, not at leave onset. With strategic PFL delay (filing PFL only after STD exhausts), total paid coverage could extend to <strong>${totalCoveredWeeks} weeks</strong>: ${preWks} pre-birth + ${disWks} recovery + ${stdBondingWks} STD bonding + ${bondWks} PFL bonding. <strong>This has not been confirmed with Lincoln Financial or Ryder HR.</strong> Treat as a planning model, not a guarantee.</div>`;
+  }
+
+  if (hasBatonTopup) {
+    const coveredText = preBirthSTD
+      ? `STD covers disability and the first ${effectiveStdMax - totalDis} bonding weeks at 100%. PFL kicks in for the remaining ${bondWks} bonding weeks, with Baton topping up to 100% for weeks within its 12-week bonding benefit.`
+      : `STD covers disability at 100%. Baton's 12-week parental leave covers bonding. Since PFL is only 8 weeks, all bonding time falls within Baton's 12-week benefit.`;
+    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>Full salary through disability + bonding.</strong> ${coveredText} Result: 100% salary for the full ${totalCoveredWeeks} weeks of disability + bonding.${totalCoveredWeeks > 18 ? ' After bonding ends, any additional leave is unpaid or uses PTO.' : ''}</div>`;
+  }
+
+  if (tenure === 'under1' && !sfResident) {
+    insHtml += `<div class="callout callout-danger" style="margin-bottom:12px"><strong>No top-up available.</strong> Under 1 year at Baton (no top-up) and outside SF (no PPLO). You receive ${salary < 76440 ? '90' : '80'}% during disability via STD, then ~${salary < 76440 ? '90' : '70'}% during bonding via PFL. The gap to full salary is real and runs the entire leave.</div>`;
+  }
+
+  if (tenure === 'under1' && sfResident) {
+    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>SF PPLO closes the bonding gap.</strong> During disability, STD covers 80% (20% gap). But during bonding, SF PPLO tops your PFL up to ~100%. You actually get <em>more</em> pay during bonding than disability.</div>`;
+  }
+
+  // High earner cap warning
+  const pflWeekly = Math.min(weeklySalary * (salary < 76440 ? 0.90 : 0.70), 1765);
+  if (pflWeekly >= 1764) {
+    const actualPct = (1765 / weeklySalary * 100).toFixed(0);
+    insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>Weekly cap bites at your salary.</strong> At ${fmt$(salary)}/yr, CA PFL pays only ${fmt$(1765)}/wk (the 2026 cap), which is ${actualPct}% of your ${fmt$(weeklySalary)}/wk salary. ${hasBatonTopup ? 'Baton top-up covers the full difference during bonding.' : 'Without Baton top-up, you absorb this gap during bonding.'}</div>`;
+  }
+
+  // Pre-existing condition warning for under 1 year
+  if (tenure === 'under1') {
+    insHtml += `<div class="callout callout-warn"><strong>Pre-existing condition exclusion.</strong> If you were pregnant before your Ryder STD coverage start date, Lincoln Financial may deny the STD claim. In that scenario, CA SDI (capped at $1,765/wk) becomes your only disability income. Confirm eligibility with Ryder HR.</div>`;
+  }
+
+  document.getElementById('insights').innerHTML = insHtml;
+}
+
+// Tooltip
+const tooltip = document.getElementById('tooltip');
+let tipWeeks = [];
+
+function showTip(e, idx) {
+  const weeks = computeWeeks();
+  const w = weeks[idx];
+  if (!w) return;
+
+  const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+  let rows = '';
+  renderOrder.forEach(src => {
+    const amt = w.sources[src] || 0;
+    if (amt < 0.50) return;
+    const pct = (amt / w.weeklySalary * 100).toFixed(0);
+    rows += `<div class="tooltip-row"><span class="src"><span class="dot" style="background:${COLORS[src]}"></span>${src}</span><span class="amt">${fmt$(amt)} (${pct}%)</span></div>`;
+  });
+
+  const totalPct = w.pct >= 99.5 ? '100%' : fmtPct(w.pct);
+  tooltip.innerHTML = `
+    <div class="tooltip-title">Week ${w.relLabel}: ${w.phase}</div>
+    ${rows}
+    <div class="tooltip-total"><span>Total income</span><span>${fmt$(w.totalPaid)} (${totalPct})</span></div>
+  `;
+
+  tooltip.classList.add('show');
+  positionTip(e);
+}
+
+function positionTip(e) {
+  const rect = tooltip.getBoundingClientRect();
+  let x = e.clientX + 12;
+  let y = e.clientY - 10;
+  if (x + rect.width > window.innerWidth - 10) x = e.clientX - rect.width - 12;
+  if (y + rect.height > window.innerHeight - 10) y = window.innerHeight - rect.height - 10;
+  if (y < 10) y = 10;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+document.addEventListener('mousemove', (e) => {
+  if (tooltip.classList.contains('show')) positionTip(e);
+});
+
+function hideTip() {
+  tooltip.classList.remove('show');
+}
+
+render();
+</script>
+</body>
+</html>
