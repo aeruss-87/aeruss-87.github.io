@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maternity Leave Timeline Guide - Baton / Ryder</title>
+<style>
+  :root { --bg: #ffffff; --bg2: #f5f5f3; --bg3: #eeedeb; --text: #1a1a1a; --text2: #6b6b68; --text3: #9a9a97; --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.2); --info-bg: #e6f1fb; --info-text: #185fa5; --warn-bg: #faeeda; --warn-text: #854f0b; --danger-bg: #fcebeb; --danger-text: #a32d2d; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #1a1a1a; --bg2: #2c2c2a; --bg3: #3a3a38; --text: #e8e8e5; --text2: #a0a09d; --text3: #707070; --border: rgba(255,255,255,0.12); --border2: rgba(255,255,255,0.2); --info-bg: #0c447c; --info-text: #b5d4f4; --warn-bg: #633806; --warn-text: #faeeda; --danger-bg: #501313; --danger-text: #f7c1c1; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; padding: 2rem; max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 4px; }
+  h2 { font-size: 18px; font-weight: 500; margin: 2rem 0 1rem; }
+  h3 { font-size: 15px; font-weight: 500; margin: 1.5rem 0 0.5rem; }
+  .subtitle { font-size: 14px; color: var(--text2); margin-bottom: 2rem; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .tabs button { padding: 8px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); transition: all .15s; font-family: inherit; }
+  .tabs button.active { background: var(--info-bg); color: var(--info-text); border-color: transparent; }
+  .tabs.small button { padding: 6px 16px; font-size: 13px; }
+  .tabs.small button.active { background: var(--bg2); color: var(--text); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 1.5rem; font-size: 12px; color: var(--text2); }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+  .timeline-wrap { overflow-x: auto; margin-bottom: 1.5rem; }
+  .timeline-inner { min-width: 800px; position: relative; }
+  table.timeline { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  table.timeline th { font-size: 11px; font-weight: 400; color: var(--text3); padding: 2px 0; text-align: center; }
+  table.timeline td { padding: 0; height: 30px; position: relative; }
+  .row-label { font-size: 12px; font-weight: 500; color: var(--text); white-space: nowrap; padding-right: 8px; text-align: right; width: 140px; min-width: 140px; }
+  .bar { position: absolute; top: 3px; bottom: 3px; left: 1px; right: 1px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; overflow: hidden; white-space: nowrap; }
+  .section-label { font-size: 13px; font-weight: 500; color: var(--text2); padding: 14px 0 6px; text-align: left; }
+  .marker { position: absolute; top: 0; bottom: 0; border-left: 2px dashed var(--border2); z-index: 10; pointer-events: none; }
+  .marker span { position: absolute; top: -2px; left: 5px; font-size: 10px; font-weight: 500; color: var(--text2); white-space: nowrap; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 1.5rem 0; }
+  .summary-card { background: var(--bg2); border-radius: 8px; padding: 14px 18px; }
+  .summary-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .summary-value { font-size: 20px; font-weight: 500; }
+  .summary-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .callout { font-size: 13px; color: var(--text2); line-height: 1.7; padding: 14px 18px; background: var(--bg2); border-radius: 8px; margin-top: 1.5rem; }
+  .callout strong { color: var(--text); }
+  .callout-warn { background: var(--warn-bg); color: var(--warn-text); }
+  .callout-warn strong { color: var(--warn-text); }
+  .callout-danger { background: var(--danger-bg); color: var(--danger-text); }
+  .callout-danger strong { color: var(--danger-text); }
+  .source-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 13px; }
+  .source-table th { text-align: left; padding: 8px 12px; background: var(--bg2); font-weight: 500; font-size: 12px; color: var(--text2); }
+  .source-table td { padding: 8px 12px; border-bottom: 0.5px solid var(--border); }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+  .badge-yes { background: #eaf3de; color: #3b6d11; }
+  .badge-no { background: #fcebeb; color: #a32d2d; }
+  .badge-maybe { background: #faeeda; color: #854f0b; }
+  @media (prefers-color-scheme: dark) { .badge-yes { background: #27500a; color: #c0dd97; } .badge-no { background: #501313; color: #f7c1c1; } .badge-maybe { background: #633806; color: #faeeda; } }
+  .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 0.5px solid var(--border); font-size: 12px; color: var(--text3); }
+  @media (max-width: 600px) { body { padding: 1rem; } .summary-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<h1>Maternity leave timeline guide</h1>
+<p class="subtitle">Baton / Ryder employees in California. Updated April 2026.</p>
+
+<div class="tabs" id="scenario-tabs">
+  <button class="active" onclick="setScenario('vaginal')">Vaginal delivery</button>
+  <button onclick="setScenario('csection')">C-section delivery</button>
+</div>
+<div class="tabs small" id="tenure-tabs">
+  <button class="active" onclick="setTenure('under1')">Under 1 year at Ryder</button>
+  <button onclick="setTenure('over1')">1+ year at Ryder</button>
+</div>
+<div class="tabs small" id="sf-tabs">
+  <button onclick="setSF(false)">Outside San Francisco</button>
+  <button class="active" onclick="setSF(true)">San Francisco resident</button>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#5DCAA5"></div>PDL (job protection)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>CFRA (job protection)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#AFA9EC"></div>FMLA (job protection)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FAC775"></div>CA SDI (70-90%, cap $1,765/wk)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#F0997B"></div>CA PFL (70-90%, cap $1,765/wk)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ED93B1"></div>Ryder STD (employer pay)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#64C8C8"></div>SF PPLO (employer supplement)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#97C459"></div>Baton top-up</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#B4B2A9"></div>Unpaid / PTO</div>
+</div>
+
+<div id="timeline-container"></div>
+<div class="summary-grid" id="pay-summary"></div>
+<div id="notes-container"></div>
+
+<h2>Where your money comes from</h2>
+<table class="source-table">
+  <thead><tr><th>Program</th><th>Source</th><th>Who pays</th><th>Under 1 yr?</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ryder STD</strong></td><td>Lincoln Financial</td><td>Ryder (employer benefit)</td><td><span class="badge badge-maybe">80% for 12 wks*</span></td></tr>
+    <tr><td><strong>CA SDI</strong> (70-90%)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes (up to 52 wks, cap $1,765/wk)</span></td></tr>
+    <tr><td><strong>CA PFL</strong> (70-90%)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes (8 wks, cap $1,765/wk)</span></td></tr>
+    <tr><td><strong>SF PPLO</strong></td><td>Ryder (per SF ordinance)</td><td>Employer-funded (Ryder HR 03.32 POL)</td><td><span class="badge badge-yes">If 180+ days at Ryder, works in SF</span></td></tr>
+    <tr><td><strong>Baton top-up</strong></td><td>Baton</td><td>Baton</td><td><span class="badge badge-no">No (12 mo req.)</span></td></tr>
+    <tr><td><strong>FMLA / CFRA</strong></td><td>Federal / CA law</td><td>Unpaid (job protection)</td><td><span class="badge badge-no">FMLA: No</span></td></tr>
+    <tr><td><strong>CA PDL</strong></td><td>CA law</td><td>Unpaid (job protection)</td><td><span class="badge badge-yes">Yes</span></td></tr>
+  </tbody>
+</table>
+<p style="font-size:12px;color:var(--text3);margin-top:4px">*Pre-existing condition exclusion applies. Confirm with Ryder HR.</p>
+
+<h2>How programs sequence (STD, then PFL)</h2>
+<div class="callout">
+  <strong>The key insight:</strong> Ryder STD and CA PFL cover different phases of your leave and run back-to-back, not at the same time. This means they can add up to significant coverage.<br><br>
+  <strong>Phase 1: Disability (recovery after delivery)</strong><br>
+  Ryder STD is your primary income source. CA SDI also covers this phase, but the two offset each other. You receive the higher of the two, not both. File for both as a safety net in case STD is denied.<br>
+  CA SDI duration: up to 52 weeks per claim. For pregnancy, SDI typically covers up to 4 weeks before delivery + 6 weeks (vaginal) or 8 weeks (C-section) after. Your doctor certifies the exact period.<br><br>
+  <strong>Phase 2: Bonding (after disability ends)</strong><br>
+  CA PFL kicks in after disability ends. Ryder STD does not cover bonding. SF PPLO supplements PFL if you're in San Francisco.<br><br>
+  <strong>Total income replacement:</strong> Up to 12 weeks of Ryder STD during disability, then up to 8 weeks of CA PFL during bonding = up to 20 weeks of some level of pay. In practice, the disability phase is typically 6-8 weeks, so most employees see 14-16 weeks of income replacement total.<br><br>
+  <strong>For 12+ month employees:</strong> Baton tops up your total to 100% of salary for 12 weeks across both phases.<br><br>
+  <strong>For under-12-month employees:</strong> You receive STD at 80% during disability, then PFL at ~70% during bonding. There is no Baton top-up.
+</div>
+
+<h2>Action steps</h2>
+<div class="callout">
+  <strong>As early as possible:</strong> Tell your manager. Loop in Laura Forte or Ashley Russell.<br><br>
+  <strong>6+ weeks before leave:</strong> File leave request on MyRyder. Contact Lincoln Financial. Start CA EDD application. All three tracks run in parallel.<br><br>
+  <strong>2-3 weeks before leave:</strong> Get healthcare provider certifications. Upload to MyRyder and Lincoln. Submit CA SDI claim.<br><br>
+  <strong>After birth:</strong> File CA PFL bonding claim through EDD. Notify Lincoln of delivery date and type.<br><br>
+  <strong>Before returning:</strong> Contact Ryder and Lincoln 1-2 weeks before return. Get doctor's clearance note. Drug screen required if out 90+ days.
+</div>
+
+<div class="callout callout-warn" style="margin-top:1rem">
+  <strong>The biggest trap:</strong> FMLA approval does not mean you get paid. FMLA is job protection only. You must separately file for STD and SDI to receive income during leave. File all three tracks as early as you can.
+</div>
+
+<h2>Key contacts</h2>
+<table class="source-table">
+  <thead><tr><th>Contact</th><th>Role</th><th>Reach</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Ashley Russell</strong></td><td>Baton People Ops</td><td>Slack</td></tr>
+    <tr><td><strong>Laura Forte</strong></td><td>Baton People Ops, leave navigation</td><td>Slack</td></tr>
+
+    <tr><td><strong>Karen Rios</strong></td><td>Ryder leave administrator</td><td>Microsoft Teams</td></tr>
+    <tr><td><strong>Ryder Employee Services</strong></td><td>General HR questions</td><td>1-800-280-2999</td></tr>
+    <tr><td><strong>Lincoln Financial</strong></td><td>STD claims</td><td>Lincoln portal / phone</td></tr>
+    <tr><td><strong>CA EDD</strong></td><td>SDI and PFL</td><td><a href="https://edd.ca.gov" style="color:var(--info-text)">edd.ca.gov</a></td></tr>
+  </tbody>
+</table>
+
+<div class="footer">
+  This guide is a planning tool, not an official benefits determination. Confirm all details with Laura Forte, Ryder HR, and CA EDD.<br>
+  Owner: Ashley Russell (People Ops) | Version 1.0 | April 2026
+</div>
+
+<script>
+let scenario = 'vaginal', tenure = 'under1', sfResident = true;
+
+function setScenario(s) {
+  scenario = s;
+  document.querySelectorAll('#scenario-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&s==='vaginal')||(i===1&&s==='csection')));
+  render();
+}
+function setTenure(t) {
+  tenure = t;
+  document.querySelectorAll('#tenure-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&t==='under1')||(i===1&&t==='over1')));
+  render();
+}
+function setSF(v) {
+  sfResident = v;
+  document.querySelectorAll('#sf-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&!v)||(i===1&&v)));
+  render();
+}
+
+function render() {
+  const preWks = 4;
+  const disWks = scenario === 'vaginal' ? 6 : 8;
+  const totalDis = preWks + disWks;
+  const bondWks = 8;
+  const stdRate = tenure === 'under1' ? 80 : 100;
+  const hasBatonTopup = tenure === 'over1';
+  const totalWks = 28;
+  const birthWk = preWks;
+  const disEnd = birthWk + disWks;
+  const bondEnd = disEnd + bondWks;
+
+  // Bonding pay depends on SF PPLO and Baton top-up
+  const bondingPay = hasBatonTopup ? '100%' : (sfResident ? '~100%' : '~70%');
+  const bondingSub = hasBatonTopup
+    ? 'CA PFL + Baton top-up'
+    : (sfResident
+      ? 'CA PFL (~70%) + SF PPLO tops up to ~100%. Note: up to 2 weeks of accrued PTO is applied toward the PPLO supplement.'
+      : 'CA PFL only. STD does not cover bonding.');
+
+  let html = '<div class="timeline-wrap"><div class="timeline-inner">';
+  html += '<table class="timeline"><thead><tr><th style="width:140px;min-width:140px"></th>';
+  for (let w = 0; w <= totalWks; w++) {
+    const rel = w - birthWk;
+    html += `<th>${rel < 0 ? rel : rel === 0 ? '0' : '+' + rel}</th>`;
+  }
+  html += '</tr><tr><th></th>';
+  for (let w = 0; w <= totalWks; w++) html += '<th style="font-size:10px;color:var(--text3)">wk</th>';
+  html += '</tr></thead><tbody>';
+
+  function barRow(label, start, end, color, text, tc) {
+    if (start >= end) {
+      let r = `<tr><td class="row-label" style="color:var(--text3);text-decoration:line-through">${label}</td>`;
+      for (let w = 0; w <= totalWks; w++) r += '<td></td>';
+      return r + '</tr>';
+    }
+    let r = `<tr><td class="row-label">${label}</td>`;
+    for (let w = 0; w <= totalWks; w++) {
+      if (w === start) {
+        const span = Math.min(end, totalWks + 1) - start;
+        r += `<td colspan="${span}" style="position:relative"><div class="bar" style="background:${color};color:${tc||'#fff'}">${text||''}</div></td>`;
+      } else if (w > start && w < Math.min(end, totalWks + 1)) {
+        continue;
+      } else {
+        r += '<td></td>';
+      }
+    }
+    return r + '</tr>';
+  }
+
+  html += `<tr><td colspan="${totalWks+2}" class="section-label">Job protection (unpaid)</td></tr>`;
+  html += barRow('CA PDL', 0, disEnd, '#5DCAA5', `${totalDis} weeks`, '#04342C');
+  html += tenure === 'over1'
+    ? barRow('FMLA', 0, 12, '#AFA9EC', '12 weeks', '#26215C')
+    : barRow('FMLA', 0, 0, '', '');
+  html += barRow('CFRA', disEnd, disEnd + 12, '#85B7EB', '12 weeks', '#042C53');
+
+  html += `<tr><td colspan="${totalWks+2}" class="section-label">Income replacement</td></tr>`;
+  html += barRow(`Ryder STD (${stdRate}%)`, 0, 12, '#ED93B1', `${stdRate}% pay, 12 wks`, '#4B1528');
+  html += barRow('CA SDI (70-90%)', 1, disEnd, '#FAC775', 'Offsets STD, cap $1,765/wk', '#412402');
+  html += barRow('CA PFL (70-90%)', disEnd, bondEnd, '#F0997B', `70-90%, ${bondWks} wks, cap $1,765/wk`, '#4A1B0C');
+  if (sfResident) html += barRow('SF PPLO (to 100%)', disEnd, bondEnd, '#64C8C8', 'Tops up PFL to ~100%', '#0A3D3D');
+  if (hasBatonTopup) html += barRow('Baton top-up', 0, bondEnd, '#97C459', 'To 100%', '#173404');
+  if (bondEnd < totalWks) html += barRow('Unpaid / PTO', bondEnd, totalWks + 1, '#B4B2A9', '', '#2C2C2A');
+
+  html += '</tbody></table>';
+  html += '</div></div>';
+
+  document.getElementById('timeline-container').innerHTML = html;
+
+  const totalPaidWks = disWks + bondWks;
+  let ph = '';
+  ph += `<div class="summary-card"><div class="summary-label">Phase 1: Disability (${disWks} weeks post-delivery)</div><div class="summary-value">${stdRate}% of base pay</div><div class="summary-sub">Ryder STD is primary. CA SDI offsets (up to 52 wks max, ~${totalDis} wks typical for pregnancy).</div></div>`;
+  ph += `<div class="summary-card"><div class="summary-label">Phase 2: Bonding (${bondWks} weeks after disability)</div><div class="summary-value">${bondingPay} of base pay</div><div class="summary-sub">${bondingSub}</div></div>`;
+  ph += `<div class="summary-card"><div class="summary-label">Total income replacement</div><div class="summary-value">${totalPaidWks} weeks</div><div class="summary-sub">${disWks} wks STD (disability) then ${bondWks} wks PFL (bonding). These run back-to-back, not at the same time.</div></div>`;
+
+  if (hasBatonTopup) {
+    ph += `<div class="summary-card"><div class="summary-label">Baton top-up period</div><div class="summary-value">12 weeks at 100%</div><div class="summary-sub">Baton bridges the difference to full pay for 12 of these weeks.</div></div>`;
+  } else if (sfResident) {
+    ph += `<div class="summary-card"><div class="summary-label">SF PPLO effect</div><div class="summary-value">Bonding at ~100%</div><div class="summary-sub">SF PPLO closes the gap during bonding. The remaining gap is ${stdRate}% vs 100% during the disability phase only. Up to 2 wks PTO applied toward PPLO.</div></div>`;
+  } else {
+    ph += `<div class="summary-card"><div class="summary-label">Gap to full salary</div><div class="summary-value">Real</div><div class="summary-sub">${stdRate}% during disability, ~70% during bonding. No Baton top-up or SF PPLO supplement.</div></div>`;
+  }
+  document.getElementById('pay-summary').innerHTML = ph;
+
+  let nh = '';
+  if (tenure === 'under1') {
+    if (sfResident) {
+      nh += '<div class="callout callout-warn" style="margin-bottom:12px"><strong>Under 1 year + SF resident:</strong> Phase 1 (disability): 80% pay via Ryder STD for up to 12 weeks. The gap here is 20% of base pay. Phase 2 (bonding): CA PFL (~70%) plus SF PPLO tops you up to ~100% of pay for 8 weeks. Total: up to 20 weeks of income replacement, with near-full pay during bonding.</div>';
+      nh += '<div class="callout" style="margin-bottom:12px"><strong>SF PPLO details (Ryder policy HR 03.32 POL):</strong> Requires 180+ days at Ryder and 8+ hrs/week in SF. You must be receiving CA PFL to qualify. Up to 2 weeks of accrued PTO is applied toward the supplement (you still get paid, but it draws from your PTO bank first). If you voluntarily leave within 90 days of returning from leave, Ryder can request repayment of the PPLO supplement.</div>';
+    } else {
+      nh += '<div class="callout callout-danger" style="margin-bottom:12px"><strong>Under 1 year, outside SF:</strong> Phase 1 (disability): 80% pay via Ryder STD for up to 12 weeks. Phase 2 (bonding): ~70% via CA PFL for up to 8 weeks. No SF PPLO supplement. These run back-to-back, giving you up to 20 weeks of income replacement, but with a meaningful gap to full salary in both phases.</div>';
+    }
+    nh += '<div class="callout callout-warn"><strong>Pre-existing condition exclusion:</strong> Ryder\'s STD plan may deny coverage if you were pregnant before your coverage start date. Confirm your eligibility with Ryder HR before relying on STD income.</div>';
+  } else {
+    if (sfResident) {
+      nh += '<div class="callout"><strong>1+ year + SF resident:</strong> You are eligible for FMLA, Ryder STD at 100%, Baton\'s top-up, and SF PPLO. Phase 1 (disability): 100% via STD. Phase 2 (bonding): PFL + Baton top-up to 100% (SF PPLO also applies but Baton top-up already covers the gap). Baton covers 12 weeks total at full salary. CA PFL may extend a few additional weeks at ~70% beyond Baton\'s 12-week benefit, with SF PPLO topping those up to ~100%.</div>';
+    } else {
+      nh += '<div class="callout"><strong>1+ year, outside SF:</strong> You are eligible for FMLA, Ryder STD at 100%, and Baton\'s top-up. Phase 1 (disability): 100% via STD. Phase 2 (bonding): PFL + Baton top-up to 100%. Baton covers 12 weeks total at full salary. CA PFL may extend a few additional weeks at ~70% beyond Baton\'s 12-week benefit.</div>';
+    }
+  }
+  document.getElementById('notes-container').innerHTML = nh;
+}
+
+render();
+</script>
+</body>
+</html>
