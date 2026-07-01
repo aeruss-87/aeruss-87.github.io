@@ -691,6 +691,7 @@
     <button class="tab" onclick="switchTab('inspiration', this)">Inspiration</button>
     <button class="tab" onclick="switchTab('30day', this)">30-Day Plan</button>
     <button class="tab" onclick="switchTab('xml-tags', this)">XML Tags</button>
+    <button class="tab" onclick="switchTab('file-mgmt', this)">File Management</button>
   </nav>
 </header>
 
@@ -2014,6 +2015,113 @@ Warm but direct. No em dashes. Two short paragraphs max. Emojis are fine.
         <button class="copy-btn" onclick="copyPrompt(this)">📋 Copy</button>
       </div>
     </div>
+
+  </div>
+
+
+  <div class="panel" id="panel-file-mgmt">
+
+    <div class="plan-intro searchable">
+      <h2>File Management in the Terminal</h2>
+      <p>Every terminal command follows one pattern: <span class="code">command -flags arguments</span>. The command is the verb, flags (anything starting with a dash) modify how it behaves, and arguments are what it acts on, usually file paths. Everything below is that pattern with different verbs.</p>
+    </div>
+
+    <div class="section-label">Core Commands</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Command</th><th>What it does</th><th>Worth knowing</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">rm file.txt</span></td><td>Deletes a file.</td><td>Permanent. No Trash, no undo.</td></tr>
+        <tr><td><span class="code">rm -r folder</span></td><td>Deletes a folder and everything inside it.</td><td>-r means recursive. Plain rm refuses folders.</td></tr>
+        <tr><td><span class="code">rm -rf folder</span></td><td>Deletes a folder with no confirmation and no complaints if it is missing.</td><td>-f means force. Triple-check the path before Enter.</td></tr>
+        <tr><td><span class="code">ls ~/Downloads</span></td><td>Lists what is in a folder.</td><td>The "what is actually here?" command.</td></tr>
+        <tr><td><span class="code">ls -lt</span></td><td>Long format, sorted newest first.</td><td>Perfect for "which download is the latest?"</td></tr>
+        <tr><td><span class="code">ls -la</span></td><td>Long format including hidden dot-files.</td><td>How you see .zshrc and the .claude folder.</td></tr>
+        <tr><td><span class="code">unzip file.zip -d ~/dest/</span></td><td>Extracts an archive into a destination folder.</td><td>-d sets destination. .skill files are just zips.</td></tr>
+        <tr><td><span class="code">cp source dest</span></td><td>Copies a file.</td><td>cp -r copies a whole folder.</td></tr>
+        <tr><td><span class="code">mv source dest</span></td><td>Moves or renames.</td><td>Renaming is just moving to a new name.</td></tr>
+        <tr><td><span class="code">mkdir -p ~/a/b/c</span></td><td>Creates folders.</td><td>-p builds the whole nested chain at once.</td></tr>
+        <tr><td><span class="code">cat file.md</span></td><td>Prints a file's contents to the screen.</td><td>Quick peek without opening an editor.</td></tr>
+        <tr><td><span class="code">open file.html</span></td><td>Opens a file in its default Mac app.</td><td>Mac-only. What the loops alias uses.</td></tr>
+        <tr><td><span class="code">man rm</span></td><td>Full manual for any command.</td><td>Press q to quit the viewer.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Symbols That Show Up Everywhere</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Symbol</th><th>Meaning</th><th>Example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="code">~</span></td><td>Your home folder, /Users/ashruss-baton.</td><td><span class="code">~/Desktop/Baton</span></td></tr>
+        <tr><td><span class="code">*</span></td><td>Wildcard, matches anything.</td><td><span class="code">rm ~/Downloads/open-loops-tracker*.skill</span></td></tr>
+        <tr><td><span class="code">-</span> and <span class="code">--</span></td><td>Introduce a flag. Short flags stack.</td><td><span class="code">ls -lt</span>, <span class="code">--help</span></td></tr>
+        <tr><td><span class="code">&amp;&amp;</span></td><td>Chain commands. The second runs only if the first succeeds.</td><td><span class="code">rm -rf old &amp;&amp; unzip new.skill -d ~/dest/</span></td></tr>
+        <tr><td><span class="code">" "</span></td><td>Quotes protect paths containing spaces or parentheses.</td><td><span class="code">"open-loops-tracker (2).skill"</span></td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Safety Habits</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>Habit</th><th>Why</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Before any <span class="code">rm -rf</span>, run <span class="code">ls</span> on the same path first.</td><td>Confirms exactly what you are about to delete, since there is no undo.</td></tr>
+        <tr><td>Wildcards plus rm: preview with <span class="code">ls ~/Downloads/*.skill</span>, then swap ls for rm.</td><td>The wildcard may match more than you expect.</td></tr>
+        <tr><td>Unsure what a command does? Ask Claude Code to explain before approving.</td><td>It will happily annotate its own commands. Or use <span class="code">man</span>.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Recent Real Commands (from Claude sessions)</div>
+    <table class="shortcuts-table searchable">
+      <thead>
+        <tr><th>What I was doing</th><th>The exact commands</th><th>To reuse</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Replace an installed Claude Code skill with a new download (Jul 1, 2026)</td>
+          <td><span class="code">rm -rf ~/.claude/skills/open-loops-tracker</span><br><span class="code">unzip ~/Downloads/open-loops-tracker.skill -d ~/.claude/skills/</span></td>
+          <td>Swap the skill name in both lines. Restart Claude Code after.</td>
+        </tr>
+        <tr>
+          <td>Find the newest download when the browser added (1), (2) suffixes</td>
+          <td><span class="code">ls -lt ~/Downloads/*.skill*</span></td>
+          <td>Change the extension pattern for other file types, e.g. *.zip*</td>
+        </tr>
+        <tr>
+          <td>Install when the filename has parentheses</td>
+          <td><span class="code">unzip "~/Downloads/open-loops-tracker (2).skill" -d ~/.claude/skills/</span></td>
+          <td>Quotes are required for any path with spaces or parentheses.</td>
+        </tr>
+        <tr>
+          <td>Verify the new skill version landed</td>
+          <td><span class="code">ls ~/.claude/skills/open-loops-tracker/assets/</span></td>
+          <td>tracker-template.html present = latest build.</td>
+        </tr>
+        <tr>
+          <td>Clean up old downloads after a successful install</td>
+          <td><span class="code">rm ~/Downloads/open-loops-tracker*.skill</span></td>
+          <td>Keeps Downloads clean so the next install is unambiguous.</td>
+        </tr>
+        <tr>
+          <td>Create a shortcut command to open the open loops tracker</td>
+          <td><span class="code">echo 'alias loops="open ~/Desktop/Baton/open-loops/tracker.md"' &gt;&gt; ~/.zshrc</span><br><span class="code">source ~/.zshrc</span></td>
+          <td>Then just type loops in any terminal. Same pattern for any file you open often.</td>
+        </tr>
+        <tr>
+          <td>Chrome bookmarks for local files</td>
+          <td><span class="code">file:///Users/ashruss-baton/Desktop/Baton/open-loops/tracker.html</span></td>
+          <td>Any local file works with the file:/// prefix and full path.</td>
+        </tr>
+        <tr>
+          <td>Set default editor so Ctrl+G works in Claude Code (Apr 2026)</td>
+          <td><span class="code">echo 'export EDITOR=nano' &gt;&gt; ~/.zshrc</span><br><span class="code">source ~/.zshrc</span></td>
+          <td>One-time setup. Terminal CLI only, not the VSCode extension.</td>
+        </tr>
+      </tbody>
+    </table>
 
   </div>
 
