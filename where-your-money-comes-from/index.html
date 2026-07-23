@@ -198,6 +198,7 @@ function computeWeeks() {
   const stateRate = (salary < 76440) ? 0.90 : 0.70;
   const SDI_CAP = 1765;
   const PFL_CAP = 1765;
+  const PPLO_WAGE_CAP = 2522; // SF PPLO caps total (PFL + PPLO) at this weekly amount
 
   const weeks = [];
   const showWeeks = pflEnd + 3; // show a few unpaid weeks after PFL ends
@@ -259,7 +260,8 @@ function computeWeeks() {
         if (topup > 0.50) sources['Baton top-up'] = topup;
       } else if (sfResident) {
         const paid = Math.max(stdPay, pflPay);
-        const pplo = Math.max(0, weeklySalary - paid);
+        const pploCappedWage = Math.min(weeklySalary, PPLO_WAGE_CAP);
+        const pplo = Math.max(0, pploCappedWage - paid);
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
       }
     } else if (pflActive) {
@@ -267,9 +269,10 @@ function computeWeeks() {
       const pflPay = Math.min(weeklySalary * stateRate, PFL_CAP);
       sources['CA PFL'] = pflPay;
 
-      // SF PPLO: tops PFL up to 100%
+      // SF PPLO: tops PFL up to 100% of salary, capped at $2,522/wk total
       if (sfResident) {
-        const pplo = Math.max(0, weeklySalary - pflPay);
+        const pploCappedWage = Math.min(weeklySalary, PPLO_WAGE_CAP);
+        const pplo = Math.max(0, pploCappedWage - pflPay);
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
       }
 
@@ -479,7 +482,13 @@ function render() {
   }
 
   if (tenure === 'under1' && sfResident) {
-    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>SF PPLO closes the bonding gap.</strong> During disability, STD covers 80% (20% gap). But during bonding, SF PPLO tops your PFL up to ~100%. You actually get <em>more</em> pay during bonding than disability.</div>`;
+    const pploGetsTo100 = weeklySalary <= PPLO_WAGE_CAP;
+    if (pploGetsTo100) {
+      insHtml += `<div class="callout" style="margin-bottom:12px"><strong>SF PPLO closes the bonding gap.</strong> During disability, STD covers 80% (20% gap). But during bonding, SF PPLO tops your PFL up to ~100%. You actually get <em>more</em> pay during bonding than disability.</div>`;
+    } else {
+      const pploTotal = Math.round(PPLO_WAGE_CAP / weeklySalary * 100);
+      insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>SF PPLO helps, but doesn't fully close the gap.</strong> PPLO tops PFL up to a combined ${fmt$(PPLO_WAGE_CAP)}/wk (${pploTotal}% of your salary). At ${fmt$(salary)}/yr, there's still a ${fmt$(weeklySalary - PPLO_WAGE_CAP)}/wk gap between the PPLO ceiling and your full pay.${hasBatonTopup ? ' Baton top-up covers this remaining gap.' : ''}</div>`;
+    }
   }
 
   // High earner cap warning
