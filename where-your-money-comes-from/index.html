@@ -276,8 +276,10 @@ function computeWeeks() {
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
       }
 
-      // Baton top-up during bonding
-      if (hasBatonTopup && bondWeek <= batonBondingLimit) {
+      // Baton top-up during bonding. When pre-birth STD is on, STD covers early
+      // bonding weeks at 100% (Baton not needed), so Baton's clock starts at PFL.
+      const batonBondWeek = preBirthSTD ? (w - pflStart + 1) : bondWeek;
+      if (hasBatonTopup && batonBondWeek <= batonBondingLimit) {
         const alreadyCovered = pflPay + (sources['SF PPLO'] || 0);
         const topup = Math.max(0, weeklySalary - alreadyCovered);
         if (topup > 0.50) sources['Baton top-up'] = topup;
@@ -525,10 +527,16 @@ function showTip(e, idx) {
   });
 
   const totalPct = w.pct >= 99.5 ? '100%' : fmtPct(w.pct);
+  const gapAmt = w.weeklySalary - w.totalPaid;
+  const gapLine = gapAmt > 0.50
+    ? `<div class="tooltip-row" style="color:var(--danger-text);margin-top:2px"><span class="src"><span class="dot" style="background:${COLORS['Gap']}"></span>Missing from full pay</span><span class="amt">${fmt$(gapAmt)}/wk</span></div>`
+    : '';
   tooltip.innerHTML = `
     <div class="tooltip-title">Week ${w.relLabel}: ${w.phase}</div>
     ${rows}
     <div class="tooltip-total"><span>Total income</span><span>${fmt$(w.totalPaid)} (${totalPct})</span></div>
+    ${gapLine}
+    <div class="tooltip-row" style="font-size:11px;color:var(--text3);margin-top:2px"><span>Full weekly salary</span><span>${fmt$(w.weeklySalary)}/wk</span></div>
   `;
 
   tooltip.classList.add('show');
