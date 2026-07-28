@@ -119,7 +119,7 @@
 <div id="insights"></div>
 
 <div class="footer">
-  This tool is a planning estimate, not a benefits determination. CA SDI/PFL rates reflect 2026 SB 951 tiers ($1,765/wk cap). Ryder STD rates per Lincoln Financial policy (general benefit: 5 months; maternity: 12 weeks). SF PPLO per Ryder HR 03.32 POL. Baton top-up per Baton Handbook parental leave policy (12 months eligibility, 12 weeks birthing parent). "Pre-birth STD (assumed)" scenario models an unconfirmed assumption: that pre-delivery disability is classified under Ryder's general STD benefit as a separate claim from the maternity STD benefit. Confirm all details with your People Ops team, Ryder HR, and Lincoln Financial.<br>
+  This tool is a planning estimate, not a benefits determination. CA SDI/PFL rates reflect 2026 SB 951 tiers ($1,765/wk cap). Ryder STD rates per Lincoln Financial policy (general benefit: 5 months; maternity: 12 weeks). SF PPLO per Ryder HR 03.32 POL ($2,522/wk cap). "Pre-birth STD (assumed)" scenario models an unconfirmed assumption: that pre-delivery disability is classified under Ryder's general STD benefit as a separate claim from the maternity STD benefit. Confirm all details with your People Ops team, Ryder HR, and Lincoln Financial.<br>
   Companion to: Maternity Leave Timeline Guide | April 2026
 </div>
 
@@ -134,7 +134,6 @@ const COLORS = {
   'CA SDI': '#FAC775',
   'CA PFL': '#F0997B',
   'SF PPLO': '#64C8C8',
-  'Baton top-up': '#97C459',
   'Gap': '#B4B2A9'
 };
 const TEXT_COLORS = {
@@ -143,7 +142,6 @@ const TEXT_COLORS = {
   'CA SDI': '#412402',
   'CA PFL': '#4A1B0C',
   'SF PPLO': '#0A3D3D',
-  'Baton top-up': '#173404',
   'Gap': '#2C2C2A'
 };
 
@@ -184,8 +182,6 @@ function computeWeeks() {
   const totalDis = preWks + disWks;
   const bondWks = 8;
   const stdRate = tenure === 'under1' ? 0.80 : 1.00;
-  const hasBatonTopup = tenure === 'over1';
-  const batonBondingLimit = 12; // Baton's 12-wk parental leave (separate bucket from STD)
 
   // Pre-birth STD approved: maternity STD 12-wk clock starts at birth, not leave start.
   // Pre-delivery weeks use the general STD benefit (separate claim).
@@ -239,12 +235,6 @@ function computeWeeks() {
         sources['CA SDI'] = sdiPay;
       }
 
-      // Baton top-up (check bonding limit if we're in bonding phase)
-      if (hasBatonTopup && (bondWeek === 0 || bondWeek <= batonBondingLimit)) {
-        const paid = Math.max(stdPay, sdiPay);
-        const topup = Math.max(0, weeklySalary - paid);
-        if (topup > 0.50) sources['Baton top-up'] = topup;
-      }
     } else if (stdActive && pflActive) {
       // STD and PFL overlap (rare in preBirthSTD mode, common in standard mode)
       const stdPay = weeklySalary * stdRate;
@@ -254,11 +244,7 @@ function computeWeeks() {
       } else {
         sources['CA PFL'] = pflPay;
       }
-      if (hasBatonTopup && bondWeek <= batonBondingLimit) {
-        const paid = Math.max(stdPay, pflPay);
-        const topup = Math.max(0, weeklySalary - paid);
-        if (topup > 0.50) sources['Baton top-up'] = topup;
-      } else if (sfResident) {
+      if (sfResident) {
         const paid = Math.max(stdPay, pflPay);
         const pploCappedWage = Math.min(weeklySalary, PPLO_WAGE_CAP);
         const pplo = Math.max(0, pploCappedWage - paid);
@@ -276,14 +262,6 @@ function computeWeeks() {
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
       }
 
-      // Baton top-up during bonding. When pre-birth STD is on, STD covers early
-      // bonding weeks at 100% (Baton not needed), so Baton's clock starts at PFL.
-      const batonBondWeek = preBirthSTD ? (w - pflStart + 1) : bondWeek;
-      if (hasBatonTopup && batonBondWeek <= batonBondingLimit) {
-        const alreadyCovered = pflPay + (sources['SF PPLO'] || 0);
-        const topup = Math.max(0, weeklySalary - alreadyCovered);
-        if (topup > 0.50) sources['Baton top-up'] = topup;
-      }
     }
     // Extended leave (beyond PFL): no sources
 
@@ -317,7 +295,6 @@ function render() {
   const disWks = scenario === 'vaginal' ? 6 : 8;
   const totalDis = preWks + disWks;
   const bondWks = 8;
-  const hasBatonTopup = tenure === 'over1';
   const effectiveStdMax = preBirthSTD ? preWks + 12 : 12;
   const pflStart = preBirthSTD ? effectiveStdMax + 1 : totalDis + 1;
   const pflEnd = pflStart + bondWks - 1;
@@ -328,7 +305,7 @@ function render() {
   weeks.forEach(w => Object.keys(w.sources).forEach(s => activeSources.add(s)));
 
   // Legend
-  const sourceOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+  const sourceOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Gap'];
   let legendHtml = '';
   sourceOrder.forEach(s => {
     if (activeSources.has(s)) {
@@ -399,7 +376,7 @@ function render() {
     let segs = '';
 
     // Build segments bottom-up (primary source at bottom)
-    const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+    const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Gap'];
     renderOrder.forEach(src => {
       const amt = w.sources[src] || 0;
       if (amt < 0.50) return;
@@ -472,24 +449,21 @@ function render() {
     insHtml += `<div class="callout" style="margin-bottom:12px;background:var(--info-bg);color:var(--info-text)"><strong>Pre-birth STD scenario (not yet confirmed).</strong> This view <em>assumes</em> pre-delivery disability is classified under Ryder's general STD benefit, making it a separate claim from the maternity STD benefit. If that assumption holds, the maternity 12-week clock starts at birth, not at leave onset. With strategic PFL delay (filing PFL only after STD exhausts), total paid coverage could extend to <strong>${totalCoveredWeeks} weeks</strong>: ${preWks} pre-birth + ${disWks} recovery + ${stdBondingWks} STD bonding + ${bondWks} PFL bonding. <strong>This has not been confirmed with Lincoln Financial or Ryder HR.</strong> Treat as a planning model, not a guarantee.</div>`;
   }
 
-  if (hasBatonTopup) {
-    const coveredText = preBirthSTD
-      ? `STD covers disability and the first ${effectiveStdMax - totalDis} bonding weeks at 100%. PFL kicks in for the remaining ${bondWks} bonding weeks, with Baton topping up to 100% for weeks within its 12-week bonding benefit.`
-      : `STD covers disability at 100%. Baton's 12-week parental leave covers bonding. Since PFL is only 8 weeks, all bonding time falls within Baton's 12-week benefit.`;
-    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>Full salary through disability + bonding.</strong> ${coveredText} Result: 100% salary for the full ${totalCoveredWeeks} weeks of disability + bonding.${totalCoveredWeeks > 18 ? ' After bonding ends, any additional leave is unpaid or uses PTO.' : ''}</div>`;
+  if (tenure === 'over1') {
+    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>Full salary during disability.</strong> With 1+ year at Ryder, STD pays 100% of salary through the disability phase. During PFL bonding, income drops to the state benefit level (${salary < 76440 ? '90' : '70'}% of salary, capped at $1,765/wk).${sfResident ? ' SF PPLO helps close the gap during bonding.' : ''}</div>`;
   }
 
   if (tenure === 'under1' && !sfResident) {
-    insHtml += `<div class="callout callout-danger" style="margin-bottom:12px"><strong>No top-up available.</strong> Under 1 year at Baton (no top-up) and outside SF (no PPLO). You receive ${salary < 76440 ? '90' : '80'}% during disability via STD, then ~${salary < 76440 ? '90' : '70'}% during bonding via PFL. The gap to full salary is real and runs the entire leave.</div>`;
+    insHtml += `<div class="callout callout-danger" style="margin-bottom:12px"><strong>Income gap throughout leave.</strong> Under 1 year at Ryder means STD pays 80% during disability. During bonding, PFL pays ~${salary < 76440 ? '90' : '70'}% (capped at $1,765/wk). No SF PPLO supplement available outside San Francisco.</div>`;
   }
 
-  if (tenure === 'under1' && sfResident) {
+  if (sfResident) {
     const pploGetsTo100 = weeklySalary <= PPLO_WAGE_CAP;
     if (pploGetsTo100) {
       insHtml += `<div class="callout" style="margin-bottom:12px"><strong>SF PPLO closes the bonding gap.</strong> During disability, STD covers 80% (20% gap). But during bonding, SF PPLO tops your PFL up to ~100%. You actually get <em>more</em> pay during bonding than disability.</div>`;
     } else {
       const pploTotal = Math.round(PPLO_WAGE_CAP / weeklySalary * 100);
-      insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>SF PPLO helps, but doesn't fully close the gap.</strong> PPLO tops PFL up to a combined ${fmt$(PPLO_WAGE_CAP)}/wk (${pploTotal}% of your salary). At ${fmt$(salary)}/yr, there's still a ${fmt$(weeklySalary - PPLO_WAGE_CAP)}/wk gap between the PPLO ceiling and your full pay.${hasBatonTopup ? ' Baton top-up covers this remaining gap.' : ''}</div>`;
+      insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>SF PPLO helps, but doesn't fully close the gap.</strong> PPLO tops PFL up to a combined ${fmt$(PPLO_WAGE_CAP)}/wk (${pploTotal}% of your salary). At ${fmt$(salary)}/yr, there's still a ${fmt$(weeklySalary - PPLO_WAGE_CAP)}/wk gap between the PPLO ceiling and your full pay.</div>`;
     }
   }
 
@@ -497,7 +471,7 @@ function render() {
   const pflWeekly = Math.min(weeklySalary * (salary < 76440 ? 0.90 : 0.70), 1765);
   if (pflWeekly >= 1764) {
     const actualPct = (1765 / weeklySalary * 100).toFixed(0);
-    insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>Weekly cap bites at your salary.</strong> At ${fmt$(salary)}/yr, CA PFL pays only ${fmt$(1765)}/wk (the 2026 cap), which is ${actualPct}% of your ${fmt$(weeklySalary)}/wk salary. ${hasBatonTopup ? 'Baton top-up covers the full difference during bonding.' : 'Without Baton top-up, you absorb this gap during bonding.'}</div>`;
+    insHtml += `<div class="callout callout-warn" style="margin-bottom:12px"><strong>Weekly cap bites at your salary.</strong> At ${fmt$(salary)}/yr, CA PFL pays only ${fmt$(1765)}/wk (the 2026 cap), which is ${actualPct}% of your ${fmt$(weeklySalary)}/wk salary. You absorb this gap during bonding unless SF PPLO applies.</div>`;
   }
 
   // Pre-existing condition warning for under 1 year
@@ -517,7 +491,7 @@ function showTip(e, idx) {
   const w = weeks[idx];
   if (!w) return;
 
-  const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Baton top-up', 'Gap'];
+  const renderOrder = ['Pre-birth STD', 'Ryder STD', 'CA SDI', 'CA PFL', 'SF PPLO', 'Gap'];
   let rows = '';
   renderOrder.forEach(src => {
     const amt = w.sources[src] || 0;
