@@ -68,18 +68,18 @@
   <button onclick="setTenure('over1')">1+ year at Ryder</button>
 </div>
 <div class="tabs small" id="sf-tabs">
-  <button onclick="setSF(false)">Outside San Francisco</button>
-  <button class="active" onclick="setSF(true)">San Francisco resident</button>
+  <button onclick="setSF(false)">Do not work in SF</button>
+  <button class="active" onclick="setSF(true)">Work in SF</button>
 </div>
 
 <div class="legend">
   <div class="legend-item"><div class="legend-swatch" style="background:#5DCAA5"></div>PDL (job protection)</div>
   <div class="legend-item"><div class="legend-swatch" style="background:#85B7EB"></div>CFRA (job protection)</div>
   <div class="legend-item"><div class="legend-swatch" style="background:#AFA9EC"></div>FMLA (job protection)</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#FAC775"></div>CA SDI (70-90%, cap $1,765/wk)</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#F0997B"></div>CA PFL (70-90%, cap $1,765/wk)</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#ED93B1"></div>Ryder STD (employer pay)</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#64C8C8"></div>SF PPLO (employer supplement)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#FAC775"></div>CA SDI (state, max $1,765/wk)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#F0997B"></div>CA PFL (state, max $1,765/wk)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#ED93B1"></div>Ryder STD via Lincoln (employer pay)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#64C8C8"></div>SF PPLO (tops up to $2,522/wk)</div>
   <div class="legend-item"><div class="legend-swatch" style="background:#B4B2A9"></div>Unpaid / PTO</div>
 </div>
 
@@ -91,10 +91,10 @@
 <table class="source-table">
   <thead><tr><th>Program</th><th>Source</th><th>Who pays</th><th>Under 1 yr?</th></tr></thead>
   <tbody>
-    <tr><td><strong>Ryder STD</strong></td><td>Lincoln Financial</td><td>Ryder (employer benefit)</td><td><span class="badge badge-maybe">80% for 12 wks*</span></td></tr>
-    <tr><td><strong>CA SDI</strong> (70-90%)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes (up to 52 wks, cap $1,765/wk)</span></td></tr>
-    <tr><td><strong>CA PFL</strong> (70-90%)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes (8 wks, cap $1,765/wk)</span></td></tr>
-    <tr><td><strong>SF PPLO</strong></td><td>Ryder (per SF ordinance)</td><td>Employer-funded (Ryder HR 03.32 POL)</td><td><span class="badge badge-yes">If 180+ days at Ryder, works in SF</span></td></tr>
+    <tr><td><strong>Ryder STD</strong></td><td>Lincoln Financial</td><td>Ryder, paid <em>net of</em> your state benefit</td><td><span class="badge badge-maybe">80% for 12 wks*</span></td></tr>
+    <tr><td><strong>CA SDI</strong> (max $1,765/wk)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes (up to 52 wks)</span></td></tr>
+    <tr><td><strong>CA PFL</strong> (max $1,765/wk)</td><td>CA EDD</td><td>Your payroll deductions (1.3%)</td><td><span class="badge badge-yes">Yes, 8 weeks regardless of delivery type</span></td></tr>
+    <tr><td><strong>SF PPLO</strong> (to $2,522/wk)</td><td>Ryder (per SF ordinance)</td><td>Employer-funded (Ryder HR 03.32 POL)</td><td><span class="badge badge-yes">If 180+ days at Ryder and you <em>work</em> in SF</span></td></tr>
     <tr><td><strong>FMLA / CFRA</strong></td><td>Federal / CA law</td><td>Unpaid (job protection)</td><td><span class="badge badge-no">FMLA: No</span></td></tr>
     <tr><td><strong>CA PDL</strong></td><td>CA law</td><td>Unpaid (job protection)</td><td><span class="badge badge-yes">Yes</span></td></tr>
   </tbody>
@@ -104,20 +104,21 @@
 <h2>How programs sequence (STD, then PFL)</h2>
 <div class="callout">
   <strong>The key insight:</strong> Ryder STD and CA PFL cover different phases of your leave and run back-to-back, not at the same time. This means they can add up to significant coverage.<br><br>
-  <strong>Phase 1: Disability (recovery after delivery)</strong><br>
-  Ryder STD is your primary income source. CA SDI also covers this phase, but the two offset each other. You receive the higher of the two, not both. File for both as a safety net in case STD is denied.<br>
-  CA SDI duration: up to 52 weeks per claim. For pregnancy, SDI typically covers up to 4 weeks before delivery + 6 weeks (vaginal) or 8 weeks (C-section) after. Your doctor certifies the exact period.<br><br>
+  <strong>Phase 1: Disability (pre-delivery and recovery)</strong><br>
+  <strong>Two payers, at the same time.</strong> CA EDD pays your state disability benefit, and Lincoln Financial pays the remainder up to your Ryder STD benefit level. These are not either/or, and you must file both claims: the state portion does not arrive on its own, and Lincoln calculates its payment net of what the state pays you.<br>
+  <strong>Duration is not the same for both.</strong> Ryder's STD benefit runs 12 weeks regardless of delivery type. The state disability period is what varies: typically up to 4 weeks before delivery plus 6 weeks (vaginal) or 8 weeks (C-section) after. Your doctor certifies the exact period.<br><br>
   <strong>Phase 2: Bonding (after disability ends)</strong><br>
-  CA PFL kicks in after disability ends. Ryder STD does not cover bonding. SF PPLO supplements PFL if you're in San Francisco.<br><br>
+  CA PFL kicks in after disability ends and runs <strong>8 weeks regardless of delivery type</strong>. SF PPLO supplements PFL if you work in San Francisco. Your CFRA job protection also starts here, when state disability ends, and runs 12 weeks. <strong>Do not read the 12-week CFRA bar as 12 weeks of PFL pay.</strong> CFRA is job protection, not income.<br><br>
   <strong>Total income replacement:</strong> Up to 12 weeks of Ryder STD during disability, then up to 8 weeks of CA PFL during bonding = up to 20 weeks of some level of pay. In practice, the disability phase is typically 6-8 weeks, so most employees see 14-16 weeks of income replacement total.<br><br>
-  <strong>For 1+ year at Ryder:</strong> STD pays 100% during disability, then CA PFL pays 70-90% (capped at $1,765/wk) during bonding.<br><br>
-  <strong>For under 1 year at Ryder:</strong> STD pays 80% during disability, then CA PFL pays 70-90% (capped at $1,765/wk) during bonding. Pre-existing condition exclusions may apply.
+  <strong>For 1+ year at Ryder:</strong> state disability plus Lincoln brings you to 100% of pay during disability. During bonding you drop to CA PFL, capped at $1,765/wk.<br><br>
+  <strong>For under 1 year at Ryder:</strong> the same two payers bring you to 80% of pay during disability, then CA PFL during bonding. Pre-existing condition exclusions may apply.
 </div>
 
 <h2>Action steps</h2>
 <div class="callout">
   <strong>As early as possible:</strong> Tell your manager. Loop in Laura Forte or Ashley Russell.<br><br>
-  <strong>6+ weeks before leave:</strong> File leave request on MyRyder. Contact Lincoln Financial. Start CA EDD application. All three tracks run in parallel.<br><br>
+  <strong>6+ weeks before leave:</strong> Contact Lincoln Financial and start your CA EDD application. Neither has an early-filing limit, so start them as soon as you can.<br><br>
+  <strong>About 30 days before leave:</strong> File your leave request on MyRyder. Ryder generally will not accept a request filed more than 30 days in advance, so do not plan on filing this one early. Confirm the exact window with Karen Rios.<br><br>
   <strong>2-3 weeks before leave:</strong> Get healthcare provider certifications. Upload to MyRyder and Lincoln. Submit CA SDI claim.<br><br>
   <strong>After birth:</strong> File CA PFL bonding claim through EDD. Notify Lincoln of delivery date and type.<br><br>
   <strong>Before returning:</strong> Contact Ryder and Lincoln 1-2 weeks before return. Get doctor's clearance note. Drug screen required if out 90+ days.
@@ -142,12 +143,12 @@
 </table>
 
 <div class="footer">
-  This guide is a planning tool, not an official benefits determination. Confirm all details with Laura Forte, Ryder HR, and CA EDD.<br>
-  Owner: Ashley Russell (People Ops) | Version 1.1 | August 2026
+  This guide is a planning tool, not an official benefits determination. During disability you are paid by CA EDD and Lincoln Financial together, not one or the other. SF PPLO eligibility is based on where you work, not where you live. Confirm all details with Laura Forte, Karen Rios, Ryder HR, and CA EDD.<br>
+  Owner: Ashley Russell (People Ops) | Version 1.2 | August 2026
 </div>
 
 <script>
-let scenario = 'vaginal', tenure = 'under1', sfResident = true;
+let scenario = 'vaginal', tenure = 'under1', sfWorker = true;
 
 function setScenario(s) {
   scenario = s;
@@ -160,7 +161,7 @@ function setTenure(t) {
   render();
 }
 function setSF(v) {
-  sfResident = v;
+  sfWorker = v;
   document.querySelectorAll('#sf-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&!v)||(i===1&&v)));
   render();
 }
@@ -176,11 +177,12 @@ function render() {
   const disEnd = birthWk + disWks;
   const bondEnd = disEnd + bondWks;
 
-  // Bonding pay depends on SF PPLO only
-  const bondingPay = sfResident ? '~100%' : '~70%';
-  const bondingSub = sfResident
-    ? 'CA PFL (~70%) + SF PPLO tops up to ~100%. Note: up to 2 weeks of accrued PTO is applied toward the PPLO supplement.'
-    : 'CA PFL only. STD does not cover bonding.';
+  // Bonding pay depends on SF PPLO only. Both programs are capped, so express
+  // the ceiling in dollars: percentages mislead at Baton salary levels.
+  const bondingPay = sfWorker ? 'Up to $2,522/wk' : 'Up to $1,765/wk';
+  const bondingSub = sfWorker
+    ? 'CA PFL (max $1,765/wk) plus SF PPLO, which tops the combined total up to $2,522/wk. That reaches 100% only if you earn under ~$131,000/yr. Up to 2 weeks of accrued PTO is applied toward the PPLO supplement.'
+    : 'CA PFL only, capped at $1,765/wk. That is 100% of pay only under ~$92,000/yr, and under 70% above ~$131,000/yr.';
 
   let html = '<div class="timeline-wrap"><div class="timeline-inner">';
   html += '<table class="timeline"><thead><tr><th style="width:140px;min-width:140px"></th>';
@@ -213,17 +215,17 @@ function render() {
   }
 
   html += `<tr><td colspan="${totalWks+2}" class="section-label">Job protection (unpaid)</td></tr>`;
-  html += barRow('CA PDL', 0, disEnd, '#5DCAA5', `${totalDis} weeks`, '#04342C');
+  html += barRow('CA PDL', 0, disEnd, '#5DCAA5', `${totalDis} weeks, unpaid`, '#04342C');
   html += tenure === 'over1'
-    ? barRow('FMLA', 0, 12, '#AFA9EC', '12 weeks', '#26215C')
+    ? barRow('FMLA', 0, 12, '#AFA9EC', '12 weeks, unpaid', '#26215C')
     : barRow('FMLA', 0, 0, '', '');
-  html += barRow('CFRA', disEnd, disEnd + 12, '#85B7EB', '12 weeks', '#042C53');
+  html += barRow('CFRA', disEnd, disEnd + 12, '#85B7EB', '12 weeks, unpaid (not PFL pay)', '#042C53');
 
   html += `<tr><td colspan="${totalWks+2}" class="section-label">Income replacement</td></tr>`;
-  html += barRow(`Ryder STD (${stdRate}%)`, 0, 12, '#ED93B1', `${stdRate}% pay, 12 wks`, '#4B1528');
-  html += barRow('CA SDI (70-90%)', 1, disEnd, '#FAC775', 'Offsets STD, cap $1,765/wk', '#412402');
-  html += barRow('CA PFL (70-90%)', disEnd, bondEnd, '#F0997B', `70-90%, ${bondWks} wks, cap $1,765/wk`, '#4A1B0C');
-  if (sfResident) html += barRow('SF PPLO (to 100%)', disEnd, bondEnd, '#64C8C8', 'Tops up PFL to ~100%', '#0A3D3D');
+  html += barRow('Lincoln / Ryder STD', 0, 12, '#ED93B1', `Pays the remainder up to ${stdRate}% of pay, 12 wks`, '#4B1528');
+  html += barRow('CA SDI (state)', 1, disEnd, '#FAC775', 'State portion, max $1,765/wk', '#412402');
+  html += barRow('CA PFL (state)', disEnd, bondEnd, '#F0997B', `${bondWks} wks any delivery type, max $1,765/wk`, '#4A1B0C');
+  if (sfWorker) html += barRow('SF PPLO', disEnd, bondEnd, '#64C8C8', 'Tops PFL up to $2,522/wk', '#0A3D3D');
   if (bondEnd < totalWks) html += barRow('Unpaid / PTO', bondEnd, totalWks + 1, '#B4B2A9', '', '#2C2C2A');
 
   html += '</tbody></table>';
@@ -233,31 +235,32 @@ function render() {
 
   const totalPaidWks = disWks + bondWks;
   let ph = '';
-  ph += `<div class="summary-card"><div class="summary-label">Phase 1: Disability (${disWks} weeks post-delivery)</div><div class="summary-value">${stdRate}% of base pay</div><div class="summary-sub">Ryder STD is primary. CA SDI offsets (up to 52 wks max, ~${totalDis} wks typical for pregnancy).</div></div>`;
-  ph += `<div class="summary-card"><div class="summary-label">Phase 2: Bonding (${bondWks} weeks after disability)</div><div class="summary-value">${bondingPay} of base pay</div><div class="summary-sub">${bondingSub}</div></div>`;
+  ph += `<div class="summary-card"><div class="summary-label">Phase 1: Disability</div><div class="summary-value">${stdRate}% of base pay</div><div class="summary-sub">Paid by two sources at once: CA EDD state disability (max $1,765/wk) plus Lincoln Financial for the remainder. Ryder's STD benefit runs <strong>12 weeks regardless of delivery type</strong>. The state disability period is ~${totalDis} weeks here (${preWks} pre-delivery + ${disWks} recovery) and is the part that varies with delivery type.</div></div>`;
+  ph += `<div class="summary-card"><div class="summary-label">Phase 2: Bonding (${bondWks} weeks, any delivery type)</div><div class="summary-value">${bondingPay}</div><div class="summary-sub">${bondingSub}</div></div>`;
   ph += `<div class="summary-card"><div class="summary-label">Total income replacement</div><div class="summary-value">${totalPaidWks} weeks</div><div class="summary-sub">${disWks} wks STD (disability) then ${bondWks} wks PFL (bonding). These run back-to-back, not at the same time.</div></div>`;
 
-  if (sfResident) {
-    ph += `<div class="summary-card"><div class="summary-label">SF PPLO effect</div><div class="summary-value">Bonding at ~100%</div><div class="summary-sub">SF PPLO closes the gap during bonding. The remaining gap is ${stdRate}% vs 100% during the disability phase only. Up to 2 wks PTO applied toward PPLO.</div></div>`;
+  if (sfWorker) {
+    ph += `<div class="summary-card"><div class="summary-label">SF PPLO effect</div><div class="summary-value">Bonding to $2,522/wk</div><div class="summary-sub">SF PPLO narrows the bonding gap but is itself capped. It reaches 100% of pay only under ~$131,000/yr. Up to 2 wks PTO applied toward PPLO.</div></div>`;
   } else {
-    ph += `<div class="summary-card"><div class="summary-label">Gap to full salary</div><div class="summary-value">Real</div><div class="summary-sub">${stdRate}% during disability, ~70% during bonding. No SF PPLO supplement outside San Francisco.</div></div>`;
+    ph += `<div class="summary-card"><div class="summary-label">Gap to full salary</div><div class="summary-value">Real</div><div class="summary-sub">${stdRate}% during disability, then a hard $1,765/wk ceiling during bonding. No SF PPLO supplement unless you work in San Francisco.</div></div>`;
   }
   document.getElementById('pay-summary').innerHTML = ph;
 
   let nh = '', pploNote = '';
-  if (sfResident) pploNote = '<div class="callout" style="margin-top:12px"><strong>SF PPLO details (Ryder policy HR 03.32 POL):</strong> Requires 180+ days at Ryder and 8+ hrs/week in SF. You must be receiving CA PFL to qualify. Up to 2 weeks of accrued PTO is applied toward the supplement (you still get paid, but it draws from your PTO bank first). If you voluntarily leave within 90 days of returning from leave, Ryder can request repayment of the PPLO supplement.</div>';
+  nh += '<div class="callout callout-warn" style="margin-bottom:12px"><strong>Watch the weekly cap, not the percentage.</strong> CA SDI and CA PFL are usually quoted at 70-90% of pay, but both are hard capped at <strong>$1,765/wk</strong> in 2026. Above roughly <strong>$131,000/yr</strong> that cap binds and you receive less than 70%. At $150,000/yr the state benefit replaces about 61% of pay; at $180,000, about 51%; at $220,000, about 42%. Most Baton salaries are above the point where the cap bites, so treat "70-90%" as a ceiling you will not reach. Model your own number in the <a href="https://aeruss-87.github.io/where-your-money-comes-from/" style="color:inherit;text-decoration:underline">companion pay tool</a>.</div>';
+  if (sfWorker) pploNote = '<div class="callout" style="margin-top:12px"><strong>SF PPLO details (Ryder policy HR 03.32 POL):</strong> Eligibility is based on <strong>where you work, not where you live</strong>: 180+ days at Ryder and regular hours worked in San Francisco. (Ryder policy and Baton\'s internal summary state the hours threshold differently, 8+ hrs/week vs 40% of hours. Confirm with Karen Rios.) You must be receiving CA PFL to qualify. Up to 2 weeks of accrued PTO is applied toward the supplement (you still get paid, but it draws from your PTO bank first). If you voluntarily leave within 90 days of returning from leave, Ryder can request repayment of the PPLO supplement.</div>';
   if (tenure === 'under1') {
-    if (sfResident) {
-      nh += '<div class="callout callout-warn" style="margin-bottom:12px"><strong>Under 1 year + SF resident:</strong> Phase 1 (disability): 80% pay via Ryder STD for up to 12 weeks. The gap here is 20% of base pay. Phase 2 (bonding): CA PFL (~70%) plus SF PPLO tops you up to ~100% of pay for 8 weeks. Total: up to 20 weeks of income replacement, with near-full pay during bonding.</div>';
+    if (sfWorker) {
+      nh += '<div class="callout callout-warn" style="margin-bottom:12px"><strong>Under 1 year, working in SF:</strong> Phase 1 (disability): CA EDD plus Lincoln brings you to 80% of pay for up to 12 weeks, so the gap is 20%. Phase 2 (bonding): CA PFL (max $1,765/wk) plus SF PPLO, topping the combined total to at most $2,522/wk for 8 weeks. Total: up to 20 weeks of income replacement.</div>';
     } else {
-      nh += '<div class="callout callout-danger" style="margin-bottom:12px"><strong>Under 1 year, outside SF:</strong> Phase 1 (disability): 80% pay via Ryder STD for up to 12 weeks. Phase 2 (bonding): ~70% via CA PFL for up to 8 weeks. No SF PPLO supplement. These run back-to-back, giving you up to 20 weeks of income replacement, but with a meaningful gap to full salary in both phases.</div>';
+      nh += '<div class="callout callout-danger" style="margin-bottom:12px"><strong>Under 1 year, not working in SF:</strong> Phase 1 (disability): CA EDD plus Lincoln brings you to 80% of pay for up to 12 weeks. Phase 2 (bonding): CA PFL alone, hard capped at $1,765/wk, for 8 weeks. No SF PPLO supplement. Up to 20 weeks of income replacement, with a real gap in both phases.</div>';
     }
     nh += '<div class="callout callout-warn"><strong>Pre-existing condition exclusion:</strong> Ryder\'s STD plan may deny coverage if you were pregnant before your coverage start date. Confirm your eligibility with Ryder HR before relying on STD income.</div>';
   } else {
-    if (sfResident) {
-      nh += '<div class="callout"><strong>1+ year + SF resident:</strong> You are eligible for FMLA, Ryder STD at 100%, and SF PPLO. Phase 1 (disability): 100% of base pay via STD. Phase 2 (bonding): CA PFL (~70%, capped at $1,765/wk) for 8 weeks, with SF PPLO topping you up to ~100%. Total: up to 20 weeks of income replacement.</div>';
+    if (sfWorker) {
+      nh += '<div class="callout"><strong>1+ year, working in SF:</strong> You are eligible for FMLA, Ryder STD, and SF PPLO. Phase 1 (disability): CA EDD plus Lincoln brings you to 100% of pay. Phase 2 (bonding): CA PFL (max $1,765/wk) plus SF PPLO, topping the combined total to at most $2,522/wk for 8 weeks. Total: up to 20 weeks of income replacement.</div>';
     } else {
-      nh += '<div class="callout callout-warn"><strong>1+ year, outside SF:</strong> You are eligible for FMLA and Ryder STD at 100%. Phase 1 (disability): 100% of base pay via STD. Phase 2 (bonding): CA PFL only, ~70% capped at $1,765/wk, for up to 8 weeks. No SF PPLO supplement, so the gap to full salary during bonding is real.</div>';
+      nh += '<div class="callout callout-warn"><strong>1+ year, not working in SF:</strong> You are eligible for FMLA and Ryder STD. Phase 1 (disability): CA EDD plus Lincoln brings you to 100% of pay. Phase 2 (bonding): CA PFL alone, hard capped at $1,765/wk, for 8 weeks. No SF PPLO supplement, so the drop at the start of bonding is steep.</div>';
     }
   }
   document.getElementById('notes-container').innerHTML = nh + pploNote;

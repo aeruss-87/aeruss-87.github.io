@@ -89,8 +89,8 @@
     <button class="active" onclick="setTenure('over1')">1+ year at Ryder</button>
   </div>
   <div class="tabs small" id="sf-tabs">
-    <button class="active" onclick="setSF(false)">Outside SF</button>
-    <button onclick="setSF(true)">SF resident</button>
+    <button class="active" onclick="setSF(false)">Do not work in SF</button>
+    <button onclick="setSF(true)">Work in SF</button>
   </div>
   <div class="tabs small" id="prebirth-tabs">
     <button class="active" onclick="setPreBirthSTD(false)">Standard</button>
@@ -119,14 +119,14 @@
 <div id="insights"></div>
 
 <div class="footer">
-  This tool is a planning estimate, not a benefits determination. CA SDI/PFL rates reflect 2026 SB 951 tiers ($1,765/wk cap). Ryder STD rates per Lincoln Financial policy (general benefit: 5 months; maternity: 12 weeks). SF PPLO per Ryder HR 03.32 POL ($2,522/wk cap). "Pre-birth STD (assumed)" scenario models an unconfirmed assumption: that pre-delivery disability is classified under Ryder's general STD benefit as a separate claim from the maternity STD benefit. Confirm all details with your People Ops team, Ryder HR, and Lincoln Financial.<br>
-  Companion to: Maternity Leave Timeline Guide | April 2026
+  This tool is a planning estimate, not a benefits determination. CA SDI/PFL rates reflect 2026 SB 951 tiers ($1,765/wk cap). Ryder STD rates per Lincoln Financial policy (general benefit: 5 months; maternity: 12 weeks). SF PPLO per Ryder HR 03.32 POL ($2,522/wk cap); eligibility is based on hours worked in San Francisco, not residence. During disability you are paid by CA EDD and Lincoln Financial together, not one or the other: Lincoln pays the remainder up to your STD benefit level, net of the state benefit. "Pre-birth STD (assumed)" scenario models an unconfirmed assumption: that pre-delivery disability is classified under Ryder's general STD benefit as a separate claim from the maternity STD benefit. Confirm all details with your People Ops team, Ryder HR, and Lincoln Financial.<br>
+  Companion to: Maternity Leave Timeline Guide | Updated August 2026
 </div>
 
 <div class="tooltip" id="tooltip"></div>
 
 <script>
-let scenario = 'vaginal', tenure = 'over1', sfResident = false, salary = 120000, preBirthSTD = false;
+let scenario = 'vaginal', tenure = 'over1', sfWorker = false, salary = 120000, preBirthSTD = false;
 
 const COLORS = {
   'Pre-birth STD': '#D4A5D6',
@@ -156,7 +156,7 @@ function setTenure(t) {
   render();
 }
 function setSF(v) {
-  sfResident = v;
+  sfWorker = v;
   document.querySelectorAll('#sf-tabs button').forEach((b,i) => b.classList.toggle('active', (i===0&&!v)||(i===1&&v)));
   render();
 }
@@ -175,6 +175,12 @@ function setPreBirthSTD(v) {
 function fmt$(n) { return '$' + Math.round(n).toLocaleString(); }
 function fmtPct(n) { return Math.round(n) + '%'; }
 
+// 2026 program ceilings. Declared at module scope: render() reads PPLO_WAGE_CAP
+// too, so keeping these inside computeWeeks() throws a ReferenceError on the SF path.
+const SDI_CAP = 1765;
+const PFL_CAP = 1765;
+const PPLO_WAGE_CAP = 2522; // SF PPLO caps total (PFL + PPLO) at this weekly amount
+
 function computeWeeks() {
   const weeklySalary = salary / 52;
   const preWks = 4;
@@ -192,9 +198,6 @@ function computeWeeks() {
 
   // SDI/PFL rate: 90% if salary < ~$76,440, else 70%
   const stateRate = (salary < 76440) ? 0.90 : 0.70;
-  const SDI_CAP = 1765;
-  const PFL_CAP = 1765;
-  const PPLO_WAGE_CAP = 2522; // SF PPLO caps total (PFL + PPLO) at this weekly amount
 
   const weeks = [];
   const showWeeks = pflEnd + 3; // show a few unpaid weeks after PFL ends
@@ -229,23 +232,25 @@ function computeWeeks() {
       const stdPay = weeklySalary * stdRate;
       const sdiPay = sdiActive ? Math.min(weeklySalary * stateRate, SDI_CAP) : 0;
 
-      if (stdPay >= sdiPay) {
-        sources[isPreBirthClaim ? 'Pre-birth STD' : 'Ryder STD'] = stdPay;
-      } else {
-        sources['CA SDI'] = sdiPay;
-      }
+      // You are paid by BOTH payers during disability. CA EDD pays the state
+      // benefit; Lincoln pays the remainder up to your STD benefit level.
+      // Lincoln's payment is calculated net of what the state pays you.
+      const disabilityTotal = Math.max(stdPay, sdiPay);
+      if (sdiPay > 0.50) sources['CA SDI'] = sdiPay;
+      const lincolnShare = Math.max(0, disabilityTotal - sdiPay);
+      if (lincolnShare > 0.50) sources[isPreBirthClaim ? 'Pre-birth STD' : 'Ryder STD'] = lincolnShare;
 
     } else if (stdActive && pflActive) {
       // STD and PFL overlap (rare in preBirthSTD mode, common in standard mode)
       const stdPay = weeklySalary * stdRate;
       const pflPay = Math.min(weeklySalary * stateRate, PFL_CAP);
-      if (stdPay >= pflPay) {
-        sources['Ryder STD'] = stdPay;
-      } else {
-        sources['CA PFL'] = pflPay;
-      }
-      if (sfResident) {
-        const paid = Math.max(stdPay, pflPay);
+      // Same split logic: the state pays its portion, Lincoln pays the remainder.
+      const overlapTotal = Math.max(stdPay, pflPay);
+      if (pflPay > 0.50) sources['CA PFL'] = pflPay;
+      const lincolnOverlap = Math.max(0, overlapTotal - pflPay);
+      if (lincolnOverlap > 0.50) sources['Ryder STD'] = lincolnOverlap;
+      if (sfWorker) {
+        const paid = overlapTotal;
         const pploCappedWage = Math.min(weeklySalary, PPLO_WAGE_CAP);
         const pplo = Math.max(0, pploCappedWage - paid);
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
@@ -256,7 +261,7 @@ function computeWeeks() {
       sources['CA PFL'] = pflPay;
 
       // SF PPLO: tops PFL up to 100% of salary, capped at $2,522/wk total
-      if (sfResident) {
+      if (sfWorker) {
         const pploCappedWage = Math.min(weeklySalary, PPLO_WAGE_CAP);
         const pplo = Math.max(0, pploCappedWage - pflPay);
         if (pplo > 0.50) sources['SF PPLO'] = pplo;
@@ -450,14 +455,14 @@ function render() {
   }
 
   if (tenure === 'over1') {
-    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>Full salary during disability.</strong> With 1+ year at Ryder, STD pays 100% of salary through the disability phase. During PFL bonding, income drops to the state benefit level (${salary < 76440 ? '90' : '70'}% of salary, capped at $1,765/wk).${sfResident ? ' SF PPLO helps close the gap during bonding.' : ''}</div>`;
+    insHtml += `<div class="callout" style="margin-bottom:12px"><strong>Full salary during disability, from two payers.</strong> With 1+ year at Ryder you receive 100% of salary during disability, but it arrives as two payments: CA EDD pays the state disability benefit and Lincoln Financial pays the remainder. You must file both claims. During PFL bonding, income drops to the state benefit level (${salary < 76440 ? '90' : '70'}% of salary, capped at $1,765/wk).${sfWorker ? ' SF PPLO helps close the gap during bonding.' : ''}</div>`;
   }
 
-  if (tenure === 'under1' && !sfResident) {
-    insHtml += `<div class="callout callout-danger" style="margin-bottom:12px"><strong>Income gap throughout leave.</strong> Under 1 year at Ryder means STD pays 80% during disability. During bonding, PFL pays ~${salary < 76440 ? '90' : '70'}% (capped at $1,765/wk). No SF PPLO supplement available outside San Francisco.</div>`;
+  if (tenure === 'under1' && !sfWorker) {
+    insHtml += `<div class="callout callout-danger" style="margin-bottom:12px"><strong>Income gap throughout leave.</strong> Under 1 year at Ryder means your disability income tops out at 80% of salary, paid as a state benefit from CA EDD plus a remainder from Lincoln Financial. During bonding, PFL pays ~${salary < 76440 ? '90' : '70'}% (capped at $1,765/wk). No SF PPLO supplement available outside San Francisco.</div>`;
   }
 
-  if (sfResident) {
+  if (sfWorker) {
     const pploGetsTo100 = weeklySalary <= PPLO_WAGE_CAP;
     if (pploGetsTo100) {
       insHtml += `<div class="callout" style="margin-bottom:12px"><strong>SF PPLO closes the bonding gap.</strong> During disability, STD covers 80% (20% gap). But during bonding, SF PPLO tops your PFL up to ~100%. You actually get <em>more</em> pay during bonding than disability.</div>`;
