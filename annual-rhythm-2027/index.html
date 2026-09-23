@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baton Annual Rhythm 2027 (Proposed)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #F7F6F2;
+    color: #2C2C2C;
+    padding: 48px 48px 64px;
+    min-width: 960px;
+  }
+
+  h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1A;
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 30px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    align-items: center;
+    gap: 6px 18px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    padding: 12px 16px;
+    background: #EFEDE8;
+    border-radius: 8px;
+    width: fit-content;
+  }
+  .legend-group { display: flex; gap: 14px; align-items: center; }
+  .legend-sep { width: 1px; height: 14px; background: #CCC8BE; margin: 0 4px; }
+  .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #555; }
+  .swatch { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+
+  /* Chart */
+  .chart { width: 100%; }
+  .LABEL_W { width: 120px; }
+
+  .section-head {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #BBB8B0;
+    padding-left: 120px;
+    margin: 28px 0 10px;
+  }
+
+  .chart-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    position: relative;
+  }
+
+  .row-label {
+    width: 120px;
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #777;
+    text-align: right;
+    padding-right: 14px;
+    line-height: 1.2;
+  }
+
+  .track {
+    flex: 1;
+    height: 34px;
+    background: #E9E6E0;
+    border-radius: 5px;
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Month grid lines inside track */
+  .track::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+    background:
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent calc(8.493% - 1px),
+        rgba(255,255,255,0.5) calc(8.493% - 1px),
+        rgba(255,255,255,0.5) 8.493%
+      );
+    pointer-events: none;
+  }
+
+  .bar {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    cursor: default;
+    min-width: 6px;
+    transition: filter 0.15s;
+    z-index: 2;
+  }
+  .bar:hover { filter: brightness(0.92); }
+
+  /* Overlap bands */
+  .overlap-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(210, 70, 20, 0.10);
+    border-left: 1.5px dashed rgba(200, 65, 20, 0.45);
+    border-right: 1.5px dashed rgba(200, 65, 20, 0.45);
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 0;
+  }
+  .overlap-label {
+    position: absolute;
+    bottom: calc(100% + 7px);
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    color: #B84020;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: #F7F6F2;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid rgba(200, 65, 20, 0.30);
+  }
+
+  .bar-label {
+    font-size: 10px;
+    font-weight: 500;
+    white-space: nowrap;
+    padding: 0 6px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Phase colors */
+  .c-okr-prep  { background: #B8D4A8; color: #1E4A10; }
+  .c-review    { background: #EDD98E; color: #6A4E0A; }
+  .c-setting   { background: #F09E8C; color: #7A1F10; }
+  .c-work      { background: #A4CEED; color: #1A3D62; }
+  .c-prep      { background: #C4B0E8; color: #3E1F7A; }
+  .c-feedback  { background: #F8CC50; color: #5A3E00; }
+  .c-assess    { background: #5CBFA8; color: #0A3D30; }
+  .c-results   { background: #7EC87E; color: #0E3D0E; }
+  .c-calib     { background: #F5B8A0; color: #8A3020; }
+  .c-self-eval { background: #A8C8F0; color: #1A3A70; }
+  .c-promo     { background: #F0B030; color: #5A3800; }
+  .c-upward    { background: #F0A868; color: #6B3000; }
+
+  /* Month header */
+  .month-header {
+    padding-left: 120px;
+    position: relative;
+    height: 22px;
+    margin-bottom: 6px;
+  }
+  .month-label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: 500;
+    color: #AAA;
+    transform: translateX(-50%);
+    user-select: none;
+  }
+
+  /* Today marker */
+  .today-marker {
+    position: absolute;
+    top: -2px;
+    bottom: -2px;
+    width: 2px;
+    background: #4A7FD4;
+    border-radius: 1px;
+    z-index: 20;
+  }
+  .today-label {
+    position: absolute;
+    top: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    color: #4A7FD4;
+    white-space: nowrap;
+    letter-spacing: 0.05em;
+  }
+
+  /* Separator */
+  .separator { height: 1px; background: #DDD9D2; margin: 20px 0 20px 120px; }
+
+  /* Tooltip */
+  .bar[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2C2C2C;
+    color: #FFF;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+
+  /* Trigger callout */
+  .triggers {
+    margin-top: 40px;
+    display: flex;
+    gap: 16px;
+  }
+  .trigger-card {
+    flex: 1;
+    padding: 18px 20px;
+    border-radius: 8px;
+    border-left: 4px solid;
+  }
+  .trigger-card.jan { background: #FFF5E8; border-color: #E8904A; }
+  .trigger-card.may { background: #F2F0FD; border-color: #8A6AD4; }
+  .trigger-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+  .trigger-card.jan h3 { color: #B86020; }
+  .trigger-card.may h3 { color: #5A3AAA; }
+  .trigger-card p { font-size: 12px; color: #555; line-height: 1.6; }
+
+  /* Overlap callout */
+  .overlap-card {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: #FFF8F0;
+    border-radius: 8px;
+    border: 1px solid #F0D8B8;
+  }
+  .overlap-card h3 { font-size: 12px; font-weight: 700; color: #AA5020; margin-bottom: 6px; }
+  .overlap-card p { font-size: 12px; color: #666; line-height: 1.6; }
+
+  .remote-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: rgba(220, 80, 130, 0.09);
+    border-left: 1px dashed rgba(210, 70, 120, 0.38);
+    border-right: 1px dashed rgba(210, 70, 120, 0.38);
+    z-index: 0;
+    cursor: help;
+  }
+  .remote-band[title]:hover::after,
+  .holiday-band[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2C2C2C;
+    color: #FFF;
+    padding: 5px 9px;
+    border-radius: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .holiday-band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    min-width: 5px;
+    background: rgba(220, 80, 130, 0.15);
+    border-left: 1.5px solid rgba(210, 70, 120, 0.55);
+    border-right: 1.5px solid rgba(210, 70, 120, 0.55);
+    z-index: 0;
+    cursor: help;
+  }
+
+  .options-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #5A3AAA;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  /* Ryder merit close marker */
+  .merit-marker {
+    position: absolute; top: -2px; bottom: -2px; width: 2px;
+    background: #B02E2E; border-radius: 1px; z-index: 20;
+  }
+  .merit-label {
+    position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; font-weight: 700; color: #B02E2E; white-space: nowrap;
+    letter-spacing: 0.05em; background: #F7F6F2; padding: 0 4px;
+  }
+  /* Conflict band on a single row */
+  .conflict-band {
+    position: absolute; top: 0; bottom: 0;
+    background: rgba(200, 40, 40, 0.14);
+    border-left: 1.5px dashed rgba(190, 40, 40, 0.65);
+    border-right: 1.5px dashed rgba(190, 40, 40, 0.65);
+    z-index: 3; cursor: help;
+  }
+  .conflict-label {
+    position: absolute; top: calc(100% + 5px); left: 50%; transform: translateX(-50%);
+    font-size: 9px; font-weight: 700; color: #B02020; white-space: nowrap;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    background: #F7F6F2; padding: 1px 5px; border-radius: 3px;
+    border: 1px solid rgba(190,40,40,0.35);
+  }
+  .conflict-band[title]:hover::after {
+    content: attr(title); position: absolute; bottom: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%); background: #2C2C2C; color: #FFF; padding: 5px 9px;
+    border-radius: 5px; font-size: 11px; white-space: nowrap; z-index: 100;
+    pointer-events: none; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .decision-card { background: #F2F0FD; border-color: #8A6AD4; }
+  .note-card { margin-top: 16px; padding: 14px 18px; background: #FFF8F0;
+    border-radius: 8px; border: 1px solid #F0D8B8; }
+  .note-card h3 { font-size: 12px; font-weight: 700; color: #AA5020; margin-bottom: 6px; }
+  .note-card p { font-size: 12px; color: #666; line-height: 1.6; }
+</style>
+</head>
+<body>
+
+<h1>Baton Annual Rhythm 2027 <span style="font-weight:400;color:#999">(Proposed)</span></h1>
+<p class="subtitle">Not approved. Draft for Grant, built 2026-09-22. Hover any bar for dates. Red line = Ryder merit close, Oct 1.</p>
+
+<div class="legend">
+  <div class="legend-group">
+    <span style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.08em;">OKRs</span>
+    <div class="legend-item"><div class="swatch c-okr-prep"></div> OKR Prep (6 wks)</div>
+    <div class="legend-item"><div class="swatch c-review"></div> Review</div>
+    <div class="legend-item"><div class="swatch c-setting"></div> OKR Week</div>
+    <div class="legend-item"><div class="swatch c-work"></div> Work Quarter</div>
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-group">
+    <span style="font-size:11px;font-weight:600;color:#999;text-transform:uppercase;letter-spacing:0.08em;">Performance</span>
+    <div class="legend-item"><div class="swatch c-prep"></div> Prep</div>
+    <div class="legend-item"><div class="swatch c-feedback"></div> 360 Peer Feedback</div>
+    <div class="legend-item"><div class="swatch c-upward"></div> Upward Feedback (Q1 only)</div>
+    <div class="legend-item"><div class="swatch c-self-eval"></div> Self-Eval</div>
+    <div class="legend-item"><div class="swatch c-assess"></div> Assessment</div>
+    <div class="legend-item"><div class="swatch c-calib"></div> Calibration</div>
+    <div class="legend-item"><div class="swatch c-promo"></div> Promo Committee</div>
+    <div class="legend-item"><div class="swatch c-results"></div> Results</div>
+  </div>
+  <div class="legend-sep"></div>
+  <div class="legend-group">
+    <div class="legend-item"><div style="width:10px;height:12px;background:rgba(220,80,130,0.12);border:1px dashed rgba(210,70,120,0.50);border-radius:1px;flex-shrink:0"></div> Remote week / Holiday</div>
+  </div>
+</div>
+
+<div class="chart">
+
+  <!-- Month header -->
+  <div class="month-header">
+    <span class="month-label" style="left:0%">Jan</span>
+    <span class="month-label" style="left:8.49%">Feb</span>
+    <span class="month-label" style="left:16.16%">Mar</span>
+    <span class="month-label" style="left:24.66%">Apr</span>
+    <span class="month-label" style="left:32.88%">May</span>
+    <span class="month-label" style="left:41.37%">Jun</span>
+    <span class="month-label" style="left:49.59%">Jul</span>
+    <span class="month-label" style="left:58.08%">Aug</span>
+    <span class="month-label" style="left:66.58%">Sep</span>
+    <span class="month-label" style="left:74.79%">Oct</span>
+    <span class="month-label" style="left:83.29%">Nov</span>
+    <span class="month-label" style="left:91.51%">Dec</span>
+    <span class="month-label" style="left:100%">→</span>
+  </div>
+
+  <!-- OKR Section -->
+  <div class="section-head">OKR Cycles</div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Q1 OKRs</div>
+    <div class="track">
+      <div class="bar c-okr-prep" style="left:0.00%;width:2.19%" title="Q1 OKR Prep: started Dec 1, 2026 (shown from Jan 1)">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-review" style="left:0.82%;width:1.37%" title="Q1 OKR Review: Jan 4 to 8"></div>
+      <div class="bar c-setting" style="left:2.74%;width:1.37%" title="Q1 OKR Week: Jan 11 to 15 (outing Thu Jan 14)"></div>
+      <div class="bar c-work" style="left:4.66%;width:18.63%" title="Q1 Work: Jan 18 to Mar 26">
+        <span class="bar-label">Q1 Work</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Q2 OKRs</div>
+    <div class="track">
+      <div class="bar c-okr-prep" style="left:14.25%;width:10.96%" title="Q2 OKR Prep: Feb 22 to Apr 2">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-review" style="left:23.84%;width:1.37%" title="Q2 OKR Review: Mar 29 to Apr 2"></div>
+      <div class="bar c-setting" style="left:25.75%;width:1.37%" title="Q2 OKR Week: Apr 5 to 9 (outing Thu Apr 8)"></div>
+      <div class="bar c-work" style="left:27.67%;width:22.47%" title="Q2 Work: Apr 12 to Jul 2">
+        <span class="bar-label">Q2 Work</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Q3 OKRs</div>
+    <div class="track">
+      <div class="bar c-okr-prep" style="left:41.10%;width:10.96%" title="Q3 OKR Prep: May 31 to Jul 9">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-review" style="left:48.77%;width:1.37%" title="Q3 OKR Review: Jun 28 to Jul 2"></div>
+      <div class="bar c-setting" style="left:52.60%;width:1.37%" title="Q3 OKR Week: Jul 12 to 16 (outing Thu Jul 15). July 4 week skipped"></div>
+      <div class="bar c-work" style="left:54.52%;width:18.63%" title="Q3 Work: Jul 19 to Sep 24">
+        <span class="bar-label">Q3 Work</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Q4 OKRs</div>
+    <div class="track">
+      <div class="bar c-okr-prep" style="left:64.11%;width:10.96%" title="Q4 OKR Prep: Aug 23 to Oct 1">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-review" style="left:73.70%;width:1.37%" title="Q4 OKR Review: Sep 27 to Oct 1. Assessments locked Thu Sep 30"></div>
+      <div class="bar c-setting" style="left:75.62%;width:1.37%" title="Q4 OKR Week: Oct 4 to 8 (outing Thu Oct 7)"></div>
+      <div class="bar c-work" style="left:77.53%;width:22.47%" title="Q4 Work: Oct 11 to Dec 31">
+        <span class="bar-label">Q4 Work</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="separator"></div>
+
+  <div class="section-head">Q1 Performance Cycle (settled)</div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Q1 Performance</div>
+    <div class="track">
+      <div class="bar c-prep" style="left:0.00%;width:7.95%" title="Q1 Perf Prep: opened Dec 14, 2026 (shown from Jan 1). Promo candidates confirmed Fri Jan 22, manager training Jan 25 to 29, peer requests Fri Jan 29">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:8.49%;width:1.37%" title="Q1 360 Peer Feedback: Feb 1 to 5 (in office)">
+        <span class="bar-label" style="font-size:9px">Peer</span>
+      </div>
+      <div class="bar c-upward" style="left:10.41%;width:1.37%" title="Q1 Upward Feedback: Feb 8 to 12. Q1 only, not run in Q3">
+        <span class="bar-label" style="font-size:9px">Upward</span>
+      </div>
+      <div class="bar c-self-eval" style="left:12.33%;width:1.37%" title="Q1 Self-Eval: Feb 15 to 19. Inside the February remote week, which is fine since self-eval is solo writing">
+        <span class="bar-label" style="font-size:9px">Self-Eval</span>
+      </div>
+      <div class="bar c-assess" style="left:14.25%;width:1.37%" title="Q1 Assessment: Feb 22 to 26">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-calib" style="left:16.16%;width:1.37%" title="Q1 Calibration: Mar 1 to 5">
+        <span class="bar-label" style="font-size:9px">Calib</span>
+      </div>
+      <div class="bar c-promo" style="left:18.08%;width:0.27%" title="Q1 Promotion Committee: Mon Mar 8"></div>
+      <div class="bar c-results" style="left:18.36%;width:3.01%" title="Q1 Results: Mar 9 to 19, wrap Fri Mar 19. Buffer Mar 22 to 26">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="separator" style="margin-top:24px;margin-bottom:4px"></div>
+  <div class="section-head">Q3 Performance Cycle: two options for Grant (decision 5a)</div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35"><span class="options-label">Option A &#9733;</span><br><span style="font-size:10px;font-weight:400;color:#5A3AAA">Wrap Sep 10</span></div>
+    <div class="track" style="outline:2px solid rgba(138,106,212,0.40);outline-offset:2px">
+      <div class="bar c-prep" style="left:48.77%;width:9.04%" title="Prep: Jun 28 to Jul 30. Manager training Jul 19 to 23, clear of the Q3 OKR week">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:58.36%;width:1.37%" title="Option A Peer Feedback: Aug 2 to 6. Inside the August remote week, fine since peer feedback is async">
+        <span class="bar-label" style="font-size:9px">Feedback</span>
+      </div>
+      <div class="bar c-self-eval" style="left:60.27%;width:1.37%" title="Option A Self-Eval: Aug 9 to 13">
+        <span class="bar-label" style="font-size:9px">Self-Eval</span>
+      </div>
+      <div class="bar c-assess" style="left:62.19%;width:1.37%" title="Option A Assessment: Aug 16 to 20">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-calib" style="left:64.11%;width:1.37%" title="Option A Calibration: Aug 23 to 27 (in office)">
+        <span class="bar-label" style="font-size:9px">Calib</span>
+      </div>
+      <div class="bar c-promo" style="left:66.03%;width:0.27%" title="Option A Promotion Committee: Mon Aug 30 (in office)"></div>
+      <div class="bar c-results" style="left:66.30%;width:3.01%" title="Option A Results: Aug 31 to Sep 10, wrap Fri Sep 10. Two clear weeks before Q4 OKR Review">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-row">
+    <div class="row-label" style="line-height:1.35">Option B<br><span style="font-size:10px;font-weight:400;color:#AAA">Wrap Sep 3</span></div>
+    <div class="track">
+      <div class="conflict-band" style="left:52.60%;width:1.37%" title="Manager training Jul 12 to 16 lands inside the Q3 OKR week"><span class="conflict-label">OKR week hit</span></div>
+      <div class="bar c-prep" style="left:46.85%;width:9.04%" title="Prep: Jun 21 to Jul 23. Manager training Jul 12 to 16 collides with the Q3 OKR week">
+        <span class="bar-label">Prep</span>
+      </div>
+      <div class="bar c-feedback" style="left:56.44%;width:1.37%" title="Option B Peer Feedback: Jul 26 to 30">
+        <span class="bar-label" style="font-size:9px">Feedback</span>
+      </div>
+      <div class="bar c-self-eval" style="left:58.36%;width:1.37%" title="Option B Self-Eval: Aug 2 to 6">
+        <span class="bar-label" style="font-size:9px">Self-Eval</span>
+      </div>
+      <div class="bar c-assess" style="left:60.27%;width:1.37%" title="Option B Assessment: Aug 9 to 13">
+        <span class="bar-label" style="font-size:9px">Assess</span>
+      </div>
+      <div class="bar c-calib" style="left:62.19%;width:1.37%" title="Option B Calibration: Aug 16 to 20">
+        <span class="bar-label" style="font-size:9px">Calib</span>
+      </div>
+      <div class="bar c-promo" style="left:64.11%;width:0.27%" title="Option B Promotion Committee: Mon Aug 23"></div>
+      <div class="bar c-results" style="left:64.38%;width:3.01%" title="Option B Results: Aug 24 to Sep 3, wrap Fri Sep 3. Four clear weeks before merit close">
+        <span class="bar-label">Results</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div style="height:18px"></div>
+
+<div class="triggers">
+  <div class="trigger-card decision-card">
+    <h3>Option A: results wrap Fri Sep 10 (recommended)</h3>
+    <p>Kickoff Mon Aug 2. Leaves <strong>two clear weeks</strong> (Sep 13 to 24) plus the Q4 OKR Review week before Ryder&rsquo;s Oct 1 merit close. Manager training Jul 19 to 23 clears both the July 4 holiday week and the Q3 OKR week. Promotion Committee lands on a clean Monday in office. The only overlap is peer feedback inside the August remote week, which is async form completion.</p>
+  </div>
+  <div class="trigger-card jan">
+    <h3>Option B: results wrap Fri Sep 3</h3>
+    <p>Kickoff Mon Jul 26. This is the closest achievable reading of &ldquo;end of August.&rdquo; It buys two more weeks of daylight before merit close, but <strong>manager training falls inside the Q3 OKR week</strong> (Jul 12 to 16), the one week of the quarter that is in office with a Thursday outing and travel for remote staff.</p>
+  </div>
+</div>
+
+<div class="note-card">
+  <h3>Why these two, and what a literal end of August would cost</h3>
+  <p>
+    <strong>Where this came from:</strong> leadership asked for the Q3 cycle to be pulled earlier so it clears Ryder&rsquo;s comp window with room to spare. The reasoning was that if a cycle surfaces a significant comp change, or a conversation needs more time, there should be real room to handle it before merit closes rather than a single week.
+    <br><br>
+    <strong>Why the old plan failed the test:</strong> the August draft offered an Aug 9 or Aug 16 kickoff, wrapping Sep 17 or Sep 24. Aug 16 leaves one week. Aug 9 nominally leaves two, but the second is Q4 OKR Review week with assessments locking Thu Sep 30, so in practice it also leaves one.
+    <br><br>
+    <strong>A literal end of August is worse than Option B.</strong> Wrapping Fri Aug 27 needs a Jul 19 kickoff, which puts manager training in the July 4 holiday week and sends peer requests out on the Friday of the Q3 OKR week. Every week earlier than Option A drags prep one week earlier too, and Jul 12 to 16 is where it breaks.
+    <br><br>
+    <strong>Q1 gained a week, and one thing had to move with it.</strong> The Q1 2026 cycle ran an upward feedback week that the August draft had dropped. Adding it back pushes Q1 from six phases to seven, so the cycle starts a week earlier (360 peer feedback Feb 1 rather than Feb 8) instead of running a week later, which would have wiped out the buffer before Q2 OKR Review. Every phase from self-eval onward keeps its original dates. The knock-on: the <strong>Q1 engagement survey has to move</strong>, from Jan 25 to Feb 5 (which would now still be open at kickoff) to Jan 19 to Jan 29. Upward feedback is Q1 only and is not run in Q3.
+    <br><br>
+    <strong>Still open on this page:</strong> the March remote week is shown at Mar 8 to 12 as drafted, but it is decision 6 and not settled (Mar 22 and Mar 29 are live alternatives). December is shown as two remote weeks, which is decision 1. The holiday bands assume Baton sets its own list, which is decision 7.
+  </p>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var tracks = document.querySelectorAll('.track');
+    var remoteWeeks = [
+      { left: '12.33%', width: '1.37%', title: 'Remote week: Feb 15 to 19' },
+      { left: '18.08%', width: '1.37%', title: 'Remote week (decision 6, not settled): Mar 8 to 12' },
+      { left: '33.42%', width: '1.37%', title: 'Remote week: May 3 to 7' },
+      { left: '43.01%', width: '1.37%', title: 'Remote week: Jun 7 to 11' },
+      { left: '58.36%', width: '1.37%', title: 'Remote week: Aug 2 to 6' },
+      { left: '69.86%', width: '1.37%', title: 'Remote week: Sep 13 to 17' },
+      { left: '89.04%', width: '0.82%', title: 'Remote week: Nov 22 to 24' },
+      { left: '96.71%', width: '3.29%', title: 'Remote week: Dec 20 to 31 (decision 1, two weeks recommended)' }
+    ];
+    var holidays = [
+      { left: '0.00%', title: "New Year's Day: Fri Jan 1" },
+      { left: '4.66%', title: "MLK Day: Mon Jan 18 (not on Ryder's list, decision 7)" },
+      { left: '41.10%', title: "Memorial Day: Mon May 31" },
+      { left: '50.68%', title: "Independence Day observed: Mon Jul 5" },
+      { left: '67.95%', title: "Labor Day: Mon Sep 6" },
+      { left: '89.86%', title: "Thanksgiving: Thu Nov 25" },
+      { left: '90.14%', title: "Day after Thanksgiving: Fri Nov 26" },
+      { left: '92.05%', title: "Baton Special Holiday: Fri Dec 3 (decision 4)" },
+      { left: '97.53%', title: "Christmas Eve observed: Thu Dec 23 (decisions 2, 7)" },
+      { left: '97.81%', title: "Christmas Day observed: Fri Dec 24" },
+      { left: '99.45%', title: "New Year's Eve observed: Thu Dec 30 (decisions 3, 7)" },
+      { left: '99.73%', title: "New Year's Day 2028 observed: Fri Dec 31" }
+    ];
+    tracks.forEach(function (track) {
+      remoteWeeks.forEach(function (rw) {
+        var band = document.createElement('div');
+        band.className = 'remote-band';
+        band.style.left = rw.left; band.style.width = rw.width;
+        band.title = rw.title;
+        track.insertBefore(band, track.firstChild);
+      });
+      holidays.forEach(function (h) {
+        var band = document.createElement('div');
+        band.className = 'holiday-band';
+        band.style.left = h.left; band.style.width = '0.27%';
+        band.title = h.title;
+        track.insertBefore(band, track.firstChild);
+      });
+    });
+    tracks.forEach(function (track, i) {
+      var m = document.createElement('div');
+      m.className = 'merit-marker';
+      m.style.left = '74.79%';
+      if (i === 0) {
+        var lbl = document.createElement('span');
+        lbl.className = 'merit-label';
+        lbl.textContent = 'RYDER MERIT CLOSE';
+        m.appendChild(lbl);
+      }
+      track.appendChild(m);
+    });
+  });
+</script>
+</body>
+</html>
