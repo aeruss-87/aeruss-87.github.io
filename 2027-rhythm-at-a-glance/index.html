@@ -8,10 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: a 59-week strip from mid-November 2026 through 2027 with five lanes (annual goals and Q1 OKR prep, OKR Week, performance, remote, holidays), a self-eval spacing bracket under it, then the two six-week cycles as tables. */
+/* Layout: a 59-week strip from mid-November 2026 through 2027 with six lanes (annual goals and Q1 OKR prep, SLT offsites, OKR Week, performance, remote, holidays), a self-eval spacing bracket under it, then the two six-week cycles as tables. */
 :root {
   --bg: #F3F5F7; --surface: #FFFFFF; --ink: #17202A; --muted: #5A6574; --line: #D8DEE5; --track: #EAEEF2;
-  --perf: #3A48B5; --perf-soft: #CBD1F3; --perf-se: #7B3FB0; --okr: #A86400; --okr-soft: #F2DDB6; --remote: #21825A; --hol: #6F7B8A; --merit: #CF352B;
+  --perf: #3A48B5; --perf-soft: #CBD1F3; --perf-se: #7B3FB0; --okr: #A86400; --okr-soft: #F2DDB6; --remote: #21825A; --hol: #6F7B8A; --merit: #CF352B; --slt: #BE3F66;
   --on-strong: #FFFFFF; --focus: #3A48B5;
   --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -20,11 +20,11 @@
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --bg: #0F141A; --surface: #161D25; --ink: #E5EAF0; --muted: #98A4B3; --line: #2A3440; --track: #1D2630;
-  --perf: #8592F2; --perf-soft: #2D356B; --perf-se: #C08CF0; --okr: #E3A13D; --okr-soft: #4F3A14; --remote: #4DC28B; --hol: #8C97A5; --merit: #FF6457;
+  --perf: #8592F2; --perf-soft: #2D356B; --perf-se: #C08CF0; --okr: #E3A13D; --okr-soft: #4F3A14; --remote: #4DC28B; --hol: #8C97A5; --merit: #FF6457; --slt: #E57A9A;
   --on-strong: #0F141A; --focus: #8592F2; color-scheme: dark; } }
 :root[data-theme="dark"] {
   --bg: #0F141A; --surface: #161D25; --ink: #E5EAF0; --muted: #98A4B3; --line: #2A3440; --track: #1D2630;
-  --perf: #8592F2; --perf-soft: #2D356B; --perf-se: #C08CF0; --okr: #E3A13D; --okr-soft: #4F3A14; --remote: #4DC28B; --hol: #8C97A5; --merit: #FF6457;
+  --perf: #8592F2; --perf-soft: #2D356B; --perf-se: #C08CF0; --okr: #E3A13D; --okr-soft: #4F3A14; --remote: #4DC28B; --hol: #8C97A5; --merit: #FF6457; --slt: #E57A9A;
   --on-strong: #0F141A; --focus: #8592F2; color-scheme: dark; }
 
 * { box-sizing: border-box; }
@@ -52,6 +52,8 @@ header { display: grid; gap: 8px; }
 .bar.perf.se { background: var(--perf-se); color: var(--on-strong); }
 .bar.perf.prep { background: var(--perf-soft); color: var(--ink); }
 .bar.goals { background: var(--okr-soft); color: var(--ink); }
+.bar.slt { background: var(--slt); color: var(--on-strong); font-size: 10px; }
+.bar.slt.open { background: transparent; border: 2px dashed var(--slt); color: var(--slt); }
 .bar.remote { background: var(--remote); color: var(--on-strong); }
 .bar.remote.open { background: transparent; border: 2px dashed var(--remote); color: var(--remote); }
 .bar.hol { background: transparent; color: var(--hol); font-size: 15px; }
@@ -94,13 +96,14 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
   <header>
     <div class="eyebrow">Baton annual rhythm · 2027 proposal</div>
     <h1>The weeks that matter in 2027</h1>
-    <p class="lede">The 2027 annual-goals timeline and Q1 OKR runway, four OKR Weeks, two six-week performance cycles with a manager prep week ahead of each, remote weeks and holidays.</p>
+    <p class="lede">The 2027 annual-goals timeline and Q1 OKR runway, SLT offsites, four OKR Weeks, two six-week performance cycles with a manager prep week ahead of each, remote weeks and holidays.</p>
   </header>
 
   <section class="board" aria-label="2027 calendar strip">
     <div class="scroll"><div class="grid" id="grid"></div></div>
     <div class="legend">
       <span><i class="sw" style="background:var(--okr-soft)"></i>Annual goals and Q1 OKR prep</span>
+      <span><i class="sw" style="background:var(--slt)"></i>SLT offsite</span>
       <span><i class="sw" style="background:var(--okr)"></i>OKR Week</span>
       <span><i class="sw" style="background:var(--perf-soft)"></i>Manager prep week</span>
       <span><i class="sw" style="background:var(--perf)"></i>Performance cycle week (1 to 6)</span>
@@ -137,6 +140,7 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
   <section class="notes">
     <ul>
       <li>Annual goals: pods send broad strokes by Fri Nov 20th, SLT offsite the week of Nov 30th, goals locked Fri Dec 4th. Company OKRs go to teams Mon Dec 14th, team drafts are due Mon Jan 4th, the leadership read is Tue Jan 5th, and final OKRs land in Jira Fri Jan 8th.</li>
+      <li>SLT offsites: the week of Nov 30th, 2026 for 2027 annual goals (timing being set in #ash-slt), Tue Jul 27th to Thu Jul 29th, 2027 at midyear, and Tue Nov 16th to Thu Nov 18th, 2027 for 2028 annual goals, which keeps it clear of Thanksgiving, the holiday party and the Baton Special Holiday.</li>
       <li>In each prep week managers finish training and send every feedback request by Friday, so week 1 is only for writing.</li>
       <li>The Promotion Committee meets on the Monday of week 5. Results delivery starts that Tuesday and runs two full weeks.</li>
       <li>March remote week is drafted for Mar 8th to 12th. Moving it to Mar 29th would match spring break for three families, but that is the week before Q2 OKR Week.</li>
@@ -173,7 +177,8 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
     ['2027-09-06','6','Results delivery, wraps Fri Sep 10th (Labor Day Mon)',false,false]
   ];
   var LANES = {
-    goals: [['2026-11-16','2026-11-20','Pd','Pods send broad strokes on 2027 focus and annual goals by Fri Nov 20th'],['2026-11-30','2026-12-04','SLT','SLT offsite week of Nov 30th · annual goals locked Fri Dec 4th'],['2026-12-14','2026-12-18','Co','Company OKRs to teams and Q1 OKR kickoff, Mon Dec 14th'],['2027-01-04','2027-01-08','D','Team drafts due Mon Jan 4th · leadership read Tue Jan 5th · final in Jira Fri Jan 8th']],
+    goals: [['2026-11-16','2026-11-20','Pd','Pods send broad strokes on 2027 focus and annual goals by Fri Nov 20th'],['2026-11-30','2026-12-04','Lk','Annual goals locked with Jason by Fri Dec 4th'],['2026-12-14','2026-12-18','Co','Company OKRs to teams and Q1 OKR kickoff, Mon Dec 14th'],['2027-01-04','2027-01-08','D','Team drafts due Mon Jan 4th · leadership read Tue Jan 5th · final in Jira Fri Jan 8th']],
+    slt: [['2026-11-30','2026-12-04','S','SLT offsite for 2027 annual goals, week of Nov 30th, 2026 (Grant floating timing)','open'],['2027-07-26','2027-07-30','S','Midyear SLT offsite, Tue Jul 27th to Thu Jul 29th'],['2027-11-15','2027-11-19','S','SLT offsite for 2028 annual goals, Tue Nov 16th to Thu Nov 18th']],
     okr: [['2027-01-11','2027-01-15','Q1','Q1 OKR Week, Jan 11th to 15th'],['2027-04-05','2027-04-09','Q2','Q2 OKR Week, Apr 5th to 9th'],['2027-07-12','2027-07-16','Q3','Q3 OKR Week, Jul 12th to 16th'],['2027-10-04','2027-10-08','Q4','Q4 OKR Week, Oct 4th to 8th']],
     rw: [['2026-12-21','2026-12-25','','Remote week, Dec 21st to 25th, 2026 (already booked)'],['2027-02-15','2027-02-19','','Remote week, Feb 15th to 19th'],['2027-03-08','2027-03-12','?','Remote week, Mar 8th to 12th (open question: Mar 29th instead?)','open'],['2027-05-03','2027-05-07','','Remote week, May 3rd to 7th'],['2027-06-07','2027-06-11','','Remote week, Jun 7th to 11th'],['2027-08-02','2027-08-06','','Remote week, Aug 2nd to 6th'],['2027-09-13','2027-09-17','','Remote week, Sep 13th to 17th'],['2027-11-22','2027-11-24','','Remote week, Nov 22nd to 24th (three days)'],['2027-12-20','2027-12-31','','Remote weeks, Dec 20th to 31st']],
     hol: [['2027-01-01','2027-01-01','✱',"New Year's Day, Fri Jan 1st"],['2027-01-18','2027-01-18','✱','MLK Day, Mon Jan 18th'],['2027-05-31','2027-05-31','✱','Memorial Day, Mon May 31st'],['2027-07-05','2027-07-05','✱','Independence Day observed, Mon Jul 5th'],['2027-09-06','2027-09-06','✱','Labor Day, Mon Sep 6th'],['2027-11-25','2027-11-26','✱','Thanksgiving and the day after, Nov 25th and 26th'],['2027-12-03','2027-12-03','✱','Baton Special Holiday, Fri Dec 3rd'],['2027-12-23','2027-12-24','✱','Christmas observed, Dec 23rd and 24th'],['2027-12-30','2027-12-31','✱',"New Year's observed, Dec 30th and 31st"]]
@@ -201,6 +206,9 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
   var t;
   grid.appendChild(el('div', 'lane-label', 'Goals and Q1 OKRs'));
   t = el('div', 'track'); LANES.goals.forEach(function (x) { bar(t, x[0], x[1], 'goals', x[2], x[3]); }); grid.appendChild(t);
+
+  grid.appendChild(el('div', 'lane-label', 'SLT offsite'));
+  t = el('div', 'track'); LANES.slt.forEach(function (x) { bar(t, x[0], x[1], 'slt' + (x[4] ? ' ' + x[4] : ''), x[2], x[3]); }); grid.appendChild(t);
 
   grid.appendChild(el('div', 'lane-label', 'OKR Week'));
   t = el('div', 'track'); LANES.okr.forEach(function (x) { bar(t, x[0], x[1], 'okr', x[2], x[3]); }); grid.appendChild(t);
