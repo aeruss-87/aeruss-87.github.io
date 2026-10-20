@@ -96,14 +96,12 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
   <header>
     <div class="eyebrow">Baton annual rhythm · 2027 proposal</div>
     <h1>The weeks that matter in 2027</h1>
-    <p class="lede">The 2027 annual-goals timeline and Q1 OKR runway, SLT offsites, four OKR Weeks, two six-week performance cycles with a manager prep week ahead of each, remote weeks and holidays.</p>
+    <p class="lede">Four OKR Weeks, two six-week performance cycles with a manager prep week ahead of each, remote weeks and holidays.</p>
   </header>
 
   <section class="board" aria-label="2027 calendar strip">
     <div class="scroll"><div class="grid" id="grid"></div></div>
     <div class="legend">
-      <span><i class="sw" style="background:var(--okr-soft)"></i>Annual goals and Q1 OKR prep</span>
-      <span><i class="sw" style="background:var(--slt)"></i>SLT offsite</span>
       <span><i class="sw" style="background:var(--okr)"></i>OKR Week</span>
       <span><i class="sw" style="background:var(--perf-soft)"></i>Manager prep week</span>
       <span><i class="sw" style="background:var(--perf)"></i>Performance cycle week (1 to 6)</span>
@@ -177,8 +175,6 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
     ['2027-09-06','6','Results delivery, wraps Fri Sep 10th (Labor Day Mon)',false,false]
   ];
   var LANES = {
-    goals: [['2026-11-16','2026-11-20','Pd','Pods send broad strokes on 2027 focus and annual goals by Fri Nov 20th'],['2026-11-30','2026-12-04','Lk','Annual goals locked with Jason by Fri Dec 4th'],['2026-12-14','2026-12-18','Co','Company OKRs to teams and Q1 OKR kickoff, Mon Dec 14th'],['2027-01-04','2027-01-08','D','Team drafts due Mon Jan 4th · leadership read Tue Jan 5th · final in Jira Fri Jan 8th']],
-    slt: [['2026-11-30','2026-12-04','S','SLT offsite for 2027 annual goals, week of Nov 30th, 2026 (Grant floating timing)','open'],['2027-07-26','2027-07-30','S','Midyear SLT offsite, Tue Jul 27th to Thu Jul 29th'],['2027-11-15','2027-11-19','S','SLT offsite for 2028 annual goals, Tue Nov 16th to Thu Nov 18th']],
     okr: [['2027-01-11','2027-01-15','Q1','Q1 OKR Week, Jan 11th to 15th'],['2027-04-05','2027-04-09','Q2','Q2 OKR Week, Apr 5th to 9th'],['2027-07-12','2027-07-16','Q3','Q3 OKR Week, Jul 12th to 16th'],['2027-10-04','2027-10-08','Q4','Q4 OKR Week, Oct 4th to 8th']],
     rw: [['2026-12-21','2026-12-25','','Remote week, Dec 21st to 25th, 2026 (already booked)'],['2027-02-15','2027-02-19','','Remote week, Feb 15th to 19th'],['2027-03-08','2027-03-12','?','Remote week, Mar 8th to 12th (open question: Mar 29th instead?)','open'],['2027-05-03','2027-05-07','','Remote week, May 3rd to 7th'],['2027-06-07','2027-06-11','','Remote week, Jun 7th to 11th'],['2027-08-02','2027-08-06','','Remote week, Aug 2nd to 6th'],['2027-09-13','2027-09-17','','Remote week, Sep 13th to 17th'],['2027-11-22','2027-11-24','','Remote week, Nov 22nd to 24th (three days)'],['2027-12-20','2027-12-31','','Remote weeks, Dec 20th to 31st']],
     hol: [['2027-01-01','2027-01-01','✱',"New Year's Day, Fri Jan 1st"],['2027-01-18','2027-01-18','✱','MLK Day, Mon Jan 18th'],['2027-05-31','2027-05-31','✱','Memorial Day, Mon May 31st'],['2027-07-05','2027-07-05','✱','Independence Day observed, Mon Jul 5th'],['2027-09-06','2027-09-06','✱','Labor Day, Mon Sep 6th'],['2027-11-25','2027-11-26','✱','Thanksgiving and the day after, Nov 25th and 26th'],['2027-12-03','2027-12-03','✱','Baton Special Holiday, Fri Dec 3rd'],['2027-12-23','2027-12-24','✱','Christmas observed, Dec 23rd and 24th'],['2027-12-30','2027-12-31','✱',"New Year's observed, Dec 30th and 31st"]]
@@ -204,12 +200,6 @@ tr.prep td.n { color: var(--muted); font-size: 11px; }
   for (i = 0; i < WEEKS; i++) grid.appendChild(el('div', 'daynum', String(monday(i).getUTCDate())));
 
   var t;
-  grid.appendChild(el('div', 'lane-label', 'Goals and Q1 OKRs'));
-  t = el('div', 'track'); LANES.goals.forEach(function (x) { bar(t, x[0], x[1], 'goals', x[2], x[3]); }); grid.appendChild(t);
-
-  grid.appendChild(el('div', 'lane-label', 'SLT offsite'));
-  t = el('div', 'track'); LANES.slt.forEach(function (x) { bar(t, x[0], x[1], 'slt' + (x[4] ? ' ' + x[4] : ''), x[2], x[3]); }); grid.appendChild(t);
-
   grid.appendChild(el('div', 'lane-label', 'OKR Week'));
   t = el('div', 'track'); LANES.okr.forEach(function (x) { bar(t, x[0], x[1], 'okr', x[2], x[3]); }); grid.appendChild(t);
 
